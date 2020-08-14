@@ -1,0 +1,18 @@
+<app-weapontype-select></app-weapontype-select>
+
+<!-- Select weapon -->
+<div id="weaponSelect">
+   
+  
+</div>
+
+
+<!-- Select attachments -->
+<div id="attachmentSelect"> <!-- *ngIf="weaponSelected" -->
+
+  <h2>Select attachments</h2>
+
+  <div *ngFor="let weapon of activeWeapons">{{weapon}}</div>
+  <!-- {{selectService.getWeaponsOfType()}} -->
+
+</div>
