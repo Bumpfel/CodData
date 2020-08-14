@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 })
 export class SelectService {
 
-  private selectedWeaponType: string
+  // private selectedWeaponType: string
 
   // data (temp)
   // weaponTypes = [
@@ -22,7 +22,7 @@ export class SelectService {
   weaponTypes = ['assault rifles', 'smgs', 'shotguns', 'lmgs', 'marksman rifles', 'sniper rifles', 'melee']
 
   private weapons = {
-    assaultrifles: ['Grau', 'M4', 'M13'],
+    assaultrifles: ['M4', 'M13', 'Grau 5.56'],
     smgs: ['MP5','P90', 'MP7'],
     shotguns: [],
     lmgs: ['Bruen MK9', 'PKM'],
@@ -38,17 +38,19 @@ export class SelectService {
     return this.weaponTypes
   }
 
-  setWeaponType(type: string): void { // unused if using route params
-     this.selectedWeaponType = type
-     
-  }
+  // setWeaponType(type: string): void { // unused if using route params
+  //    this.selectedWeaponType = type  
+  // }
 
-  getSelectedWeaponType(): Observable<string> {
-    return of(this.selectedWeaponType)
-  }
+  // getSelectedWeaponType(type: string): Observable<string> {
+  //   return type
+  // }
   
   getWeaponsOfTypeAsync(type: string): Observable<string[]> {
+    if(type) {
       return of(this.weapons[type.split(' ').join('')])
+    }
+    return of(null)
   }
 
   getWeaponsOfTypeSync(type: string): string[] {

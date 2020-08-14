@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-
-import { MainComponent } from './pages/main/main.component';
+import { WeaponSelectComponent } from './pages/weapon-select/weapon-select.component';
 
 const routes: Routes = [
-  { path:'', component:MainComponent},
-  { path:':type', component:MainComponent},
+  { path:'', component: WeaponSelectComponent},
+  { path:':type', component: WeaponSelectComponent},
   { path:'**', pathMatch: 'full', redirectTo: ''},
 ];
 

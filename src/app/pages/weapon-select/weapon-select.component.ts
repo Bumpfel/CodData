@@ -3,38 +3,34 @@ import { SelectService } from 'src/app/services/select.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-weapontype-select',
-  templateUrl: './weapontype-select.component.html',
-  styleUrls: ['./weapontype-select.component.scss']
+  selector: 'app-weapon-select',
+  templateUrl: './weapon-select.component.html',
+  styleUrls: ['./weapon-select.component.scss']
 })
-export class WeapontypeSelectComponent implements OnInit {
+export class WeaponSelectComponent implements OnInit {
+
   selectedWeaponType: string
   weaponTypes: string[] // TODO of type (interface) weapon
-  
+  activeWeapons: string[]
+
   constructor(public selectService: SelectService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.weaponTypes = this.selectService.getWeaponTypes()
-    // this.selectedWeaponType = this.weaponTypes[0]
-
-    // console.log('top-menu', this.route.snapshot.paramMap.get('type'))
-    
-    // this.route.paramMap.subscribe(params => {
-    //   console.log(this.route.snapshot.data) 
-    //   let type = params.get('type')
-    //   this.selectedWeaponType = type
-    //   // console.log('debug')
-      
+    // this.selectService.getWeaponsOfTypeAsync(this.selectedWeaponType).subscribe(weapons => {
+    //   this.activeWeapons = weapons
     // })
+
+    this.setWeaponType(this.weaponTypes[0]) // TODO temp
   }
 
   setWeaponType(type: string): void {
     this.selectedWeaponType = type
-    this.selectService.setWeaponType(type)
+    this.activeWeapons = this.selectService.getWeaponsOfTypeSync(type)
+
   }
 
   iSelectedWeaponType(type: string): boolean {
     return type === this.selectedWeaponType
   }
-
 }

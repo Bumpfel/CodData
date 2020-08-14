@@ -1,0 +1,23 @@
+<!-- Weapon Type Select -->
+<nav>
+  <div id="title">
+    weapon select
+  </div>
+  
+  <a>no style</a>
+
+  <div id="menu">
+    <a *ngFor="let weaponType of weaponTypes" (mousedown)="setWeaponType(weaponType)" [class.selected]="iSelectedWeaponType(weaponType)">{{weaponType}}</a>
+
+  </div>
+</nav>
+
+<!-- Weapon Select -->
+<main>
+  <div class="weaponCard" *ngFor="let weapon of activeWeapons">
+    {{weapon}}
+  </div>
+  <img src="../../../assets/images/grau.png">
+  
+</main>
+
