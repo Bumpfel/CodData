@@ -1,109 +1,29 @@
-$titleColour: rgb(89, 121, 133);
-$textColour: rgb(120, 215, 253);
-$inactiveColour: rgb(129, 137, 140);
-
-nav {
-  $trimHeight: 4px;
-  $trimColour: rgb(182, 190, 192);
-  $selectedLinkBG: rgb(40, 67, 84);
- 
-  padding-top: 30px;
-  text-transform: uppercase;
-
-  background-color: black;
-  // opacity: 0.8;
-  user-select: none;
-
-  #title {
-    width: 600px;
-    color: $titleColour;
-    font-size: 50px;
-    font-weight: thin;
-    border-bottom: 1px solid $titleColour;
-    text-align: right;
-  }
-
-  #menu {
-    display: flex;
-    padding-left: 100px;
-    
-    a {
-      width: 160px;
-      padding: 15px 0;
-      margin: 0 3px;
-
-      cursor: pointer;
-      display: inline-block;
-      color: $inactiveColour;
-      font-weight: bold;
-      font-size: 13px;
-      text-align: center;    
-      white-space: nowrap;
-      text-decoration: none;
-
-      &:hover {
-        background-image: linear-gradient(to top, lighten($selectedLinkBG, 10%) $trimHeight, transparent);
-      }
-
-      &:hover, &.selected {
-        color: $textColour;
-      }   
-      
-      &.selected {
-        background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, $selectedLinkBG $trimHeight, transparent 100%);
-        
-        &:hover {
-          background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, lighten($selectedLinkBG, 10%)  $trimHeight, transparent 100%);
-        }
-      }
-    }
-      
-  }
-}
-
+@import "../../../vars.scss";
 
 main {
-  margin: 50px;
-  // color: white;
-  
-  select {
-    padding: 3px 5px;
+ 
+  .scrollbox {
+    height: 500px;
+    width: 430px;
+    overflow-y: scroll;
+    direction: rtl;
   }
   
-  $weaponCardBG: rgba(0, 0, 0, .5);
   .weaponCard {
+    display: block;
+    direction: ltr;
+    
     margin-bottom: 10px;
     padding: 20px;
     width: 355px;
     height: 95px;
-
-    // $bg: rgba(77, 230, 250, .1);
-    // $bgSize: 1px;
-    // background-image: repeating-linear-gradient(to bottom, transparent, transparent $bgSize, $bg $bgSize, $bg ($bgSize * 2)),
-    //                   repeating-linear-gradient(to right, transparent, transparent $bgSize, $bg $bgSize, $bg ($bgSize * 2));
-
-    // background-image: radial-gradient(ellipse at top, $textColour, transparent 50%), radial-gradient(ellipse at bottom, $textColour, transparent 50%);
     
-    background-color: $weaponCardBG;
-    border-left: 0;
-    border-right: 0;
+    & div {
+      text-align: center;
+    }
 
-    text-transform: capitalize;
-    user-select: none;
-    color: $textColour;
-    font-size: 23px;
-    
-    &:hover {
-      $trimHeight: 2px;
-      $trimColour: rgb(60, 146, 202);
-      
-      background-image: 
-      linear-gradient(to right, $weaponCardBG, transparent 50%, $weaponCardBG 100%),
-      linear-gradient(to bottom, $trimColour, $trimColour $trimHeight, $weaponCardBG $trimHeight, $weaponCardBG calc(100% - 2px), $trimColour calc(100% - 2px), $trimColour 100%),
-      // linear-gradient(to right, $weaponCardBG, $trimColour 50%, weaponCardBG 100%),
-      radial-gradient(ellipse at bottom, $trimColour, transparent 150%),
-      url('../../../assets/images/square-pattern.png'),
-      ;
+    & img {
+      width: 160px;
     }
   }
 

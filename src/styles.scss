@@ -1,8 +1,157 @@
+@import "./vars.scss";
+
 * {
-  font-family: 'Roboto'; // not matching that great
+  font-family: 'Roboto'; // TODO not matching that great
+  cursor: url('./assets/images/pointer.png'), pointer;
 }
 
 body { 
-  background-image: linear-gradient(to right, rgb(26, 26, 26), rgb(45, 45, 45));
+  width: 100%;
   margin: 0;
+  // background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(30, 30, 30));
+  background-image: url('./assets/images/tempBG.png'); // TODO temp
+  background-size: cover;
+}
+
+a, a * {
+  text-decoration: none;
+  cursor: url('./assets/images/pointer-link.png'), pointer;
+}
+
+// ###############
+// Scrollbar
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: $meterBG;
+  opacity: .5;
+}
+::-webkit-scrollbar-thumb {
+  $colour: #f1f1f1bc;
+  background-image: linear-gradient($colour, $colour), url('./assets/images/square-pattern.png');
+}
+::-webkit-scrollbar-thumb:hover {
+  $trimSize: 1px;
+  background-image:
+    linear-gradient(to bottom, $darkBG, $highlightColourTransparent 50%, $darkBG 100%),
+    linear-gradient(to right,
+      $highlightColour, $highlightColour $trimSize,
+      $darkBG $trimSize, $darkBG calc(100% - #{$trimSize}),
+      $highlightColour calc(100% - #{$trimSize}), $highlightColour 100%
+    ),
+    url('./assets/images/square-pattern.png');
+  border: $trimSize solid $highlightColour;
+  border-left: 0;
+  border-right: 0;
+}
+
+// ##################
+// ####  Header  ####
+
+// $titleColour: rgb(89, 121, 133);
+$titleColour: white;
+
+nav {
+  $trimHeight: 4px;
+  $trimColour: rgb(182, 190, 192);
+  // $selectedLinkBG: rgb(40, 67, 84);
+  $selectedLinkBG: rgb(80, 61, 43);
+ 
+  padding-top: 30px;
+  text-transform: uppercase;
+  
+  background-color: $darkBG;
+  user-select: none;
+
+  // &::before {
+  //   content: '';
+  //   z-index: -1;
+  //   background-size: cover;
+  //   position: absolute;
+
+  //   top: 0;
+  //   left: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   background-image: url('../../../assets/images/vector-trails.jpg');
+  //   // opacity: .05;
+  // }
+
+  #title {
+    width: 600px;
+    color: $titleColour;
+    font-size: 50px;
+    font-weight: thin;
+    border-bottom: 1px solid $titleColour;
+    text-align: right;
+  }
+
+  #menu {
+    display: flex;
+    padding-left: 100px;
+    
+    a {
+      width: 160px;
+      padding: 15px 0;
+      margin: 0 3px;
+
+      display: inline-block;
+      color: $inactiveColour;
+      font-weight: bold;
+      font-size: 13px;
+      text-align: center;
+      white-space: nowrap;
+      text-decoration: none;
+
+      &:hover {
+        background-image: linear-gradient(to top, lighten($selectedLinkBG, 10%) $trimHeight, transparent);
+      }
+
+      &:hover, &.selected {
+        color: $active;
+      }   
+      
+      &.selected {
+        background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, $selectedLinkBG $trimHeight, transparent 100%);
+        
+        &:hover {
+          background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, lighten($selectedLinkBG, 10%)  $trimHeight, transparent 100%);
+        }
+      }
+    }    
+  }
+}
+
+main {
+  margin: 50px 5%; //100px;
+  
+  a {
+    opacity: .4;
+    
+    text-transform: capitalize;
+    user-select: none;
+    color: $highlightColour;
+    font-size: 23px;
+    background-image:
+    linear-gradient($darkColour, $darkColour),
+    url('./assets/images/square-pattern.png');
+    
+    &:hover {
+      $trimHeight: 2px;
+      $trimColour: rgb(60, 146, 202); // TODO see if it can be merged
+      
+      opacity: 1;
+      background-image: 
+      linear-gradient(to right, $darkBG, transparent 50%, $darkBG 100%),
+      linear-gradient(to bottom,
+      $trimColour, $trimColour $trimHeight,
+      $darkBG $trimHeight, $darkBG calc(100% - 2px),
+      $trimColour calc(100% - 2px), $trimColour 100%),
+      // linear-gradient(to right, $weaponCardBG, $trimColour 50%, weaponCardBG 100%),
+      radial-gradient(ellipse at bottom, $trimColour -25%, $darkBG 120%),
+      url('./assets/images/square-pattern.png'),
+      ;
+    }
+  }
 }

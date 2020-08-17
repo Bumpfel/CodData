@@ -4,11 +4,13 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { WeaponSelectComponent } from './pages/weapon-select/weapon-select.component';
+import { GunsmithComponent } from './pages/gunsmith/gunsmith.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WeaponSelectComponent
+    WeaponSelectComponent,
+    GunsmithComponent
   ],
   imports: [
     BrowserModule,

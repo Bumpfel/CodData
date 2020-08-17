@@ -21,16 +21,19 @@ export class WeaponSelectComponent implements OnInit {
     //   this.activeWeapons = weapons
     // })
 
-    this.setWeaponType(this.weaponTypes[0]) // TODO temp
+    this.setWeaponType(this.weaponTypes[0])
   }
 
   setWeaponType(type: string): void {
     this.selectedWeaponType = type
     this.activeWeapons = this.selectService.getWeaponsOfTypeSync(type)
-
   }
 
   iSelectedWeaponType(type: string): boolean {
     return type === this.selectedWeaponType
+  }
+
+  makeLink(str: string): string {
+    return str.split(' ').join('_').toLowerCase();
   }
 }
