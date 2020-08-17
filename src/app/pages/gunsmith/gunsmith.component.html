@@ -7,8 +7,10 @@
 
 
 <main>
-  <div id="attachments">
-    <div id="upperAttachments">
+    <!--                   -->
+    <!-- Upper Attachments -->
+    <!--                   -->
+    <div class="attachments" id="upperAttachments">
       <a id="muzzle">Muzzle</a>
       <a id="barrel">Barrel</a>
       <a id="laser">Laser</a>
@@ -16,59 +18,71 @@
       <a id="stock">Stock</a>
     </div>
     
-    <img [src]="'../../../assets/images/weapons/' + weaponTitle + '.png'">
+    <!-- Image -->
+    <img [src]="'../../../assets/images/weapons/' + weaponTitle + '.png'">  
+
+    <!--      -->
+    <!-- Misc -->
+    <!--      -->
+    <div id="miscInfo">
+      <div id="save">
+        Save a custom mod
+      </div>
+
+      <div id="equippedSummary">
+        Equipped 3/5:
+        <div class="filled circle">
+        </div>
+        <div class="filled circle"></div>
+        <div class="filled circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+
+      <!-- Stats -->
+      <div id="stats">
+        <div id="ads">
+          <!-- 291 ms -->
+          <div class="meter">
+            <div class="filled"></div>
+          </div>
+          <div class="title">ADS</div>
+        </div>
+        <div id="range">
     
-    <div id="lowerAttachments">
+          <div class="meter">
+            <div class="first"></div>
+            <div class="second"></div>
+            <div class="last"></div>
+          </div>
+          <div class="title">Drop-Offs</div>
+        </div>
+        <div id="bullet velocity">
+          <!-- 1259 m/s -->
+          <div class="meter">
+            <div class="filled"></div>
+          </div>
+          <div class="title">Bullet Velocity</div>
+        </div>
+        <div id="reload-time">
+          <!-- 2.3 s -->
+          <div class="meter">
+            <div class="filled"></div>
+          </div>
+          <div class="title">Reload Time</div>
+        </div>
+      </div>
+    </div>
+    
+    <!--                   -->
+    <!-- Lower Attachments -->
+    <!--                   -->
+    <div class="attachments" id="lowerAttachments">
       <a id="underbarrel">Underbarrel</a>
       <!-- <a id="trigger-action">Trigger Action</a> -->
       <a id="ammunition">Ammunition</a>
       <a id="rear-grip">Rear Grip</a>
-      <a id="perk">Perk</a>
+      <a id="perk">Perk</a>  
     </div>
-  </div>
-  
-  <div id="custom-mod"></div>
-  
-  <div id="equipped">
-    Equipped 3/5:
-    <div class="filled circle">
-    </div>
-    <div class="filled circle"></div>
-    <div class="filled circle"></div>
-    <div class="circle"></div>
-    <div class="circle"></div>
-  </div>
-  
-  <div id="stats">
-    <div id="ads">
-      <!-- 291 ms -->
-      <div class="meter">
-        <div class="filled"></div>
-      </div>
-      <div class="title">ADS</div>
-    </div>
-    <div id="range">
 
-      <div class="meter">
-        <div class="first"></div>
-        <div class="second"></div>
-        <div class="last"></div>
-      </div>
-      <div class="title">Damage Drop-Offs</div>
-    </div>
-    <div id="bullet velocity">
-      <!-- 1259 m/s -->
-      <div class="meter">
-        <div class="filled"></div>
-      </div>
-      <div class="title">Bullet Velocity</div>
-    </div>
-    <div id="reload-time">
-      <!-- 2.3 s -->
-      <div class="meter">
-        <div class="filled"></div>
-      </div>
-      <div class="title">Reload Time</div>
-    </div>
-  </div>
 </main>

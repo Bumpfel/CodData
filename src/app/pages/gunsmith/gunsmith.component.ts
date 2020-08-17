@@ -14,7 +14,7 @@ export class GunsmithComponent implements OnInit {
   constructor(private route: ActivatedRoute, private globalService: GlobalService) { }
 
   ngOnInit(): void {
-    this.weaponTitle = this.route.snapshot.paramMap.get('weapon').split('_').join(' ')
+    this.weaponTitle = this.route.snapshot.paramMap.get('weaponName').split('_').join(' ')
 
     this.globalService.goBackOnEscape()
   }
