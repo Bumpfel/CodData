@@ -7,6 +7,7 @@ import { AttachmentSelectComponent } from './pages/attachment-select/attachment-
 const routes: Routes = [
   { path:'', pathMatch: 'full', redirectTo: 'weapon-select'},
   { path:'weapon-select', component: WeaponSelectComponent},
+  // { path:'weapon-select/:weaponType', component: WeaponSelectComponent},
   { path:'gunsmith/:weaponName', component: GunsmithComponent},
   { path:'gunsmith/:weaponName/:attachmentType', component: AttachmentSelectComponent},
   { path:'**', pathMatch: 'full', redirectTo: ''},

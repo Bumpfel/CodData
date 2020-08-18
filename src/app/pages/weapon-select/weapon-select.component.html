@@ -4,8 +4,12 @@
     weapon select
   </div>
   
-  <div id="menu">
-    <a *ngFor="let weaponType of weaponTypes" (mousedown)="setWeaponType(weaponType)" [class.selected]="iSelectedWeaponType(weaponType)">{{weaponType}}</a>
+  <div class="nowrapContainer">
+    <div id="spacer"></div>
+    <div id="menu">
+      <!-- <a *ngFor="let weaponType of weaponTypes" [routerLink]="'/weapon-select/' + weaponType" routerLinkActive="selected" [class.selected]="iSelectedWeaponType(weaponType)">{{weaponType}}</a> -->
+      <a *ngFor="let weaponType of weaponTypes" (mousedown)="setWeaponType(weaponType)" [class.selected]="iSelectedWeaponType(weaponType)">{{weaponType}}</a>
+    </div>
   </div>
 </nav>
 

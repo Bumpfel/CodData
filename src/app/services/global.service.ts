@@ -5,14 +5,22 @@ import { Injectable } from '@angular/core';
 })
 export class GlobalService {
 
-  constructor() { }
+  goBack = e => {
+    if(e.key === 'Escape') {
+      window.history.back()
+      this.disableGoBack()
+    }
+  }
+
+  constructor() { 
+    this.disableGoBack()
+  }
   
   goBackOnEscape() {
-    document.addEventListener('keydown', function goBack(e) {     
-      if(e.key === 'Escape') {
-        window.history.back()
-        document.removeEventListener('keydown', goBack)
-      }
-    })
+    document.addEventListener('keydown', this.goBack)
+  }
+
+  disableGoBack() {
+    document.removeEventListener('keydown', this.goBack)
   }
 }

@@ -2,15 +2,15 @@
 
 main {
   & > * { // TODO change layout on ~600px width
-    border: 1px solid red;
+    // border: 1px solid red;
   }
   
   // ###  Attachments  ###
   // #####################
   .attachments { // TODO change layout on ~600px width
-    border: 1px solid green;
-    height: 110px;
+    // border: 1px solid green;
     white-space: nowrap;
+    height: 100px;
     
     &#upperAttachments a:not(:first-child) {
       margin-left: 5%;
@@ -18,6 +18,7 @@ main {
 
     &#lowerAttachments {
       text-align: right;
+      margin-top: -110px;
     }
     
     &#lowerAttachments a {
@@ -67,19 +68,19 @@ main {
   // #############
   img {
     $width: 70%;
+    height: auto;
+    min-height: 150px;
     width: $width;
     margin: 0 calc((100% - #{$width}) / 2);
     z-index: -1;
   }
 
-
+  // ###  Misc Info  ###
+  // ###################
   #miscInfo {
-    display: inline-block;
-    // margin-top: -80px;
-    
-    // border: 1px solid green;
     margin: 5px;
     margin-left: 40px;
+    margin-top: -80px;
     
     #equippedSummary, #save {
       margin-left: 30px;

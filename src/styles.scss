@@ -8,9 +8,9 @@
 body { 
   width: 100%;
   margin: 0;
-  // background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(30, 30, 30));
-  background-image: url('./assets/images/tempBG.png'); // TODO temp
-  background-size: cover;
+  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(30, 30, 30));
+  // background-image: url('./assets/images/tempBG.png'); // TODO temp
+  // background-size: cover;
 }
 
 a, a * {
@@ -46,12 +46,10 @@ a, a * {
   border-right: 0;
 }
 
+$leftPageMargin: 5%;
+
 // ##################
 // ####  Header  ####
-
-// $titleColour: rgb(89, 121, 133);
-$titleColour: white;
-
 nav {
   $trimHeight: 4px;
   $trimColour: rgb(182, 190, 192);
@@ -78,22 +76,41 @@ nav {
   //   // opacity: .05;
   // }
 
+  .nowrapContainer {
+    display: flex;
+    white-space: nowrap;
+  }
+
   #title {
-    width: 600px;
+    // $titleColour: rgb(89, 121, 133);
+    $titleColour: white;
+
+    $margin: 3%;
+    margin-left: $margin;
+    padding-left: $leftPageMargin - $margin;
     color: $titleColour;
     font-size: 50px;
     font-weight: thin;
     border-bottom: 1px solid $titleColour;
-    text-align: right;
+  }
+
+  #spacer {
+    // display: inline-block;
+    min-width: 0;
+    width: 100px;
+    max-width: 100px;
+    border: 1px solid red;
   }
 
   #menu {
-    display: flex;
-    padding-left: 100px;
+    border: 1px solid green;
+    display: inline-block;
+    // padding-left: calc(#{$leftPageMargin} + 40px); //100px;
     
     a {
-      width: 160px;
-      padding: 15px 0;
+      box-sizing: border-box;
+      width: 140px;
+      padding: 15px 10px;
       margin: 0 3px;
 
       display: inline-block;
@@ -124,7 +141,7 @@ nav {
 }
 
 main {
-  margin: 50px 5%; //100px;
+  margin: 50px $leftPageMargin;
   
   a {
     opacity: .4;

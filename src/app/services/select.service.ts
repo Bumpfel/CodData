@@ -37,12 +37,12 @@ export class SelectService {
   //   return type
   // }
   
-  getWeaponsOfTypeAsync(type: string): Observable<string[]> {
-    if(type) {
-      return of(this.weapons[type.split(' ').join('')])
-    }
-    return of(null)
-  }
+  // getWeaponsOfTypeAsync(type: string): Observable<string[]> {
+  //   if(type) {
+  //     return of(this.weapons[type.split(' ').join('')])
+  //   }
+  //   return of(null)
+  // }
 
   getWeaponsOfTypeSync(type: string): string[] {
     if(type) {

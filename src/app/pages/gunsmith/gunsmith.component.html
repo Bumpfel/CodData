@@ -11,19 +11,19 @@
     <!-- Upper Attachments -->
     <!--                   -->
     <div class="attachments" id="upperAttachments">
-      <a id="muzzle">Muzzle</a>
-      <a id="barrel">Barrel</a>
-      <a id="laser">Laser</a>
-      <a id="optic">Optic</a>
-      <a id="stock">Stock</a>
+      <a routerLink="muzzle" id="muzzle">Muzzle</a>
+      <a routerLink="barrel" id="barrel">Barrel</a>
+      <a routerLink="laser" id="laser">Laser</a>
+      <a routerLink="optic" id="optic">Optic</a>
+      <a routerLink="stock" id="stock">Stock</a>
     </div>
     
     <!-- Image -->
     <img [src]="'../../../assets/images/weapons/' + weaponTitle + '.png'">  
 
-    <!--      -->
-    <!-- Misc -->
-    <!--      -->
+    <!--           -->
+    <!-- Misc Info -->
+    <!--           -->
     <div id="miscInfo">
       <div id="save">
         Save a custom mod
@@ -78,11 +78,11 @@
     <!-- Lower Attachments -->
     <!--                   -->
     <div class="attachments" id="lowerAttachments">
-      <a id="underbarrel">Underbarrel</a>
+      <a id="underbarrel" routerLink="underbarrel">Underbarrel</a>
       <!-- <a id="trigger-action">Trigger Action</a> -->
-      <a id="ammunition">Ammunition</a>
-      <a id="rear-grip">Rear Grip</a>
-      <a id="perk">Perk</a>  
+      <a id="ammunition" routerLink="ammunition">Ammunition</a>
+      <a id="rear-grip" routerLink="rear-grip" >Rear Grip</a>
+      <a id="perk" routerLink="perk" >Perk</a>
     </div>
 
 </main>

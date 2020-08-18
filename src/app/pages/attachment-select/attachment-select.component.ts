@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { GlobalService } from 'src/app/services/global.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-attachment-select',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AttachmentSelectComponent implements OnInit {
 
-  constructor() { }
+  attachmentType: string
+
+  constructor(private globalService: GlobalService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.attachmentType = this.route.snapshot.paramMap.get('attachmentType')
+    // this.globalService.goBackOnEscape()
   }
 
 }
