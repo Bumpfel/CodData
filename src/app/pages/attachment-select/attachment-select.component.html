@@ -3,3 +3,38 @@
     {{attachmentType}}
   </div>
 </nav>
+
+<main>
+  <div id="attachments">
+    <a (click)="selectAttachment(attachment)" *ngFor="let attachment of attachments">{{attachment}}<div class="circle filled right"></div></a>
+  </div>
+
+  <div class="stats">
+    <div id="title">
+      Monolithic Suppressor
+    </div>
+
+    <div class="equipped">
+      <div class="circle filled"></div>
+      <div id="title">Equipped</div>
+    </div>
+      
+    <div id="pros">
+      PROS
+      <div class="stat">Sound Suppression</div>
+      <div class="stat">
+        Damage Range
+        <div>10%</div>
+      </div>
+    </div>
+    <div id="cons">
+      CONS      
+      <div class="stat">
+        Aim Down Sight Speed
+        <div>67 ms</div>
+      </div>
+      <div class="stat">Aim Walking Steadiness</div>
+    </div>
+    <!-- <div class="meter"></div> -->
+  </div>
+</main>

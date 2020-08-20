@@ -1,7 +1,7 @@
 @import "../../../vars.scss";
 
 main {
-  & > * { // TODO change layout on ~600px width
+  > * {
     // border: 1px solid red;
   }
   
@@ -27,17 +27,10 @@ main {
     
     // TODO margin-left and width of a's control the widths used. not the best solution
     a {
-      text-align: left;
-      position: relative;
-      display: inline-block;
       box-sizing: border-box;
-      width: 16%; 
-      min-width: fit-content;
-      margin: auto;
-      padding: 10px;
-      
+      width: 16%;
+    
       $vertDistance: 30px;
-
       &#muzzle {
         top: $vertDistance * 2;
       }
@@ -94,104 +87,31 @@ main {
       color: rgb(52, 91, 120); // TODO var?
       margin-bottom: 5px;
     }
-    
-    & .circle:first-child {
+
+    .circle {
+      margin-right: 12px;
+    }
+
+    .circle:first-child {
       margin-left: 15px;
     }
 
-    & .circle { // TODO probably extract this to styles.scss to make it reusable
-      display: inline-block;
-      $size: 15px;
-      width: $size;
-      height: $size;
-      margin-right: 12px;
-      padding: 3px;
-      
-      vertical-align: middle;
-      border: 1px solid $inactiveColour;
-      border-radius: 50%;
-
-      &.filled {
-        border-color: $active;
-        
-        &::before {
-          content: '';
-          vertical-align: top;
-          display: inline-block;
-          width: 100%;
-          height: 100%;
-          background-color: $active;
-          border-radius: 50%;
-        }
-      }
-    }
-
-    // ###  Stats  ###
-    // ###############
-    #stats {
-      display: inline-block;
-      padding: 10px 20px;
-      $cut: 20px;
-      background: $darkBG;
-      clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
-
-      color: $inactiveColour;
-      font-size: 15px;
-      line-height: 23px;
-
-      & > div {
-        direction: rtl;
-      }
-
-      & .title {
-        display: inline-block;
-        padding-right: 10px;
-        text-align: right;
-        white-space: nowrap;
+    .meter {
+      .filled {
+        width: 150px; // TODO temp
+        background-color: $inactiveColour;
       }
       
-      & .meter {
-        // border: 1px solid blue;
-        direction: ltr;
-        display: inline-flex;
-        height: 5px;
-        width: 200px;
-        background-color: $meterBG;
-        vertical-align: middle;
-        
-        &:hover {
-          &::before {
-            content: 'test';
-            padding: 0 5px;
-            // width: 50px;
-            // height: 25px;
-            position: absolute;
-            // top: 5px;
-            z-index: 2;
-            background-color: #333;
-          }
-        }
-
-        & > div {
-          height: 100%;
-        }
-
-        & .filled {
-          width: 150px; // TODO temp
-          background-color: $inactiveColour;
-        }
-        
-        & .first {
-          width: 100px; // TODO temp
-          background-color: $inactiveColour;
-        }
-        & .second {
-          width: 180px; // TODO temp
-          background-color: darken($inactiveColour, 20%);
-        }
-        & .last {
-          background-color: darken($inactiveColour, 40%);
-        }
+      .first {
+        width: 100px; // TODO temp
+        background-color: $inactiveColour;
+      }
+      .second {
+        width: 180px; // TODO temp
+        background-color: darken($inactiveColour, 20%);
+      }
+      .last {
+        background-color: darken($inactiveColour, 40%);
       }
     }
   }

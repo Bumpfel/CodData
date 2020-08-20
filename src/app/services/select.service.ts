@@ -8,9 +8,21 @@ export class SelectService {
 
   // private selectedWeaponType: string
 
-  weaponTypes = ['assault rifles', 'smgs', 'shotguns', 'lmgs', 'marksman rifles', 'sniper rifles', 'handguns'] // 'launchers', 'melee']
+  weaponTypes: string[] = ['assault rifles', 'smgs', 'shotguns', 'lmgs', 'marksman rifles', 'sniper rifles', 'handguns']
+  attachments: object = {
+    muzzle: ['Flash Guard', 'Tactical Suppressor', 'Breacher Device', 'Muzzle Brake', 'Lightweight Suppressor', 'Compensator', 'Monolithic Suppressor'],
+    barrel: [],
+    laser: [],
+    optic: [],
+    stock: [],
+    underbarrel: [],
+    triggerAction: [],
+    ammunition: [],
+    rearGrip: [],
+    perk: []
+  }
 
-  private weapons = {
+  private weapons: object = {
     assaultrifles: ['Kilo 141', 'FAL', 'M4A1', 'FR 5.56', 'Oden', 'M13', 'FN Scar 17', 'AK-47' ,'RAM-7', 'Grau 5.56', 'CR 56 AMAX', 'AN-94'],
     smgs: ['AUG', 'P90', 'MP5', 'Uzi', 'PP19 Bizon', 'MP7', 'Striker 45', 'Fennec', 'ISO'],
     shotguns: ['R9-0 Shotgun', '725', 'Origin 12 Shotgun', 'VLK Rogue'],
@@ -49,6 +61,10 @@ export class SelectService {
       return this.weapons[type.split(' ').join('')]
     }
     return null
+  }
+
+  getAttachmentsOfType(attachmentType: string): string[] {
+    return this.attachments[attachmentType]
   }
 
   // getActiveWeapons() {

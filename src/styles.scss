@@ -5,8 +5,7 @@
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 
-body { 
-  width: 100%;
+body {
   margin: 0;
   background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(30, 30, 30));
   // background-image: url('./assets/images/tempBG.png'); // TODO temp
@@ -18,8 +17,9 @@ a, a * {
   cursor: url('./assets/images/pointer-link.png'), pointer;
 }
 
-// ###############
-// Scrollbar
+
+// ###################
+// ###  Scrollbar  ###
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -48,9 +48,11 @@ a, a * {
 
 $leftPageMargin: 5%;
 
+
 // ##################
 // ####  Header  ####
 nav {
+  white-space: nowrap;
   $trimHeight: 4px;
   $trimColour: rgb(182, 190, 192);
   // $selectedLinkBG: rgb(40, 67, 84);
@@ -62,56 +64,27 @@ nav {
   background-color: $darkBG;
   user-select: none;
 
-  // &::before {
-  //   content: '';
-  //   z-index: -1;
-  //   background-size: cover;
-  //   position: absolute;
-
-  //   top: 0;
-  //   left: 0;
-  //   right: 0;
-  //   bottom: 0;
-  //   background-image: url('../../../assets/images/vector-trails.jpg');
-  //   // opacity: .05;
-  // }
-
-  .nowrapContainer {
-    display: flex;
-    white-space: nowrap;
-  }
-
   #title {
     // $titleColour: rgb(89, 121, 133);
     $titleColour: white;
+    display: inline-block;
 
-    $margin: 3%;
-    margin-left: $margin;
-    padding-left: $leftPageMargin - $margin;
+    margin-left: 40px;
+    padding-left: 60px;
     color: $titleColour;
     font-size: 50px;
     font-weight: thin;
     border-bottom: 1px solid $titleColour;
   }
 
-  #spacer {
-    // display: inline-block;
-    min-width: 0;
-    width: 100px;
-    max-width: 100px;
-    border: 1px solid red;
-  }
-
   #menu {
-    border: 1px solid green;
-    display: inline-block;
-    // padding-left: calc(#{$leftPageMargin} + 40px); //100px;
+    margin-left: 100px;
     
     a {
       box-sizing: border-box;
       width: 140px;
       padding: 15px 10px;
-      margin: 0 3px;
+      margin-right: 5px;
 
       display: inline-block;
       color: $inactiveColour;
@@ -141,7 +114,7 @@ nav {
 }
 
 main {
-  margin: 50px $leftPageMargin;
+  margin: 50px 100px;
   
   a {
     opacity: .4;
@@ -153,6 +126,14 @@ main {
     background-image:
     linear-gradient($darkColour, $darkColour),
     url('./assets/images/square-pattern.png');
+
+    text-align: left;
+    position: relative;
+    display: inline-block;
+    min-width: fit-content;
+    margin: auto;
+    padding: 10px;
+
     
     &:hover {
       $trimHeight: 2px;
@@ -169,6 +150,102 @@ main {
       radial-gradient(ellipse at bottom, $trimColour -25%, $darkBG 120%),
       url('./assets/images/square-pattern.png'),
       ;
+    }
+  }
+}
+
+.circle {
+  display: inline-block;
+  $size: 15px;
+  width: $size;
+  height: $size;
+  padding: 3px;
+  
+  vertical-align: middle;
+  border: 1px solid $inactiveColour;
+  border-radius: 50%; 
+
+  &.filled {
+    background-color: black;
+    border-color: $active;
+    
+    &::before {
+      content: '';
+      vertical-align: top;
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      background-color: $active;
+      border-radius: 50%;
+    }
+  }
+}
+
+.right {
+  float: right;
+}
+
+// ###  Stats  ###
+// ###############
+.stats {
+  display: inline-block;
+  padding: 10px 20px;
+  $cut: 20px;
+  background: $darkBG;
+  clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
+
+  color: $inactiveColour;
+  font-size: 15px;
+  line-height: 23px;
+
+  > div {
+    direction: rtl;
+  }
+
+  .title {
+    display: inline-block;
+    padding-right: 10px;
+    text-align: right;
+    white-space: nowrap;
+  }
+  
+  .meter {
+    // border: 1px solid blue;
+    direction: ltr;
+    display: inline-flex;
+    height: 5px;
+    width: 200px;
+    background-color: $meterBG;
+    vertical-align: middle;
+    
+    &:hover {
+      &::before {
+        content: 'test';
+        padding: 0 5px;
+        // width: 50px;
+        // height: 25px;
+        position: absolute;
+        // top: 5px;
+        z-index: 2;
+        background-color: #333;
+      }
+    }
+
+    .filled {
+      width: 150px; // TODO temp
+      background-color: $inactiveColour;
+    }
+    
+    .first {
+      width: 100px; // TODO temp
+      background-color: $inactiveColour;
+    }
+    .second {
+      width: 180px; // TODO temp
+      background-color: darken($inactiveColour, 20%);
+    }
+    .last {
+      background-color: darken($inactiveColour, 40%);
     }
   }
 }
