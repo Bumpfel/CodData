@@ -39,8 +39,9 @@ a {
     margin: 20px 0;
 
     .circle {
-      width: 23px;
-      height: 23px;
+      $sz: 23px;
+      width: $sz;
+      height: $sz;
       padding: 5px;
     }
 

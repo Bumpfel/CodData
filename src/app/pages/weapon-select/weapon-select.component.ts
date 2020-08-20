@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectService } from 'src/app/services/select.service';
+import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -13,10 +13,10 @@ export class WeaponSelectComponent implements OnInit {
   weaponTypes: string[] // TODO of type (interface) weapon
   activeWeapons: string[]
 
-  constructor(public selectService: SelectService, private route: ActivatedRoute) { }
+  constructor(public configService: WeaponConfigService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.weaponTypes = this.selectService.getWeaponTypes()
+    this.weaponTypes = this.configService.getWeaponTypes()
     // this.selectService.getWeaponsOfTypeAsync(this.selectedWeaponType).subscribe(weapons => {
     //   this.activeWeapons = weapons
     // })
@@ -26,7 +26,7 @@ export class WeaponSelectComponent implements OnInit {
 
   setWeaponType(type: string): void {
     this.selectedWeaponType = type
-    this.activeWeapons = this.selectService.getWeaponsOfTypeSync(type)
+    this.activeWeapons = this.configService.getWeaponsOfType(type)
   }
 
   iSelectedWeaponType(type: string): boolean {

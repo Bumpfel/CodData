@@ -29,6 +29,19 @@ main {
     a {
       box-sizing: border-box;
       width: 16%;
+
+      > div {
+        color: white;
+        font-size: 16px;
+      }
+
+      .circle {
+        float: right;
+        $sz: 10px;
+        width: $sz;
+        height: $sz;
+        padding: 2px;
+      }
     
       $vertDistance: 30px;
       &#muzzle {

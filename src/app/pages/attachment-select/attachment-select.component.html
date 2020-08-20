@@ -6,7 +6,7 @@
 
 <main>
   <div id="attachments">
-    <a (click)="selectAttachment(attachment)" *ngFor="let attachment of attachments">{{attachment}}<div class="circle filled right"></div></a>
+    <a (click)="selectAttachment(attachment)" *ngFor="let attachment of attachments">{{attachment}}<div *ngIf="isSelectedAttachment(attachment)" class="circle filled right"></div></a>
   </div>
 
   <div class="stats">

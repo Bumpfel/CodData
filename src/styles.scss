@@ -8,6 +8,7 @@
 body {
   margin: 0;
   background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(30, 30, 30));
+  user-select: none;
   // background-image: url('./assets/images/tempBG.png'); // TODO temp
   // background-size: cover;
 }
@@ -46,7 +47,7 @@ a, a * {
   border-right: 0;
 }
 
-$leftPageMargin: 5%;
+$leftPageMargin: 100px;
 
 
 // ##################
@@ -58,32 +59,35 @@ nav {
   // $selectedLinkBG: rgb(40, 67, 84);
   $selectedLinkBG: rgb(80, 61, 43);
  
-  padding-top: 30px;
+  padding-top: 40px;
   text-transform: uppercase;
   
-  background-color: $darkBG;
-  user-select: none;
+  // background-color: $darkBG;
+  background-image: 
+    linear-gradient($darkColour, $darkColour),
+    url('./assets/images/vector-trails.jpg'),
+  ;
+  // user-select: none;
 
   #title {
     // $titleColour: rgb(89, 121, 133);
     $titleColour: white;
     display: inline-block;
 
-    margin-left: 40px;
-    padding-left: 60px;
+    padding-left: $leftPageMargin;
     color: $titleColour;
     font-size: 50px;
-    font-weight: thin;
+    font-weight: 100;
     border-bottom: 1px solid $titleColour;
   }
 
   #menu {
-    margin-left: 100px;
+    margin-left: $leftPageMargin + 50px;
     
     a {
       box-sizing: border-box;
       width: 140px;
-      padding: 15px 10px;
+      padding: 20px 10px;
       margin-right: 5px;
 
       display: inline-block;
@@ -114,13 +118,17 @@ nav {
 }
 
 main {
-  margin: 50px 100px;
-  
+  margin: 50px $leftPageMargin;
+
+  img {
+    // user-select: none;
+  }  
+
   a {
     opacity: .4;
     
     text-transform: capitalize;
-    user-select: none;
+    // user-select: none;
     color: $highlightColour;
     font-size: 21px;
     background-image:
