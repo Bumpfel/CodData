@@ -2,29 +2,6 @@
 
 main {
  
-  .scrollbox {
-    height: 500px;
-    width: 430px;
-    overflow-y: scroll;
-    direction: rtl;
-  }
-  
-  .weaponCard {
-    display: block;
-    direction: ltr;
-    
-    margin-bottom: 10px;
-    padding: 20px;
-    width: 355px;
-    height: 95px;
-    
-    & div {
-      text-align: center;
-    }
 
-    & img {
-      width: 160px;
-    }
-  }
 
 }

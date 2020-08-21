@@ -27,8 +27,12 @@ export class AttachmentSelectComponent implements OnInit {
   }
 
   selectAttachment(attachment): void {
-    this.configService.setAttachment(this.attachmentType, attachment)
-    window.history.back()
+    if(this.configService.setAttachment(this.attachmentType, attachment)) {
+      window.history.back()
+    } else {
+      // TODO replace attachment window
+      console.log('too many attachments')
+    }
   }
 
   isSelectedAttachment(attachment: string): boolean {

@@ -34,23 +34,11 @@ export class WeaponConfigService {
   
   weaponConfig = {
     name: '',
-    attachments: {
-      muzzle: '',
-      barrel: '',
-      laser: '',
-      optic: '',
-      stock: '',
-      underbarrel: '',
-      triggerAction: '',
-      ammunition: '',
-      rearGrip: '',
-      perk: ''
-    }
+    attachments: {}
   }
   
   constructor() {
-    console.log(' -- new/reset weapon config')
-    
+    this.getTempConfig()
   }
 
   getWeaponTypes(): string[] {
@@ -86,8 +74,35 @@ export class WeaponConfigService {
     this.weaponConfig.name = weaponName
   }
 
-  setAttachment(type: string, name: string) {
-    this.weaponConfig.attachments[type] = name
+  setAttachment(type: string, name: string): boolean {
+    if(this.weaponConfig.attachments[type] === name) {
+      delete this.weaponConfig.attachments[type]
+      this.saveConfig(null)
+      return true
+    } else if(Object.keys(this.weaponConfig.attachments).length >= 5 && !this.weaponConfig.attachments.hasOwnProperty(type)) { // there are already 5 attachments and the requested swap was not for a used type
+      return false
+    } else {
+      this.weaponConfig.attachments[type] = name
+      this.saveConfig(null)
+      return true
+    }
   }
+  
+  saveConfig(name: string): void {
+    if(!name) {
+      window.sessionStorage.setItem('currentConfig', JSON.stringify(this.weaponConfig))
+    } else {
+      window.localStorage.setItem(name, JSON.stringify(this.weaponConfig))
+    }
+  }
+
+  getTempConfig(): void {
+    let tempConfig = JSON.parse(window.sessionStorage.getItem('currentConfig'))
+    if(tempConfig) {
+      this.weaponConfig = tempConfig
+    }
+  }
+
+  // resetTempConfig
 
 }

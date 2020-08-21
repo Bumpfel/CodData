@@ -29,7 +29,15 @@ export class GunsmithComponent implements OnInit {
 
     this.configService.selectWeapon(this.weaponTitle) // TOOD should only be called once
     this.weaponConfig = this.configService.getWeaponConfig()
-    console.log(this.weaponConfig)
     
+    document.addEventListener('keydown', e => {     
+      if(e.key === '1') {
+        console.log('save')
+        this.configService.saveConfig('test')
+
+        // TODO save form
+      }
+    })
+
   }
 }

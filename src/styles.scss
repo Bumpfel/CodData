@@ -7,7 +7,7 @@
 
 body {
   margin: 0;
-  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(30, 30, 30));
+  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
   user-select: none;
   // background-image: url('./assets/images/tempBG.png'); // TODO temp
   // background-size: cover;
@@ -124,6 +124,7 @@ main {
     // user-select: none;
   }  
 
+  // Buttons
   a {
     opacity: .4;
     
@@ -160,40 +161,34 @@ main {
       ;
     }
   }
-}
-
-.circle {
-  display: inline-block;
-  $size: 15px;
-  width: $size;
-  height: $size;
-  padding: 3px;
+  // Scrollbox
+  .scrollbox {
+    height: 500px;
+    width: 430px;
+    overflow-y: scroll;
+    direction: rtl;
+  }
   
-  vertical-align: middle;
-  border: 1px solid $inactiveColour;
-  border-radius: 50%; 
-
-  &.filled {
-    background-color: black;
-    border-color: $active;
+  // Weapon card
+  .weaponCard {
+    display: block;
+    direction: ltr;
     
-    &::before {
-      content: '';
-      vertical-align: top;
-      display: inline-block;
-      width: 100%;
-      height: 100%;
-      background-color: $active;
-      border-radius: 50%;
+    margin-bottom: 10px;
+    padding: 20px;
+    width: 355px;
+    height: 95px;
+    
+    & div {
+      text-align: center;
+    }
+
+    & img {
+      width: 160px;
     }
   }
-}
 
-.right {
-  float: right;
-}
-
-// ###  Stats  ###
+  // ###  Stats  ###
 // ###############
 .stats {
   display: inline-block;
@@ -257,3 +252,36 @@ main {
     }
   }
 }
+}
+
+.circle {
+  display: inline-block;
+  $size: 15px;
+  width: $size;
+  height: $size;
+  padding: 3px;
+  
+  vertical-align: middle;
+  border: 1px solid $inactiveColour;
+  border-radius: 50%; 
+
+  &.filled {
+    background-color: black;
+    border-color: $active;
+    
+    &::before {
+      content: '';
+      vertical-align: top;
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      background-color: $active;
+      border-radius: 50%;
+    }
+  }
+}
+
+.right {
+  float: right;
+}
+
