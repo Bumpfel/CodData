@@ -12,13 +12,16 @@
 
 <!-- Weapon Select -->
 <main>
-  <div class="scrollbox">
-    <a class="weaponCard button" *ngFor="let weapon of activeWeapons" [routerLink]="'/gunsmith/' + globalService.nameToLink(weapon)">
-      {{weapon}}
-      <div>
-        <img [src]="'/assets/images/blackwhite/' + weapon + '.png'">
-      </div>
-    </a>
+  <div class="scrollBox">
+    <div>
+      <app-weapon-card *ngFor="let weapon of activeWeapons" [weapon]="{ weaponName: weapon }" link="/configurations"></app-weapon-card>
+      <!-- <a class="weaponCard button" *ngFor="let weapon of activeWeapons" [routerLink]="'/gunsmith/' + globalService.nameToLink(weapon)">
+        {{weapon}}
+        <div>
+          <img [src]="'/assets/images/weapons/small/' + weapon + '.png'">
+        </div>
+      </a> -->
+    </div>
     <!-- <img src="/assets/images/grau.png"> -->
   </div>
 </main>

@@ -1,0 +1,40 @@
+a {
+  display: inline-block;
+  direction: ltr;
+  
+  margin-bottom: 10px;
+  padding: 15px 25px 5px;
+  width: 355px;
+  // height: 95px;
+  
+  .info {
+    $sz: 15px;
+    color: white;
+    font-size: $sz;
+    height: $sz + 10px;
+
+    &.small {
+      font-size: 12px;
+    }
+  }
+  
+  .img {
+    text-align: center;
+  }
+  
+  img {
+    max-width: 160px;
+    max-height: 75px;
+  }
+
+  &.small {
+    vertical-align: top;
+    margin-left: 7px;
+    width: fit-content;
+    padding: 15px 20px 20px;
+    
+    img {
+      width: 75px;
+    }
+  }
+}

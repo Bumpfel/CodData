@@ -32,9 +32,9 @@ export class GunsmithComponent implements OnInit {
     this.weaponConfig = this.configService.getWeaponConfig()
     
     document.addEventListener('keydown', e => {     
-      if(e.key === '1') {
-        console.log('save')
-        this.configService.saveConfig('test')
+      if(e.key === '1') { // TODO save once
+        console.log('saved')
+        this.configService.saveConfig(this.weaponConfig.configName)
 
         // TODO save form
       }

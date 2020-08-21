@@ -8,6 +8,7 @@ import { GunsmithComponent } from './components/pages/gunsmith/gunsmith.componen
 import { AttachmentSelectComponent } from './components/pages/attachment-select/attachment-select.component';
 import { ConfigurationComponent } from './components/pages/configuration/configuration.component';
 import { MessagesComponent } from './components/messages/messages.component';
+import { WeaponCardComponent } from './components/weapon-card/weapon-card.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { MessagesComponent } from './components/messages/messages.component';
     GunsmithComponent,
     AttachmentSelectComponent,
     ConfigurationComponent,
-    MessagesComponent
+    MessagesComponent,
+    WeaponCardComponent
   ],
   imports: [
     BrowserModule,

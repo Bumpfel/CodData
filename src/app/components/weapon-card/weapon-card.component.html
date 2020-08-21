@@ -1,0 +1,16 @@
+<a [routerLink]="link">
+  {{weapon.weaponName}}
+  <div class="info">{{weapon.configName}}</div>
+  <div class="img">
+    <img [src]="'/assets/images/weapons/small/' + weapon.weaponName + '.png'">
+  </div>
+  <div class="info small">{{weapon.type}}</div>
+</a>
+
+<a class="small" [routerLink]="'/gunsmith/' + globalService.nameToLink(weapon.weaponName)">
+  Gunsmith
+  <br>
+  <img src="/assets/images/gunsmith.png">
+</a>
+
+<br>

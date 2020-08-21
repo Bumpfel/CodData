@@ -5,4 +5,4 @@ trim it close
 remove bg to make transparent
 300 image width
 hue/saturation (ctrl + u) + 40 lightness
-
+save filename as how it's meant to be displayed

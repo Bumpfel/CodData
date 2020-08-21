@@ -120,27 +120,21 @@ nav {
 main {
   margin: 50px $leftPageMargin;
 
-  img {
-    // user-select: none;
-  }  
-
   // Buttons
   a {
     opacity: .4;
     
     text-transform: capitalize;
-    // user-select: none;
     color: $highlightColour;
     font-size: 21px;
     background-image:
-    linear-gradient($darkColour, $darkColour),
-    url('./assets/images/square-pattern.png');
-
-    text-align: left;
+      linear-gradient($darkColour, $darkColour),
+      url('./assets/images/square-pattern.png'),
+    ;
     position: relative;
     display: inline-block;
     min-width: fit-content;
-    margin: auto;
+    margin: 0;
     padding: 10px;
 
     
@@ -162,96 +156,85 @@ main {
     }
   }
   // Scrollbox
-  .scrollbox {
+  .scrollBox {
     height: 500px;
-    width: 430px;
-    overflow-y: scroll;
-    direction: rtl;
-  }
-  
-  // Weapon card
-  .weaponCard {
-    display: block;
-    direction: ltr;
-    
-    margin-bottom: 10px;
-    padding: 20px;
-    width: 355px;
-    height: 95px;
-    
-    & div {
-      text-align: center;
-    }
+    // width: 430px;
+    width: 1000px;
+    // vertical-align: top;
 
-    & img {
-      width: 160px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    direction: rtl;
+
+    > div {
+      direction: ltr;
     }
   }
 
   // ###  Stats  ###
-// ###############
-.stats {
-  display: inline-block;
-  padding: 10px 20px;
-  $cut: 20px;
-  background: $darkBG;
-  clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
-
-  color: $inactiveColour;
-  font-size: 15px;
-  line-height: 23px;
-
-  > div {
-    direction: rtl;
-  }
-
-  .title {
+  // ###############
+  .stats {
     display: inline-block;
-    padding-right: 10px;
-    text-align: right;
-    white-space: nowrap;
-  }
-  
-  .meter {
-    // border: 1px solid blue;
-    direction: ltr;
-    display: inline-flex;
-    height: 5px;
-    width: 200px;
-    background-color: $meterBG;
-    vertical-align: middle;
+    padding: 10px 20px;
+    $cut: 20px;
+    background: $darkBG;
+    clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
+
+    color: $inactiveColour;
+    font-size: 15px;
+    line-height: 23px;
+
+    > div {
+      direction: rtl;
+    }
+
+    .title {
+      display: inline-block;
+      padding-right: 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
     
-    &:hover {
-      &::before {
-        content: 'test';
-        padding: 0 5px;
-        // width: 50px;
-        // height: 25px;
-        position: absolute;
-        // top: 5px;
-        z-index: 2;
-        background-color: #333;
+    .meter {
+      // border: 1px solid blue;
+      direction: ltr;
+      display: inline-flex;
+      height: 5px;
+      width: 200px;
+      background-color: $meterBG;
+      vertical-align: middle;
+      
+      &:hover {
+        &::before {
+          content: 'test';
+          padding: 0 5px;
+          // width: 50px;
+          // height: 25px;
+          position: absolute;
+          // top: 5px;
+          z-index: 2;
+          background-color: #333;
+        }
+      }
+
+      .filled {
+        width: 150px; // TODO temp
+        background-color: $inactiveColour;
+      }
+      
+      .first {
+        width: 100px; // TODO temp
+        background-color: $inactiveColour;
+      }
+      .second {
+        width: 180px; // TODO temp
+        background-color: darken($inactiveColour, 20%);
+      }
+      .last {
+        background-color: darken($inactiveColour, 40%);
       }
     }
-
-    .filled {
-      width: 150px; // TODO temp
-      background-color: $inactiveColour;
-    }
-    
-    .first {
-      width: 100px; // TODO temp
-      background-color: $inactiveColour;
-    }
-    .second {
-      width: 180px; // TODO temp
-      background-color: darken($inactiveColour, 20%);
-    }
-    .last {
-      background-color: darken($inactiveColour, 40%);
-    }
   }
-}
 }
 
 .circle {

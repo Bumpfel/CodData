@@ -25,6 +25,7 @@ TODO CodData
  - Gunsmith (edit) button. Quick Stats on hover (attachments?, ADS, mag size, reload spd, bullet vel)?
  - main page
  - after selecting weapon, user should be redirected here
+* make sure goBackOnEscape() goes to the right site. maybe pass an argument instead and use router.navigate
 * weaponCard, stats separate component?
 * Messages impacts layout
 % Make it non static

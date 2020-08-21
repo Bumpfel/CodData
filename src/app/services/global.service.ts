@@ -28,10 +28,10 @@ export class GlobalService {
   }
 
   nameToLink(str: string): string {
-    return str.split(' ').join('_').toLowerCase();
+    return str.split(' ').join('_')
   }
 
   linkToName(str: string): string {
-    return str.split('_').join(' ').toLowerCase();
+    return str.split('_').join(' ').toLowerCase()
   }
 }

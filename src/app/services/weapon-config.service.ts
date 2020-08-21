@@ -38,7 +38,7 @@ export class WeaponConfigService {
 
   private weaponConfig = {
     weaponName: '',
-    name: '',
+    configName: 'MP7 Hybrid',
     attachments: {}
   }
   
@@ -95,7 +95,7 @@ export class WeaponConfigService {
     }
   }
   
-  saveConfig(name: string): void {
+  saveConfig(name: string): void {   
     if(!name) {
       window.sessionStorage.setItem('currentConfig', JSON.stringify(this.weaponConfig))
     } else {
@@ -110,6 +110,15 @@ export class WeaponConfigService {
     }
   }
 
-  // resetTempConfig
+  getAllConfigs(): any[] {
+    let arr: any[] = [] // TODO type
+
+    let key: string
+    for(let i = 0; i < window.sessionStorage.length; i ++) {
+      key = window.sessionStorage.key(i)
+      arr.push(JSON.parse(window.sessionStorage.getItem(key)))
+    }
+    return arr
+  }
 
 }
