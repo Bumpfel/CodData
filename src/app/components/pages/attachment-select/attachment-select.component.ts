@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { GlobalService } from 'src/app/services/global.service';
 import { ActivatedRoute } from '@angular/router';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
+import { SoundService } from 'src/app/services/sound.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-attachment-select',
@@ -14,7 +16,7 @@ export class AttachmentSelectComponent implements OnInit {
   attachments: string[]
   selectedAttachment: string
 
-  constructor(private configService: WeaponConfigService, private globalService: GlobalService, private route: ActivatedRoute) { }
+  constructor(private configService: WeaponConfigService, private soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.attachmentType = this.route.snapshot.paramMap.get('attachmentType')
@@ -22,16 +24,18 @@ export class AttachmentSelectComponent implements OnInit {
     
     this.attachments = this.configService.getAttachmentsOfType(this.attachmentType)
     this.selectedAttachment = this.configService.getSelectedAttachment(this.attachmentType)
-    console.log(this.selectedAttachment)
-    
   }
 
   selectAttachment(attachment): void {
-    if(this.configService.setAttachment(this.attachmentType, attachment)) {
+    let status = this.configService.setAttachment(this.attachmentType, attachment)
+    if(status === this.configService.editStatus.EQUIPPED) {
+      this.messageService.addMessage('Attachment Equipped', attachment) // temp
       window.history.back()
+    } else if(status === this.configService.editStatus.UNEQUIPPED) {
+        this.selectedAttachment = undefined
     } else {
       // TODO replace attachment window
-      console.log('too many attachments')
+      this.messageService.addMessage('Too many attachments', '') // temp
     }
   }
 

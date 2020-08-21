@@ -4,9 +4,11 @@
   </div>
 </nav>
 
+<app-messages></app-messages>
+
 <main>
   <div id="attachments">
-    <a (click)="selectAttachment(attachment)" *ngFor="let attachment of attachments">{{attachment}}<div *ngIf="isSelectedAttachment(attachment)" class="circle filled right"></div></a>
+    <a (click)="selectAttachment(attachment); soundService.select()" (mouseover)="soundService.hover()" *ngFor="let attachment of attachments">{{attachment}}<div *ngIf="isSelectedAttachment(attachment)" class="circle filled right"></div></a>
   </div>
 
   <div class="stats">

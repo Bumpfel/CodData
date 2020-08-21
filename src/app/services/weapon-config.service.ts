@@ -3,10 +3,12 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class WeaponConfigService {
-  
-  weaponTypes: string[] = ['assault rifles', 'smgs', 'shotguns', 'lmgs', 'marksman rifles', 'sniper rifles', 'handguns']
-  attachments: object = {
+    
+  private weaponTypes: string[] = ['assault rifles', 'smgs', 'shotguns', 'lmgs', 'marksman rifles', 'sniper rifles', 'handguns']
+  private attachments: object = {
     muzzle: ['Flash Guard', 'Tactical Suppressor', 'Breacher Device', 'Muzzle Brake', 'Lightweight Suppressor', 'Compensator', 'Monolithic Suppressor'],
     barrel: ['Singuard Arms 16.6" SOCOM', 'Singuard Arms Whisperer'],
     laser: ['5mW Laser', 'Tac Laser', '1mW Laser'],
@@ -31,8 +33,11 @@ export class WeaponConfigService {
     // launchers: ['PILA', 'Strela-P', 'JOKR', 'RPG-7'],
     // melee: ['Riot Shield', 'Combat Knife', 'Kali Sticks', 'Dual Kodachis']
   }
-  
-  weaponConfig = {
+
+  public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3}
+
+  private weaponConfig = {
+    weaponName: '',
     name: '',
     attachments: {}
   }
@@ -71,20 +76,22 @@ export class WeaponConfigService {
   selectWeapon(weaponName: string): void {
     // TODO check that the weapon exists
     // TODO use weaponconfig class
-    this.weaponConfig.name = weaponName
+    this.weaponConfig.weaponName = weaponName
   }
 
-  setAttachment(type: string, name: string): boolean {
+  setAttachment(type: string, name: string) {
     if(this.weaponConfig.attachments[type] === name) {
+      // same as selected attachment. unequip
       delete this.weaponConfig.attachments[type]
       this.saveConfig(null)
-      return true
-    } else if(Object.keys(this.weaponConfig.attachments).length >= 5 && !this.weaponConfig.attachments.hasOwnProperty(type)) { // there are already 5 attachments and the requested swap was not for a used type
-      return false
+      return this.editStatus.UNEQUIPPED
+    } else if(Object.keys(this.weaponConfig.attachments).length >= 5 && !this.weaponConfig.attachments.hasOwnProperty(type)) {
+      // there are already 5 attachments and the requested swap was not for a used type
+      return this.editStatus.TOOMANY
     } else {
       this.weaponConfig.attachments[type] = name
       this.saveConfig(null)
-      return true
+      return this.editStatus.EQUIPPED
     }
   }
   

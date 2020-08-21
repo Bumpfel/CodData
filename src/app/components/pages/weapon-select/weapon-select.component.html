@@ -5,7 +5,7 @@
   </div>
   
   <div id="menu">
-    <a *ngFor="let weaponType of weaponTypes" [routerLink]="'/weapon-select/' + nameToLink(weaponType)" routerLinkActive="selected">{{weaponType}}</a>
+    <a *ngFor="let weaponType of weaponTypes" [routerLink]="'/weapon-select/' + globalService.nameToLink(weaponType)" routerLinkActive="selected">{{weaponType}}</a>
     <!-- <a *ngFor="let weaponType of weaponTypes" ((mousedown)="setWeaponType(weaponType)" [class.selected]="iSelectedWeaponType(weaponType)">{{weaponType}}</a> -->
   </div>
 </nav>
@@ -13,12 +13,12 @@
 <!-- Weapon Select -->
 <main>
   <div class="scrollbox">
-    <a class="weaponCard button" *ngFor="let weapon of activeWeapons" [routerLink]="'/gunsmith/' + nameToLink(weapon)">
+    <a class="weaponCard button" *ngFor="let weapon of activeWeapons" [routerLink]="'/gunsmith/' + globalService.nameToLink(weapon)">
       {{weapon}}
       <div>
-        <img [src]="'../../../assets/images/blackwhite/' + weapon + '.png'">
+        <img [src]="'/assets/images/blackwhite/' + weapon + '.png'">
       </div>
     </a>
-    <!-- <img src="../../../assets/images/grau.png"> -->
+    <!-- <img src="/assets/images/grau.png"> -->
   </div>
 </main>

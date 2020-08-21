@@ -1,0 +1,74 @@
+TODO CodData
+
+###  Thoughts  ###
+##################
+* när resetta sessionStorage.tempConfig. ska bort om man väljer nytt vapen iaf
+* om pathen alls ska användas för att modda en config, eller om det ska göras enbart mha config service (eller en mix)
+* gunsmith: how show stats (numbers)?
+* how save/load custom mods?
+ - web storage
+ - save as it's done in game, i.e. "enter name", "update custom mod", "create new custom mod"?
+ - how load it? from weapon select as in game?
+* menu separate component
+* think about how some pages would be displayed on smaller screens.
+ - different menu on weapon-select
+ - different button layout
+* custom mod share link
+* config template? able to apply a mod template on a weapon
+* FAQ page (go a little nerdy with the weapon details. lock time (open bolt delay))
+
+
+
+###  Prio 1  ###
+################
+* Config-Page (as main loadout page in game with only weapon configs)
+ - Gunsmith (edit) button. Quick Stats on hover (attachments?, ADS, mag size, reload spd, bullet vel)?
+ - main page
+ - after selecting weapon, user should be redirected here
+* weaponCard, stats separate component?
+* Messages impacts layout
+% Make it non static
+* test with codgundata backend
+
+
+
+###  Prio 2  ###
+################
+* buttons as a mini component since added sounds?
+* mute sounds button. save as localStorage setting
+* z-index on messages
+* routerLink should trigger on mousedown to make it more responsive and emulate real game better
+* improve layout dynamics
+ - main layout - left margin should collapse as prio 1 if needed
+ - layout improvements in gunsmith. should work better on narrower screens w/o changing layout
+ - mobile friendly. different layout based on screen width
+* remove attachment on 'r' when hovering button
+* weapon images
+* tabbable links / key (arrows) control
+* button titles for hearing impaired
+* back button
+* able to name configurations
+* page titles so you can navigate easier via browser back/forward buttons
+
+
+###  Prio 3  ###
+################
+* different select, go-back sounds as in game
+* Gunsmith real stats - real weapon name, cartridge. pic over cartridge with dimensions (inch + mm)
+½ background image
+- menu done
+½ menu sounds
+* scrollbar only full size when hovering the scrollable area
+* graphical transition between pages. at least scrolling title
+* more accurate font
+
+
+
+###  Done  ###
+##############
+* sharable css variables
+* Gunsmith layout
+* Attachment-Select layout
+* rename select-service
+* Able to build configurations
+* messages component

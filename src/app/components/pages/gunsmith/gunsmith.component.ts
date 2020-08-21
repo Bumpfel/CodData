@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { Location } from '@angular/common'
+import { MessagesComponent } from './../../messages/messages.component'
 
 @Component({
   selector: 'app-gunsmith',

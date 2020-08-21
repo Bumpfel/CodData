@@ -1,0 +1,6 @@
+<a class="weaponCard button" *ngFor="let config of configurations" [routerLink]="'/gunsmith/' + globalService.nameToLink(config)">
+  {{config.weaponName}}
+  <div>
+    <img [src]="'/src/assets/images/blackwhite/' + config.weaponName + '.png'">
+  </div>
+</a>

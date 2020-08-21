@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GlobalService } from 'src/app/services/global.service';
 
 @Component({
   selector: 'app-weapon-select',
@@ -13,7 +14,7 @@ export class WeaponSelectComponent implements OnInit {
   weaponTypes: string[] // TODO of type (interface) weapon
   activeWeapons: string[]
 
-  constructor(public configService: WeaponConfigService, private route: ActivatedRoute, private router: Router) { }
+  constructor(public globalService: GlobalService, public configService: WeaponConfigService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.weaponTypes = this.configService.getWeaponTypes()
@@ -27,9 +28,9 @@ export class WeaponSelectComponent implements OnInit {
     this.route.params.subscribe(params => {
       if(!params.weaponType) {
         console.log('navigate to ' + this.weaponTypes[0])
-        this.router.navigate([this.nameToLink(this.weaponTypes[0])], { relativeTo: this.route })
+        this.router.navigate([this.globalService.nameToLink(this.weaponTypes[0])], { relativeTo: this.route })
       } else {
-        this.activeWeapons = this.configService.getWeaponsOfType(this.linkToName(params.weaponType))
+        this.activeWeapons = this.configService.getWeaponsOfType(this.globalService.linkToName(params.weaponType))
       }
     })
 
@@ -43,12 +44,4 @@ export class WeaponSelectComponent implements OnInit {
   // iSelectedWeaponType(type: string): boolean {
   //   return type === this.selectedWeaponType
   // }
-
-  nameToLink(str: string): string {
-    return str.split(' ').join('_').toLowerCase();
-  }
-
-  linkToName(str: string): string {
-    return str.split('_').join(' ').toLowerCase();
-  }
 }
