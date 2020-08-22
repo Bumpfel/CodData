@@ -9,6 +9,7 @@ import { AttachmentSelectComponent } from './components/pages/attachment-select/
 import { ConfigurationComponent } from './components/pages/configuration/configuration.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { WeaponCardComponent } from './components/weapon-card/weapon-card.component';
+import { TopMenuComponent } from './components/navigation/top-menu/top-menu.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { WeaponCardComponent } from './components/weapon-card/weapon-card.compon
     AttachmentSelectComponent,
     ConfigurationComponent,
     MessagesComponent,
-    WeaponCardComponent
+    WeaponCardComponent,
+    TopMenuComponent
   ],
   imports: [
     BrowserModule,

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
-import { Location } from '@angular/common'
-import { MessagesComponent } from './../../messages/messages.component'
+import { WeaponConfig } from 'src/app/models/WeaponConfig';
 
 @Component({
   selector: 'app-gunsmith',
@@ -13,30 +12,39 @@ import { MessagesComponent } from './../../messages/messages.component'
 export class GunsmithComponent implements OnInit {
 
   weaponTitle: string
-  weaponConfig
+  weaponConfig: WeaponConfig
   // availableAttachments: object
   upperAttachments: string[]
   lowerAttachments: string[]
 
-  constructor(private route: ActivatedRoute, private globalService: GlobalService, private configService: WeaponConfigService, private _location: Location) { }
+  constructor(private route: ActivatedRoute, private router: Router, private globalService: GlobalService, private configService: WeaponConfigService) { }
 
   ngOnInit(): void {
-    this.weaponTitle = this.route.snapshot.paramMap.get('weaponName').split('_').join(' ')
-    this.globalService.goBackOnEscape()
+    // this.weaponTitle = this.route.snapshot.paramMap.get('weaponName').split('_').join(' ')
+    let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
+
+    this.weaponConfig = this.configService.getWeaponConfig(slot)
+    
+    console.log(this.weaponConfig)
+    this.weaponTitle = this.weaponConfig.weaponName
+    
+    // this.globalService.goBackOnEscape()
+    this.globalService.navigateOnEscape('/configurations', this.router)
+
     // this.availableAttachments = this.configService.getAvailableAttachments()
     // console.log(this.availableAttachments)
-    this.upperAttachments = ['muzzle', 'barrel', 'laser', 'optic', 'stock']
+  // TODO temp
+    this.upperAttachments = ['muzzle', 'barrel', 'laser', 'optic', 'stock'] 
     this.lowerAttachments = ['underbarrel', 'ammunition', 'rearGrip', 'perk']
 
-    this.configService.selectWeapon(this.weaponTitle) // TOOD should only be called once
-    this.weaponConfig = this.configService.getWeaponConfig()
+    // this.configService.selectWeapon(this.weaponTitle) // TODO should only be called once
     
     document.addEventListener('keydown', e => {     
       if(e.key === '1') { // TODO save once
-        console.log('saved')
-        this.configService.saveConfig(this.weaponConfig.configName)
-
         // TODO save form
+        console.log('saved')
+        this.weaponConfig.armouryName = 'temp' // TODO temp
+        // this.configService.saveConfig(this.weaponConfig.armoryName)
       }
     })
 

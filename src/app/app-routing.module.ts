@@ -8,10 +8,10 @@ import { ConfigurationComponent } from './components/pages/configuration/configu
 const routes: Routes = [
   { path:'', pathMatch: 'full', redirectTo: 'configurations'},
   { path:'configurations', component: ConfigurationComponent },
-  { path:'weapon-select', component: WeaponSelectComponent },
-  { path:'weapon-select/:weaponType', component: WeaponSelectComponent },
-  { path:'gunsmith/:weaponName', component: GunsmithComponent },
-  { path:'gunsmith/:weaponName/:attachmentType', component: AttachmentSelectComponent },
+  { path:':slot/weapon-select', component: WeaponSelectComponent },
+  { path:':slot/weapon-select/:weaponType', component: WeaponSelectComponent },
+  { path:':slot/gunsmith', component: GunsmithComponent },
+  { path:':slot/gunsmith/:attachmentType', component: AttachmentSelectComponent },
   { path:'**', pathMatch: 'full', redirectTo: '' }, // TODO 404
 ];
 

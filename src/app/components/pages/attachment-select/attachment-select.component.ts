@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GlobalService } from 'src/app/services/global.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
@@ -16,18 +16,22 @@ export class AttachmentSelectComponent implements OnInit {
   attachments: string[]
   selectedAttachment: string
 
-  constructor(private configService: WeaponConfigService, private soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private messageService: MessageService) { }
+  constructor(private configService: WeaponConfigService, private soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.attachmentType = this.route.snapshot.paramMap.get('attachmentType')
-    this.globalService.goBackOnEscape()
+    let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     
-    this.attachments = this.configService.getAttachmentsOfType(this.attachmentType)
-    this.selectedAttachment = this.configService.getSelectedAttachment(this.attachmentType)
+    this.globalService.navigateOnEscape('/' + slot + '/gunsmith/', this.router)
+    
+    this.attachments = this.configService.getAttachments(this.attachmentType)
+    this.selectedAttachment = this.configService.getSelectedAttachment(slot, this.attachmentType)
   }
-
+  
   selectAttachment(attachment): void {
-    let status = this.configService.setAttachment(this.attachmentType, attachment)
+    let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
+
+    let status = this.configService.setAttachment(slot, this.attachmentType, attachment)
     if(status === this.configService.editStatus.EQUIPPED) {
       this.messageService.addMessage('Attachment Equipped', attachment) // temp
       window.history.back()

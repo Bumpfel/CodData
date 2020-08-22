@@ -1,14 +1,8 @@
+<title>Weapon Select</title>
+
 <!-- Header & Weapon Type Select -->
-<nav>
-  <div id="title">
-    primary weapon select
-  </div>
-  
-  <div id="menu">
-    <a *ngFor="let weaponType of weaponTypes" [routerLink]="'/weapon-select/' + globalService.nameToLink(weaponType)" routerLinkActive="selected">{{weaponType}}</a>
-    <!-- <a *ngFor="let weaponType of weaponTypes" ((mousedown)="setWeaponType(weaponType)" [class.selected]="iSelectedWeaponType(weaponType)">{{weaponType}}</a> -->
-  </div>
-</nav>
+<app-top-menu title="weapon select" [menuItems]="weaponTypes"></app-top-menu>
+<!-- link="/weapon-select" -->
 
 <!-- Weapon Select -->
 <main>

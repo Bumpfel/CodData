@@ -1,26 +1,27 @@
 TODO CodData
 
-håller på med: spara comparison config i sessionStorage med slot0....9 när man väljer en slot från listan i configurations
-flyttar routerLink bort från weapon-card-komponenten så man slipper passa variabler och köra metoder därifrån (gör det ologiskt och blir svårt att följa koden)
-separera gunsmith-card. används bara en gång? behöver inte vara separat komponent isf
+håller på med: 
+- spara comparison config i sessionStorage med slot0....9 när man väljer en slot från listan i configurations
+- gunsmith button configurations
+
 
 ###  Thoughts  ###
 ##################
+* can save activeConfig in sessionStorage to make it possible to reload page. alt put slot nr in path
 * mobile friendly layout som in game config (multiplayer/plunder)
 * två klasser för ComparisonConfig och ArmoryConfig om behövs/klargör? kan i.s.f. ha en basklass de ärver från
 * göra det tydligare i koden om en config är en comparison config eller en armory config
 * när resetta sessionStorage.tempConfig. ska bort om man väljer nytt vapen iaf
-* om pathen alls ska användas för att modda en config, eller om det ska göras enbart mha config service (eller en mix)
 * gunsmith: how show stats (numbers)?
 * how save/load custom mods?
  - web storage
  - save as it's done in game, i.e. "enter name", "update custom mod", "create new custom mod"?
  - how load it? from weapon select as in game?
-* menu separate component
 * think about how some pages would be displayed on smaller screens.
- - different menu on weapon-select
- - different button layout
+ - different menu (dropdown?)
+ - main pages same layout as in game modding of loadouts
 * custom mod share link
+* make some weapons browsable (but not selectable in weapons-select)? colour in link should make it clear they're not selectable
 * config template? able to apply a mod template on a weapon
 * FAQ page (go a little nerdy with the weapon details. lock time (open bolt delay))
 
@@ -30,21 +31,24 @@ separera gunsmith-card. används bara en gång? behöver inte vara separat kompo
 ################
 * Config-Page (as main loadout page in game with only weapon configs)
  - Gunsmith (edit) button. Quick Stats on hover (attachments?, ADS, mag size, reload spd, bullet vel)?
- - main page
- - after selecting weapon, user should be redirected here
+ - able to delete configurations
+ - some title for each card. e.g. "Slot 0"
 * make sure goBackOnEscape() goes to the right site. maybe pass an argument instead and use router.navigate
-* weaponCard, stats separate component?
-* Messages impacts layout
-% Make it non static
+ - problem is the history makes little sense then
+* stats separate component
+* remove messageService use inject the vars to the message component instead
+* messages impacts layout
+- z-index on messages
 * test with codgundata backend
-
 
 
 ###  Prio 2  ###
 ################
+* deal with attachments that blocks other attachments
+* save weaponType in configs and use it to direct user to the same weapon-select/weaponType in configurations
+ // - don't need to save comparisonSlot in config. key is enough
 * buttons as a mini component since added sounds?
 * mute sounds button. save as localStorage setting
-* z-index on messages
 * routerLink should trigger on mousedown to make it more responsive and emulate real game better
 * improve layout dynamics
  - main layout - left margin should collapse as prio 1 if needed
@@ -80,3 +84,8 @@ separera gunsmith-card. används bara en gång? behöver inte vara separat kompo
 * rename select-service
 * Able to build configurations
 * messages component
+* Config-Page
+ - main page
+ - after selecting weapon, user should be redirected here
+* Move link logic to component using weapon card instead of passing variables to the weapon card component
+* Separate menu to its own component

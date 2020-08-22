@@ -16,25 +16,21 @@ export class ConfigurationComponent implements OnInit {
   //   { name: 'Kilo 141', type: 'Assault Rifle', configName: 'Kilo Ranged', attachments: { muzzle: 'Monolithic Suppressor' } },
   //   { name: 'MP7',  type: 'Submachine Gun', configName: 'MP7 Hybrid', attachments: { muzzle: 'Monolithic Suppressor' } },
   // ]
+  nextSlot: number
 
-  configurations: any[] // use type
+  configurations: WeaponConfig[] // use type
 
   ngOnInit(): void {
     this.configurations = this.configService.getAllComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
-
-    // console.log('comparison configs (session)', this.configurations)
+    this.nextSlot = this.configService.getNextFreeComparisonSlot()
   }
 
-  selectSlot(config: WeaponConfig) : void {
-    this.configService.setActiveConfig(config)
-  }
-
-  // setConfig(slot?: number) {    
-  //   if(!slot) {
-  //     slot = this.configurations.length;
-      
-  //     this.configService.setConfigSlot(slot)
-  //   }
+  // selectSlot(config: WeaponConfig) : void {
+  //   this.configService.setActiveConfig(config)
   // }
+
+  test() {
+    console.log('debug') 
+  }
 
 }

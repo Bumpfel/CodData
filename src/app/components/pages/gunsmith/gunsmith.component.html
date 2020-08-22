@@ -1,30 +1,25 @@
-<!-- Header -->
-<nav>
-  <div id="title">
-    {{weaponTitle}} gunsmith
-  </div>
-</nav>
+<title>{{weaponConfig.weaponName}} Gunsmith</title>
+<app-top-menu [title]="weaponTitle + ' gunsmith'"></app-top-menu>
+
 
 <app-messages></app-messages>
 
 <main>
-    <!--                   -->
-    <!-- Upper Attachments -->
-    <!--                   -->
+  <!-- Upper Attachments -->
+  <!----------------------->
     <div class="attachments" id="upperAttachments">
       <a *ngFor="let attachment of upperAttachments" [routerLink]="attachment" [id]="attachment">
         {{attachment}}
-        <div *ngIf="weaponConfig.attachments[attachment]" class="circle filled"></div>
-        <div>{{weaponConfig.attachments[attachment]}}</div>
+        <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachment]" class="circle filled"></div>
+        <div *ngIf="weaponConfig.attachments">{{weaponConfig.attachments[attachment]}}</div>
       </a>
     </div>
     
     <!-- Image -->
     <img [src]="'../../../assets/images/weapons/' + weaponTitle + '.png'">  
 
-    <!--           -->
     <!-- Misc Info -->
-    <!--           -->
+    <!--------------->
     <div id="miscInfo">
       <div id="save">
         <span>1</span> Save a Custom Mod
@@ -75,14 +70,13 @@
       </div>
     </div>
     
-    <!--                   -->
     <!-- Lower Attachments -->
-    <!--                   -->
+    <!----------------------->
     <div class="attachments" id="lowerAttachments">
       <a *ngFor="let attachment of lowerAttachments" [routerLink]="attachment" [id]="attachment">
         {{attachment}}
-        <div *ngIf="weaponConfig.attachments[attachment]" class="circle filled"></div>
-        <div>{{weaponConfig.attachments[attachment]}}</div>
+        <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachment]" class="circle filled"></div>
+        <div *ngIf="weaponConfig.attachments">{{weaponConfig.attachments[attachment]}}</div>
       </a>
     </div>
 

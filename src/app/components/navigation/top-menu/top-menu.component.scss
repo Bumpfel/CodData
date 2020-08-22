@@ -1,0 +1,65 @@
+@import "../../../../vars.scss";
+
+nav {
+  white-space: nowrap;
+  $trimHeight: 4px;
+  $trimColour: rgb(182, 190, 192);
+  // $selectedLinkBG: rgb(40, 67, 84);
+  $selectedLinkBG: rgb(80, 61, 43);
+ 
+  padding-top: 40px;
+  text-transform: uppercase;
+  
+  // background-color: $darkBG;
+  background-image: 
+    linear-gradient($darkColour, $darkColour),
+    url('../../../../assets/images/vector-trails.jpg'),
+  ;
+
+  #title {
+    // $titleColour: rgb(89, 121, 133);
+    $titleColour: white;
+    display: inline-block;
+
+    padding-left: $leftPageMargin;
+    color: $titleColour;
+    font-size: 50px;
+    font-weight: 100;
+    border-bottom: 1px solid $titleColour;
+  }
+
+  #menu {
+    margin-left: $leftPageMargin + 50px;
+    
+    a {
+      box-sizing: border-box;
+      width: 140px;
+      padding: 20px 10px;
+      margin-right: 5px;
+
+      display: inline-block;
+      color: $inactiveColour;
+      font-weight: bold;
+      font-size: 13px;
+      text-align: center;
+      white-space: nowrap;
+      text-decoration: none;
+
+      &:hover {
+        background-image: linear-gradient(to top, lighten($selectedLinkBG, 10%) $trimHeight, transparent);
+      }
+
+      &:hover, &.selected {
+        color: $active;
+      }   
+      
+      &.selected {
+        background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, $selectedLinkBG $trimHeight, transparent 100%);
+        
+        &:hover {
+          background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, lighten($selectedLinkBG, 10%)  $trimHeight, transparent 100%);
+        }
+      }
+    }    
+  }
+}

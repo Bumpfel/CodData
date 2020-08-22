@@ -4,7 +4,7 @@
     <div *ngFor="let key of config.attachments | keyvalue" class="circle filled"></div>
     <!-- <div *ngFor="let i of 5 - weapon.attachments" class="circle"></div> -->
   </div>
-  <div class="info">{{config.armoryName}}</div>
+  <div class="info">{{config.armouryName}}</div>
   <div class="img">
     <img [src]="'/assets/images/weapons/small/' + config.weaponName + '.png'" (error)="err($event)">
   </div>

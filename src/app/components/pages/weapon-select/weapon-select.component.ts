@@ -26,12 +26,13 @@ export class WeaponSelectComponent implements OnInit {
         // console.log('navigate to ' + this.weaponTypes[0])
         this.router.navigate([this.globalService.nameToLink(this.weaponTypes[0])], { relativeTo: this.route })
       } else {
-        this.weaponNamesOfSelectedType = this.configService.getWeaponsOfType(this.globalService.linkToName(params.weaponType))
+        this.weaponNamesOfSelectedType = this.configService.getWeapons(this.globalService.linkToName(params.weaponType))
       }
     })
   }
 
   selectWeapon(weaponName: string) {
-    this.configService.saveConfig(weaponName)
+    let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
+    this.configService.saveNewConfig(slot, weaponName)
   }
 }

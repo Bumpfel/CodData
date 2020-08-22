@@ -1,10 +1,27 @@
 @import "../../../../vars.scss";
 
 a {
-  display: block;
   box-sizing: border-box;
   width: 400px; // duplicated value (not horrible). if need to remove, find out how to select angular component in css
   margin-bottom: 10px;
+
+
+  // &:hover {
+  //   a {
+  //     display: block;
+  //   }
+  // }
+
+  &.small {
+    vertical-align: top;
+    margin-left: 7px;
+    width: fit-content;
+    padding: 15px 20px 20px;
+    
+    img {
+      width: 75px;
+    }
+  }
 
   &.add {
     text-align: center;

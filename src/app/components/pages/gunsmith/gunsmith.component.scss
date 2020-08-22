@@ -1,13 +1,9 @@
 @import "../../../../vars.scss";
 
-main {
-  > * {
-    // border: 1px solid red;
-  }
-  
+main { 
   // ###  Attachments  ###
   // #####################
-  .attachments { // TODO change layout on ~600px width
+  .attachments {
     // border: 1px solid green;
     white-space: nowrap;
     height: 100px;

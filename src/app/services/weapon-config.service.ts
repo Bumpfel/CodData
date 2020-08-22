@@ -36,17 +36,17 @@ export class WeaponConfigService {
 
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3}
 
-  private weaponConfig: WeaponConfig
+  // private weaponConfig: WeaponConfig // TODO possibly phase this one out and pass this data as arguments in the methods instead
 
   constructor() {
-    this.getActiveConfig()
+    // this.getActiveConfig()
   }
 
   getWeaponTypes(): string[] {
     return this.weaponTypes
   }
 
-  getWeaponsOfType(type: string): string[] {
+  getWeapons(type: string): string[] {
     if(type) {
       return this.weapons[type.split(' ').join('')]
     }
@@ -57,78 +57,89 @@ export class WeaponConfigService {
     return this.attachments
   }
 
-  getAttachmentsOfType(attachmentType: string): string[] {
+  getAttachments(attachmentType: string): string[] {
     return this.attachments[attachmentType]
   }
 
-  getSelectedAttachment(attachmentType: string): string {
+  getSelectedAttachment(slot: number, attachmentType: string): string {
     // return this.weaponConfig.attachments[attachmentType]
-    return this.weaponConfig.attachments[attachmentType]
-  }
-
-  getWeaponConfig(): object {
-    return this.weaponConfig
-  }
-
-  getActiveConfig(): void {
-    let tempConfig = JSON.parse(window.sessionStorage.getItem('activeConfig')) // TODO change to slot nr
-    if(tempConfig) {
-      this.weaponConfig = tempConfig
+    let weaponConfig: WeaponConfig = this.getWeaponConfig(slot)
+    if(!weaponConfig.attachments) {
+      return null
     }
+    return weaponConfig.attachments[attachmentType]
   }
 
-  getAllComparisonConfigs(): any[] {
-    let arr: any[] = [] // TODO type
+  getWeaponConfig(slot: number): WeaponConfig {
+    // return this.weaponConfig
+    let weaponConfig = window.sessionStorage.getItem('' + slot)
+    return JSON.parse(weaponConfig)
+  }
 
-    let key: string
+  // getActiveConfig(): WeaponConfig {
+  //   let tempConfig = JSON.parse(window.sessionStorage.getItem('activeConfig')) // TODO change to slot nr
+  //   return tempConfig
+  // }
+
+  getAllComparisonConfigs(): WeaponConfig[] {
+    let arr: WeaponConfig[] = []
+
     for(let i = 0; i < window.sessionStorage.length; i ++) {
-      key = window.sessionStorage.key(i)
+      let key = window.sessionStorage.key(i)
       arr.push(JSON.parse(window.sessionStorage.getItem(key)))
     }
     return arr
   }
 
-  selectWeapon(weaponName: string): void {
-    // TODO check that the weapon exists
-    // TODO use weaponconfig class
-    this.weaponConfig.weaponName = weaponName
-  }
+  // selectWeapon(weaponName: string): void {
+  //   // TODO check that the weapon exists
+  //   // TODO use weaponconfig class
+  //   this.weaponConfig.weaponName = weaponName
+  // }
 
-  setAttachment(type: string, name: string) { // TODO return not typed
-    if(this.weaponConfig.attachments[type] === name) {
+  setAttachment(slot: number, type: string, weaponName: string) { // TODO return not typed
+    let weaponConfig: WeaponConfig = this.getWeaponConfig(slot)
+
+    if(weaponConfig.attachments[type] === weaponName) {
       // same as selected attachment. unequip
-      delete this.weaponConfig.attachments[type]
-      // this.saveConfig()
+      delete weaponConfig.attachments[type]
+      this.saveConfig(slot, weaponConfig)
       return this.editStatus.UNEQUIPPED
-    } else if(Object.keys(this.weaponConfig.attachments).length >= 5 && !this.weaponConfig.attachments.hasOwnProperty(type)) {
+    } else if(Object.keys(weaponConfig.attachments).length >= 5 && !weaponConfig.attachments.hasOwnProperty(type)) {
       // there are already 5 attachments and the requested swap was not for a used type
       return this.editStatus.TOOMANY
     } else {
-      this.weaponConfig.attachments[type] = name
-      // this.saveConfig()
+      weaponConfig.attachments[type] = weaponName
+      this.saveConfig(slot, weaponConfig)
       return this.editStatus.EQUIPPED
     }
   }
 
-  setActiveConfig(config: WeaponConfig) : void {    
-    if(!config) {
-      let slot = this.getAllComparisonConfigs().length
-      // console.log('--new config! saving to slot ' + slot)
-      this.weaponConfig = new WeaponConfig(slot)
+  // setActiveConfig(config: WeaponConfig): void {
+  //   if(!config) {
+  //     let slot = this.getAllComparisonConfigs().length
+  //     // console.log('--new config! saving to slot ' + slot)
+  //     this.weaponConfig = new WeaponConfig(slot)
+  //   } else {
+  //     this.weaponConfig = config
+  //   }
+  // }
+
+  getNextFreeComparisonSlot(): number {
+    return this.getAllComparisonConfigs().length
+  }
+
+  saveConfig(slot: number, weaponConfig: WeaponConfig, isArmoryConfig: boolean = false, armouryName?: string): void {
+    if(isArmoryConfig) {
+      weaponConfig.armouryName = armouryName
+      window.localStorage.setItem(name, JSON.stringify(weaponConfig))
     } else {
-      this.weaponConfig = config
+      window.sessionStorage.setItem('' + slot, JSON.stringify(weaponConfig))
     }
   }
-    
-  saveConfig(weaponName: string, configName?: string, isArmoryConfig: boolean = false) : void {
-    this.weaponConfig.weaponName = weaponName
-    // console.log('saving config', this.weaponConfig)
 
-    if(isArmoryConfig) {
-      window.localStorage.setItem(name, JSON.stringify(this.weaponConfig))
-    } else {
-      window.sessionStorage.setItem(this.weaponConfig.comparisonSlot + '', JSON.stringify(this.weaponConfig))
-    }
-  }  
-
+  saveNewConfig(slot: number, weaponName: string): void {
+    let weaponConfig = new WeaponConfig(slot, weaponName)
+    window.sessionStorage.setItem('' + slot, JSON.stringify(weaponConfig))
+  }
 }

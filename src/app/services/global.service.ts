@@ -7,36 +7,46 @@ import { Router } from '@angular/router';
 })
 export class GlobalService {
   
+  router: Router
+  location: string
+
   constructor(private soundService: SoundService) { 
-    this.disableGoBack()
   }
 
   navigateOnEscape(location: string, router: Router) {
-    let navigate = e => {
-      if(e.key === 'Escape') {
-        this.soundService.goBack()
-        router.navigate([location])
-        document.removeEventListener('keydown', navigate)
-      }
-    }
-    document.addEventListener('keydown', navigate)
+    this.router = router
+    this.location = location
+    document.removeEventListener('keydown', this.navigate)
+    document.addEventListener('keydown', this.navigate)
   }
 
-  goBack = (e: KeyboardEvent) => {
+  navigate = (e: KeyboardEvent) => {
     if(e.key === 'Escape') {
       this.soundService.goBack()
-      window.history.back()
-      this.disableGoBack()
+      this.router.navigate([this.location],  { replaceUrl: true })
+      document.removeEventListener('keydown', this.navigate)
     }
+    // document.addEventListener('keydown', this.navigate)
+    // console.log('added event listener')
   }
 
-  goBackOnEscape() : void{
-    document.addEventListener('keydown', this.goBack)
-  }
 
-  disableGoBack() : void {
-    document.removeEventListener('keydown', this.goBack)
-  }
+
+  // goBack = (e: KeyboardEvent) => {
+  //   if(e.key === 'Escape') {
+  //     this.soundService.goBack()
+  //     window.history.back()
+  //     this.disableGoBack()
+  //   }
+  // }
+
+  // goBackOnEscape() : void{
+  //   document.addEventListener('keydown', this.goBack)
+  // }
+
+  // disableGoBack() : void {
+  //   document.removeEventListener('keydown', this.goBack)
+  // }
 
   nameToLink(str: string): string {
     return str.split(' ').join('_')

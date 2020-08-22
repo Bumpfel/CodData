@@ -1,17 +1,21 @@
+<title>Configs</title>
+
+<app-top-menu title="configurations"></app-top-menu>
+
 <main>
   <div class="scrollBox">
     <div>
-      <a *ngFor="let config of configurations" (click)="selectSlot(config)" routerLink="/weapon-select">
-        <app-weapon-card [config]="config">
-          <a *ngIf="weapon" class="small" [routerLink]="'/gunsmith/' + globalService.nameToLink(weapon.weaponName)">
-            Gunsmith
-            <br>
-            <img src="/assets/images/gunsmith.png">
-          </a>
-        </app-weapon-card>
-      </a>
-      
-      <a (click)="selectSlot(null)" routerLink="/weapon-select" class="add">
+      <div *ngFor="let config of configurations">
+        <a (mouseenter)="test()" [routerLink]="'/' + config.comparisonSlot + '/weapon-select'">
+          <app-weapon-card [config]="config"></app-weapon-card>
+        </a>
+        <a class="small" [routerLink]="'/' + config.comparisonSlot + '/gunsmith'">
+          Gunsmith
+          <br>
+          <img src="/assets/images/gunsmith.png">
+        </a>
+      </div>
+      <a [routerLink]="'/' + nextSlot + '/weapon-select'" class="add">
         +
       </a>
     </div>
