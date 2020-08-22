@@ -1,5 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { GlobalService } from 'src/app/services/global.service';
+import { WeaponConfigService } from 'src/app/services/weapon-config.service';
+import { WeaponConfig } from 'src/app/models/WeaponConfig';
 
 @Component({
   selector: 'app-weapon-card',
@@ -8,12 +10,19 @@ import { GlobalService } from 'src/app/services/global.service';
 })
 export class WeaponCardComponent implements OnInit {
 
-  @Input() weapon: any
+  @Input() config: WeaponConfig
   @Input() link: string
+  // @HostListener('click') onClick() {
+  //   this.configService.saveConfig(this.config)
+  // }
 
-  constructor(public globalService: GlobalService) { }
+  constructor(public globalService: GlobalService, private configService: WeaponConfigService) { }
 
   ngOnInit(): void {
+  }
+
+  err(event) {
+    event.target.src = '/assets/images/no_image.png'
   }
 
 }

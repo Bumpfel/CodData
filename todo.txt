@@ -1,7 +1,14 @@
 TODO CodData
 
+håller på med: spara comparison config i sessionStorage med slot0....9 när man väljer en slot från listan i configurations
+flyttar routerLink bort från weapon-card-komponenten så man slipper passa variabler och köra metoder därifrån (gör det ologiskt och blir svårt att följa koden)
+separera gunsmith-card. används bara en gång? behöver inte vara separat komponent isf
+
 ###  Thoughts  ###
 ##################
+* mobile friendly layout som in game config (multiplayer/plunder)
+* två klasser för ComparisonConfig och ArmoryConfig om behövs/klargör? kan i.s.f. ha en basklass de ärver från
+* göra det tydligare i koden om en config är en comparison config eller en armory config
 * när resetta sessionStorage.tempConfig. ska bort om man väljer nytt vapen iaf
 * om pathen alls ska användas för att modda en config, eller om det ska göras enbart mha config service (eller en mix)
 * gunsmith: how show stats (numbers)?

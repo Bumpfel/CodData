@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { WeaponConfig } from '../models/WeaponConfig'
 
 @Injectable({
   providedIn: 'root'
 })
-
 
 export class WeaponConfigService {
     
@@ -36,14 +36,10 @@ export class WeaponConfigService {
 
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3}
 
-  private weaponConfig = {
-    weaponName: '',
-    configName: 'MP7 Hybrid',
-    attachments: {}
-  }
-  
+  private weaponConfig: WeaponConfig
+
   constructor() {
-    this.getTempConfig()
+    this.getActiveConfig()
   }
 
   getWeaponTypes(): string[] {
@@ -66,51 +62,22 @@ export class WeaponConfigService {
   }
 
   getSelectedAttachment(attachmentType: string): string {
+    // return this.weaponConfig.attachments[attachmentType]
     return this.weaponConfig.attachments[attachmentType]
   }
 
-  getWeaponConfig(): object { 
+  getWeaponConfig(): object {
     return this.weaponConfig
   }
-  
-  selectWeapon(weaponName: string): void {
-    // TODO check that the weapon exists
-    // TODO use weaponconfig class
-    this.weaponConfig.weaponName = weaponName
-  }
 
-  setAttachment(type: string, name: string) {
-    if(this.weaponConfig.attachments[type] === name) {
-      // same as selected attachment. unequip
-      delete this.weaponConfig.attachments[type]
-      this.saveConfig(null)
-      return this.editStatus.UNEQUIPPED
-    } else if(Object.keys(this.weaponConfig.attachments).length >= 5 && !this.weaponConfig.attachments.hasOwnProperty(type)) {
-      // there are already 5 attachments and the requested swap was not for a used type
-      return this.editStatus.TOOMANY
-    } else {
-      this.weaponConfig.attachments[type] = name
-      this.saveConfig(null)
-      return this.editStatus.EQUIPPED
-    }
-  }
-  
-  saveConfig(name: string): void {   
-    if(!name) {
-      window.sessionStorage.setItem('currentConfig', JSON.stringify(this.weaponConfig))
-    } else {
-      window.localStorage.setItem(name, JSON.stringify(this.weaponConfig))
-    }
-  }
-
-  getTempConfig(): void {
-    let tempConfig = JSON.parse(window.sessionStorage.getItem('currentConfig'))
+  getActiveConfig(): void {
+    let tempConfig = JSON.parse(window.sessionStorage.getItem('activeConfig')) // TODO change to slot nr
     if(tempConfig) {
       this.weaponConfig = tempConfig
     }
   }
 
-  getAllConfigs(): any[] {
+  getAllComparisonConfigs(): any[] {
     let arr: any[] = [] // TODO type
 
     let key: string
@@ -120,5 +87,48 @@ export class WeaponConfigService {
     }
     return arr
   }
+
+  selectWeapon(weaponName: string): void {
+    // TODO check that the weapon exists
+    // TODO use weaponconfig class
+    this.weaponConfig.weaponName = weaponName
+  }
+
+  setAttachment(type: string, name: string) { // TODO return not typed
+    if(this.weaponConfig.attachments[type] === name) {
+      // same as selected attachment. unequip
+      delete this.weaponConfig.attachments[type]
+      // this.saveConfig()
+      return this.editStatus.UNEQUIPPED
+    } else if(Object.keys(this.weaponConfig.attachments).length >= 5 && !this.weaponConfig.attachments.hasOwnProperty(type)) {
+      // there are already 5 attachments and the requested swap was not for a used type
+      return this.editStatus.TOOMANY
+    } else {
+      this.weaponConfig.attachments[type] = name
+      // this.saveConfig()
+      return this.editStatus.EQUIPPED
+    }
+  }
+
+  setActiveConfig(config: WeaponConfig) : void {    
+    if(!config) {
+      let slot = this.getAllComparisonConfigs().length
+      // console.log('--new config! saving to slot ' + slot)
+      this.weaponConfig = new WeaponConfig(slot)
+    } else {
+      this.weaponConfig = config
+    }
+  }
+    
+  saveConfig(weaponName: string, configName?: string, isArmoryConfig: boolean = false) : void {
+    this.weaponConfig.weaponName = weaponName
+    // console.log('saving config', this.weaponConfig)
+
+    if(isArmoryConfig) {
+      window.localStorage.setItem(name, JSON.stringify(this.weaponConfig))
+    } else {
+      window.sessionStorage.setItem(this.weaponConfig.comparisonSlot + '', JSON.stringify(this.weaponConfig))
+    }
+  }  
 
 }

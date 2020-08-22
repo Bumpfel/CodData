@@ -1,8 +1,19 @@
 <main>
   <div class="scrollBox">
     <div>
-      <app-weapon-card *ngFor="let config of configurations; index as i" [weapon]="config" link="/weapon-select" [slot]="i"></app-weapon-card>
-      <app-weapon-card [weapon]="{}" link="/weapon-select"></app-weapon-card> <!-- Add new -->
+      <a *ngFor="let config of configurations" (click)="selectSlot(config)" routerLink="/weapon-select">
+        <app-weapon-card [config]="config">
+          <a *ngIf="weapon" class="small" [routerLink]="'/gunsmith/' + globalService.nameToLink(weapon.weaponName)">
+            Gunsmith
+            <br>
+            <img src="/assets/images/gunsmith.png">
+          </a>
+        </app-weapon-card>
+      </a>
+      
+      <a (click)="selectSlot(null)" routerLink="/weapon-select" class="add">
+        +
+      </a>
     </div>
   </div>
 </main>

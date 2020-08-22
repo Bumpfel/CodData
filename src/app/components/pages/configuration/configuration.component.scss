@@ -1,1 +1,18 @@
 @import "../../../../vars.scss";
+
+a {
+  display: block;
+  box-sizing: border-box;
+  width: 400px; // duplicated value (not horrible). if need to remove, find out how to select angular component in css
+  margin-bottom: 10px;
+
+  &.add {
+    text-align: center;
+    color: white;
+    font-size: 70px;
+  }
+}
+
+.scrollBox {
+  height: auto;
+}

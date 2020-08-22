@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from 'src/app/services/global.service';
+import { WeaponConfig } from 'src/app/models/WeaponConfig';
 
 @Component({
   selector: 'app-weapon-select',
@@ -10,38 +11,27 @@ import { GlobalService } from 'src/app/services/global.service';
 })
 export class WeaponSelectComponent implements OnInit {
 
-  // selectedWeaponType: string
-  weaponTypes: string[] // TODO of type (interface) weapon
-  activeWeapons: string[]
+  weaponTypes: string[] // TODO of type (interface/class) weapon
+  weaponNamesOfSelectedType: string[]
 
   constructor(public globalService: GlobalService, public configService: WeaponConfigService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    this.weaponTypes = this.configService.getWeaponTypes()
-    // this.selectService.getWeaponsOfTypeAsync(this.selectedWeaponType).subscribe(weapons => {
-    //   this.activeWeapons = weapons
-    // })
+    this.globalService.navigateOnEscape('/configurations', this.router)
 
-    
-    // this.setWeaponType(this.weaponTypes[0])
+    this.weaponTypes = this.configService.getWeaponTypes()
 
     this.route.params.subscribe(params => {
       if(!params.weaponType) {
-        console.log('navigate to ' + this.weaponTypes[0])
+        // console.log('navigate to ' + this.weaponTypes[0])
         this.router.navigate([this.globalService.nameToLink(this.weaponTypes[0])], { relativeTo: this.route })
       } else {
-        this.activeWeapons = this.configService.getWeaponsOfType(this.globalService.linkToName(params.weaponType))
+        this.weaponNamesOfSelectedType = this.configService.getWeaponsOfType(this.globalService.linkToName(params.weaponType))
       }
     })
-
   }
 
-  // setWeaponType(type: string): void {
-  //   this.selectedWeaponType = type
-  //   this.activeWeapons = this.configService.getWeaponsOfType(type)
-  // }
-
-  // iSelectedWeaponType(type: string): boolean {
-  //   return type === this.selectedWeaponType
-  // }
+  selectWeapon(weaponName: string) {
+    this.configService.saveConfig(weaponName)
+  }
 }

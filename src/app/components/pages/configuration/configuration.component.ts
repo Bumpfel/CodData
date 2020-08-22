@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
+import { WeaponConfig } from 'src/app/models/WeaponConfig';
 
 @Component({
   selector: 'app-configuration',
@@ -19,7 +20,21 @@ export class ConfigurationComponent implements OnInit {
   configurations: any[] // use type
 
   ngOnInit(): void {
-    this.configurations = this.configService.getAllConfigs()   
+    this.configurations = this.configService.getAllComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
+
+    // console.log('comparison configs (session)', this.configurations)
   }
+
+  selectSlot(config: WeaponConfig) : void {
+    this.configService.setActiveConfig(config)
+  }
+
+  // setConfig(slot?: number) {    
+  //   if(!slot) {
+  //     slot = this.configurations.length;
+      
+  //     this.configService.setConfigSlot(slot)
+  //   }
+  // }
 
 }

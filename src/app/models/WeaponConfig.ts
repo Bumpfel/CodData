@@ -1,6 +1,10 @@
 export class WeaponConfig {
-    private name: string
-    private attachments: {
+    // TODO keep exposed vars?
+    weaponName: string
+    armoryName: string
+    comparisonSlot: number
+    weaponType: string
+    attachments: {
       muzzle: string,
       barrel: string,
       laser: string,
@@ -13,9 +17,13 @@ export class WeaponConfig {
       perk: string,
     }
 
-    constructor(name) {
-      this.name = name
+    constructor(slot: number) {
+      this.comparisonSlot = slot
     }
+
+    // getSelectedAttachment(attachmentType: string) : string {
+    //   return this.attachments[attachmentType]
+    // }
 
     
 }

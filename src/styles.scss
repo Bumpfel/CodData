@@ -157,16 +157,16 @@ main {
   }
   // Scrollbox
   .scrollBox {
-    height: 500px;
+    height: 600px;
+    padding-left: 15px;
     // width: 430px;
     width: 1000px;
-    // vertical-align: top;
-
+    
     overflow-y: auto;
     overflow-x: hidden;
     direction: rtl;
 
-    > div {
+    div {
       direction: ltr;
     }
   }
