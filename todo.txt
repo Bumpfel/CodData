@@ -6,10 +6,11 @@ håller på med:
 
 ###  Thoughts  ###
 ##################
+* see if I can cache data from TGD. cookie/sessionStorage?
+ - or just store in global variable in WeaponConfigService. populate if empty 
 * gunsmith - testa display: table för att positionera attachment slots
 * another level in structure - comparisons
  - highest level. same level as loadout in game
-* see if I can cache data from TGD. cookie/sessionStorage?
 * able to save whole comparisons (an array of config)
  - in localStorage
  - in that case, need something that separates armouryConfigs and comarisonConfigs. could save everything as two arrays and then parse it in code

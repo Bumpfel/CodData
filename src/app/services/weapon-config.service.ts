@@ -31,6 +31,8 @@ export class WeaponConfigService {
     // melee: ['Riot Shield', 'Combat Knife', 'Kali Sticks', 'Dual Kodachis']
   }
 
+  private attachmentData: any = {}
+
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3, BLOCKED: 4 }
 
   // private weaponConfig: WeaponConfig // TODO possibly phase this one out and pass this data as arguments in the methods instead
@@ -49,26 +51,31 @@ export class WeaponConfigService {
     }
     return null
   }
-  
-  // async getTGDWeapons(weaponType: string): Promise<any> {
-  //   return await TgdService.getWeaponData(weaponType)
-  // }
-  
-  // async getTGDAttachments(weaponName: string): Promise<any> {
-  //   return await TgdService.getAttachmentData(weaponName)
-  // }
 
-
-  async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {   
-    const result = await TgdService.getAttachmentData(weaponName)
-    let attachmentSlots: Set<string> = new Set()  
-    result.forEach(attachment => attachmentSlots.add(attachment.slot.toLowerCase()))
-
-    return attachmentSlots
+  async getAttachmentData(weaponName: string): Promise<any> {
+    let result: any
+    if(!this.attachmentData[weaponName]) {
+      console.log('fetching new data')
+      result = await TgdService.getAttachmentData(weaponName)
+      this.attachmentData[weaponName] = result
+    } else {
+      result = this.attachmentData[weaponName]
+    }
+    return result
   }
 
+  async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
+    let result = await this.getAttachmentData(weaponName)
+    
+    let attachmentSlots: Set<string> = new Set()
+    result.forEach(attachment => attachmentSlots.add(attachment.slot.toLowerCase()))
+    
+    return attachmentSlots
+  }
+  
   async getAttachments(weaponName: string, attachmentType: string): Promise<string[]> {
-    let result = await TgdService.getAttachmentData(weaponName)
+    let result = await this.getAttachmentData(weaponName)
+    // let result = await TgdService.getAttachmentData(weaponName)
     result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)
     
     // console.log(result)
@@ -87,6 +94,16 @@ export class WeaponConfigService {
       return null
     }
     return weaponConfig.attachments[attachmentType]
+  }
+  
+  getBlockingAttachment(weaponConfig: WeaponConfig, attachmentSlot: string): string {
+    for(const configAttachmentSlot in weaponConfig.attachments) {
+      const attachment = weaponConfig.attachments[configAttachmentSlot]
+      if(this.attachmentBlocks.get(attachment) === attachmentSlot) {
+        return attachment
+      }
+    }
+    return null
   }
 
   getWeaponConfig(slot: number): WeaponConfig {
@@ -130,7 +147,7 @@ export class WeaponConfigService {
   setAttachment(saveSlot: number, attachmentSlot: string, attachmentName: string): any { // TODO return not typed
     let weaponConfig: WeaponConfig = this.getWeaponConfig(saveSlot)  
 
-    if(this.blockedBy(weaponConfig, attachmentSlot)) {
+    if(this.getBlockingAttachment(weaponConfig, attachmentSlot)) {
       return this.editStatus.BLOCKED
     } else if(weaponConfig.attachments[attachmentSlot] === attachmentName) {
       // same as selected attachment. unequip
@@ -141,29 +158,14 @@ export class WeaponConfigService {
       // there are already 5 attachments and the requested swap was not for a used type
       return this.editStatus.TOOMANY
     } else {
-      const blockedAttachment = this.blocksAttachment(attachmentName)
+      const blockedAttachment = this.attachmentBlocks.get(attachmentName)
       if(blockedAttachment) {
-        console.log(attachmentName + ' blocks ' + blockedAttachment)
+        // remove blocked attachment
         delete weaponConfig.attachments[blockedAttachment]
       }
       weaponConfig.attachments[attachmentSlot] = attachmentName
       this.saveConfig(weaponConfig)
       return this.editStatus.EQUIPPED
     }
-  }
-
-  blocksAttachment(attachmentName): string {
-    return this.attachmentBlocks.get(attachmentName)
-  }
-
-  blockedBy(weaponConfig: WeaponConfig, attachmentSlot: string): string {
-    for(const configAttachmentSlot in weaponConfig.attachments) {
-      const attachment = weaponConfig.attachments[configAttachmentSlot]
-      if(this.attachmentBlocks.get(attachment) === attachmentSlot) {
-        // console.log(attachment + ' blocks ' + attachmentSlot)
-        return attachment
-      }
-    }
-    return null
   }
 }

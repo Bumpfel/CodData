@@ -90,7 +90,7 @@ export class GunsmithComponent implements OnInit {
   navigate(attachmentSlot: string) {
     // console.log(attachmentSlot)
     
-    if(!this.configService.blockedBy(this.weaponConfig, attachmentSlot)) {
+    if(!this.configService.getBlockingAttachment(this.weaponConfig, attachmentSlot)) {
       this.router.navigate([attachmentSlot], { relativeTo: this.route })
     }
   }
