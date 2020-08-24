@@ -1,15 +1,24 @@
+@import "../../../vars.scss";
+
 #card {
   display: inline-block;
-  // direction: ltr;
   
   // margin-bottom: 10px;
-  padding: 15px 25px 5px;
+  padding: 5px 15px;
   box-sizing: border-box;
   width: 100%;
   // height: 95px;
   
   .circle {
+    $sz: 6px;
+    width: $sz;
+    height: $sz;
     margin-left: 5px;
+    border: 1px solid $inactiveColour;
+
+  }
+  .filled {
+    background-color: $active;
   }
 
   .info {
@@ -25,11 +34,13 @@
   
   .img {
     text-align: center;
-  }
-  
-  img {
-    max-width: 160px;
-    max-height: 75px;
+    
+    img {
+      max-width: 160px;
+      max-height: 75px;
+      -webkit-user-drag: none;
+      -moz-user-drag: none; 
+    }
   }
 
   &.small {

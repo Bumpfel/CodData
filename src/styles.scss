@@ -1,7 +1,7 @@
 @import "./vars.scss";
 
 * {
-  font-family: 'Roboto'; // TODO not matching that great
+  font-family: 'Roboto', 'sans-serif'; // TODO not matching that great
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 
@@ -16,6 +16,9 @@ body {
 a, a * {
   text-decoration: none;
   cursor: url('./assets/images/pointer-link.png'), pointer;
+  
+  -webkit-user-drag: none;
+  -moz-user-drag: none; 
 }
 
 // ###################
@@ -49,13 +52,13 @@ a, a * {
 main {
   margin: 50px $leftPageMargin;
 
-  // Buttons
-  a {
+  // Buttons 
+  a, .disabledButton {
     opacity: .4;
     
     text-transform: capitalize;
     color: $highlightColour;
-    font-size: 21px;
+    font-size: 18px;
     background-image:
       linear-gradient($darkColour, $darkColour),
       url('./assets/images/square-pattern.png'),
@@ -65,12 +68,10 @@ main {
     min-width: fit-content;
     margin: 0;
     padding: 10px;
-
-    
+   
     &:hover {
-      $trimHeight: 2px;
       $trimColour: rgb(60, 146, 202); // TODO see if it can be merged
-      
+      $trimHeight: 2px;
       opacity: 1;
       background-image: 
       linear-gradient(to right, $darkBG, transparent 50%, $darkBG 100%),
@@ -83,13 +84,35 @@ main {
       url('./assets/images/square-pattern.png'),
       ;
     }
+    
+    &.small {
+      vertical-align: top;
+      margin-left: 7px;
+      width: fit-content;
+      padding: 15px 20px 20px;
+      
+      img {
+        width: 75px;
+        -webkit-user-drag: none;
+        -moz-user-drag: none; 
+      }
+    }
   }
+
+  .disabledButton {
+    filter: grayscale(100%) opacity(.5);
+    // -webkit-filter: grayscale(100%);
+    // -moz-filter:    grayscale(100%);
+    // -ms-filter:     grayscale(100%);
+    // -o-filter:      grayscale(100%);
+  }
+
   // Scrollbox
   .scrollBox {
+    display: inline-block;
     height: 600px;
     padding-left: 15px;
-    // width: 430px;
-    width: 1000px;
+    width: auto;
     
     overflow-y: auto;
     overflow-x: hidden;
@@ -197,3 +220,14 @@ main {
   float: right;
 }
 
+.disabled {
+  color: white;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.gone {
+  display: none;
+}

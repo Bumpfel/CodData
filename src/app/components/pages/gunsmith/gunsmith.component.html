@@ -1,5 +1,5 @@
 <title>{{weaponConfig.weaponName}} Gunsmith</title>
-<app-top-menu [title]="weaponTitle + ' gunsmith'"></app-top-menu>
+<app-top-menu [title]="weaponConfig.weaponName + ' gunsmith'"></app-top-menu>
 
 
 <app-messages></app-messages>
@@ -8,15 +8,24 @@
   <!-- Upper Attachments -->
   <!----------------------->
     <div class="attachments" id="upperAttachments">
-      <a *ngFor="let attachment of upperAttachments" [routerLink]="attachment" [id]="attachment">
-        {{attachment}}
-        <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachment]" class="circle filled"></div>
-        <div *ngIf="weaponConfig.attachments">{{weaponConfig.attachments[attachment]}}</div>
-      </a>
+      <ng-container *ngFor="let attachmentSlot of upperAttachments">
+        <a *ngIf="!configService.blockedBy(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover()" (mousedown)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+          {{attachmentSlot}}
+          <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
+          <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
+        </a>
+        <ng-template #disabledSlot>
+          <div class="disabledButton" [id]="attachmentSlot">
+            <!-- <img src="/assets/images/blocked.png"> -->
+            {{attachmentSlot}}
+            <div class="white">Blocked by {{configService.blockedBy(weaponConfig, attachmentSlot)}}</div>
+          </div>
+        </ng-template>
+      </ng-container>
     </div>
     
     <!-- Image -->
-    <img [src]="'../../../assets/images/weapons/' + weaponTitle + '.png'">  
+    <img [src]="'../../../assets/images/weapons/' + weaponConfig.weaponName + '.png'">
 
     <!-- Misc Info -->
     <!--------------->
@@ -73,11 +82,21 @@
     <!-- Lower Attachments -->
     <!----------------------->
     <div class="attachments" id="lowerAttachments">
-      <a *ngFor="let attachment of lowerAttachments" [routerLink]="attachment" [id]="attachment">
-        {{attachment}}
-        <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachment]" class="circle filled"></div>
-        <div *ngIf="weaponConfig.attachments">{{weaponConfig.attachments[attachment]}}</div>
-      </a>
+      <ng-container *ngFor="let attachmentSlot of lowerAttachments">
+        <a *ngIf="!configService.blockedBy(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+          {{attachmentSlot}}
+          <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
+          <div *ngIf="weaponConfig.attachments">{{weaponConfig.attachments[attachmentSlot]}}</div>
+        </a>
+        <ng-template #disabledSlot>
+          <div class="disabledButton" [id]="attachmentSlot">
+            <!-- <img src="/assets/images/blocked.png"> -->
+            {{attachmentSlot}}
+            <div class="white">Blocked by {{configService.blockedBy(weaponConfig, attachmentSlot)}}</div>
+          </div>
+        </ng-template>
+      </ng-container>
     </div>
 
+    <!-- <a (click)="blockedBy('muzzle')">Test Me</a> -->
 </main>

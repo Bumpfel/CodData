@@ -13,22 +13,22 @@ main {
     }
 
     &#lowerAttachments {
-      text-align: right;
+      text-align: right; // TODO this is used to align the buttons, but causes text to get the wrong alignment
       margin-top: -110px;
     }
     
     &#lowerAttachments a {
       margin-left: 3%;
-    }
-    
+    }   
+
     // TODO margin-left and width of a's control the widths used. not the best solution
-    a {
+    a, .disabledButton {
       box-sizing: border-box;
       width: 16%;
 
-      > div {
+      .white {
         color: white;
-        font-size: 16px;
+        font-size: 14px;
       }
 
       .circle {

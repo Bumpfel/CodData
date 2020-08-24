@@ -12,13 +12,15 @@ export class WeaponCardComponent implements OnInit {
 
   @Input() config: WeaponConfig
   @Input() link: string
-  // @HostListener('click') onClick() {
-  //   this.configService.saveConfig(this.config)
-  // }
 
   constructor(public globalService: GlobalService, private configService: WeaponConfigService) { }
 
   ngOnInit(): void {
+  }
+  
+  emptyAttachmentSlots(): number[] {
+    let emptyAttachmentSlots: number = 5 - Object.keys(this.config.attachments).length
+    return [...Array(emptyAttachmentSlots).keys()]
   }
 
   err(event) {

@@ -1,22 +1,27 @@
 TODO CodData
 
 håller på med: 
-- spara comparison config i sessionStorage med slot0....9 när man väljer en slot från listan i configurations
-- gunsmith button configurations
-
+* implementera data från tgd
+* attachment blocking other attachments
 
 ###  Thoughts  ###
 ##################
+* gunsmith - testa display: table för att positionera attachment slots
+* another level in structure - comparisons
+ - highest level. same level as loadout in game
+* see if I can cache data from TGD. cookie/sessionStorage?
+* able to save whole comparisons (an array of config)
+ - in localStorage
+ - in that case, need something that separates armouryConfigs and comarisonConfigs. could save everything as two arrays and then parse it in code
+* två klasser för ComparisonConfig och ArmoryConfig om behövs/klargör? kan i.s.f. ha en basklass de ärver från
+* configurations and weapon select pages needs to be distinguished more
 * can save activeConfig in sessionStorage to make it possible to reload page. alt put slot nr in path
 * mobile friendly layout som in game config (multiplayer/plunder)
-* två klasser för ComparisonConfig och ArmoryConfig om behövs/klargör? kan i.s.f. ha en basklass de ärver från
 * göra det tydligare i koden om en config är en comparison config eller en armory config
 * när resetta sessionStorage.tempConfig. ska bort om man väljer nytt vapen iaf
 * gunsmith: how show stats (numbers)?
 * how save/load custom mods?
- - web storage
  - save as it's done in game, i.e. "enter name", "update custom mod", "create new custom mod"?
- - how load it? from weapon select as in game?
 * think about how some pages would be displayed on smaller screens.
  - different menu (dropdown?)
  - main pages same layout as in game modding of loadouts
@@ -24,26 +29,38 @@ håller på med:
 * make some weapons browsable (but not selectable in weapons-select)? colour in link should make it clear they're not selectable
 * config template? able to apply a mod template on a weapon
 * FAQ page (go a little nerdy with the weapon details. lock time (open bolt delay))
-
+* ev köra egen cors proxy
+ - https://stackoverflow.com/questions/43871637/no-access-control-allow-origin-header-is-present-on-the-requested-resource-whe
 
 
 ###  Prio 1  ###
 ################
+* test with codgundata backend
+ - use data in attachment-select
+   * available attachments
+   * attachment data (e.g. ADS speed mod)
+* remove (or make non-selectable) the weapons that tgd doesn't support. maybe easier to grap the available guns from tgd as well
+* Make attachment-select non-static
 * Config-Page (as main loadout page in game with only weapon configs)
- - Gunsmith (edit) button. Quick Stats on hover (attachments?, ADS, mag size, reload spd, bullet vel)?
+ - Quick Stats on hover (attachments?, ADS, mag size, reload spd, bullet vel)?
  - able to delete configurations
  - some title for each card. e.g. "Slot 0"
 * make sure goBackOnEscape() goes to the right site. maybe pass an argument instead and use router.navigate
  - problem is the history makes little sense then
+ - try back() again. go(-2) for weapon-select 
 * stats separate component
-* remove messageService use inject the vars to the message component instead
 * messages impacts layout
 - z-index on messages
-* test with codgundata backend
+* error w. sounds 
+ -"Uncaught (in promise) DOMException: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD"
 
 
 ###  Prio 2  ###
 ################
+* type tgd data. replace "any"-returns in attachment-select 
+* put app-messages in app-component so it's available anywhere. remove from attachment-select (?)
+ - or make as global service
+* remove messageService use inject the vars to the message component instead
 * deal with attachments that blocks other attachments
 * save weaponType in configs and use it to direct user to the same weapon-select/weaponType in configurations
  // - don't need to save comparisonSlot in config. key is enough
@@ -65,6 +82,7 @@ håller på med:
 
 ###  Prio 3  ###
 ################
+* armoury-button should match the one in game in terms of height and text aligment
 * different select, go-back sounds as in game
 * Gunsmith real stats - real weapon name, cartridge. pic over cartridge with dimensions (inch + mm)
 ½ background image
@@ -73,7 +91,7 @@ håller på med:
 * scrollbar only full size when hovering the scrollable area
 * graphical transition between pages. at least scrolling title
 * more accurate font
-
+* Equipped indicator in attachment-select should have an outer black border
 
 
 ###  Done  ###
@@ -89,3 +107,8 @@ håller på med:
  - after selecting weapon, user should be redirected here
 * Move link logic to component using weapon card instead of passing variables to the weapon card component
 * Separate menu to its own component
+* fix broken stuff after re-structuring
+* Gunsmith (edit) button
+* Armory Button weapon-select
+* Make gunsmith dynamic. Only show attachment slots that are available, and show them in the right positions
+* use data from TGD in gunsmith

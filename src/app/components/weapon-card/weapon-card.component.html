@@ -1,7 +1,8 @@
 <div id="card">
   {{config.weaponName}}
-  <div class="right">
-    <div *ngFor="let key of config.attachments | keyvalue" class="circle filled"></div>
+  <div class="right" *ngIf="config.attachments">
+    <div *ngFor="let key of config.attachments | keyvalue" class="small circle filled"></div>
+    <div *ngFor="let i of emptyAttachmentSlots()" class="small circle"></div>
     <!-- <div *ngFor="let i of 5 - weapon.attachments" class="circle"></div> -->
   </div>
   <div class="info">{{config.armouryName}}</div>

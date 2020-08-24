@@ -4,6 +4,13 @@
 #attachments {
   display: inline-block;
   width: 330px;
+
+  .circle {
+    $sz: 10px;
+    width: $sz;
+    height: $sz;
+    padding: 2px;
+  }
 }
 
 a {
@@ -37,23 +44,25 @@ a {
 
   .equipped {
     display: inline-block;
-    margin: 20px 0;
+    box-sizing: border-box;
+    margin: 10px 0;
+    min-height: 24px;
 
     .circle {
-      $sz: 23px;
+      $sz: 18px;
       width: $sz;
       height: $sz;
-      padding: 5px;
+      padding: 5px; 
     }
-
+    
     #title {
-      position: relative;
       vertical-align: middle;
-      left: -20px;
+      position: relative;
+      left: -15px;
       display: inline-block;
       z-index: -1;
-      padding: 6px;
-      padding-left: 25px;
+      padding: 4px;
+      padding-left: 23px;
       background-image:
         linear-gradient(darken($activeBG, 25), darken($activeBG, 25)),
         url('../../../../assets/images/square-pattern.png'),

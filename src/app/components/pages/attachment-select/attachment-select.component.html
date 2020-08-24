@@ -1,26 +1,29 @@
 <title>Attachment Select</title>
 
-<nav>
-  <div id="title">
-    {{attachmentType}}
-  </div>
-</nav>
+<app-top-menu [title]="attachmentSlot"></app-top-menu>
 
 <app-messages></app-messages>
 
 <main>
-  <div id="attachments">
-    <a (click)="selectAttachment(attachment); soundService.select()" (mouseover)="soundService.hover()" *ngFor="let attachment of attachments">{{attachment}}<div *ngIf="isSelectedAttachment(attachment)" class="circle filled right"></div></a>
+  <div class="scrollBox" id="attachments">
+    <div>
+      <a *ngFor="let attachment of attachments" (click)="selectAttachment(attachment.attachment); soundService.select()" (mouseenter)="setHoveredAttachment(attachment); soundService.hover()">
+        {{attachment.attachment}}
+        <div *ngIf="isSelectedAttachment(attachment)" class="circle filled small right"></div>
+      </a>
+    </div>
   </div>
 
   <div class="stats">
-    <div id="title">
-      Monolithic Suppressor
+    <div id="title" *ngIf="hoveredAttachment">
+      {{hoveredAttachment.attachment}}
     </div>
 
     <div class="equipped">
-      <div class="circle filled"></div>
-      <div id="title">Equipped</div>
+      <ng-container *ngIf="isSelectedAttachment(hoveredAttachment)">
+        <div class="circle filled"></div>
+        <div id="title">Equipped</div>
+      </ng-container>
     </div>
       
     <div id="pros">

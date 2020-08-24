@@ -2,10 +2,40 @@
 
 
 main {
+
   a {
-    display: block;
     box-sizing: border-box;
-    width: 400px;
+    width: 400px; // duplicated value (weapon-select). can do commmon css class in styles
     margin-bottom: 10px;
+    
+    &.small {
+      width: auto;
+      min-width: 50px;
+      min-height: 120px; // TODO not perfect. Should be the same height as the card
+      // vertical-align: middle; //and vertically aligned middle
+      padding: 5px 5px;
+      
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      
+
+      .title {
+        color: $highlightColour;
+      }
+      
+      .triangle {
+        display: inline-block;
+        margin-left: 5px;
+        width: 7px;
+        height: 12px;
+        background-color: $highlightColour;
+        clip-path: polygon(0 0, 100% 50%, 0 100%);
+      }
+      
+      img {
+        width: 65px;
+      }
+    }
   }
 }

@@ -1,26 +1,25 @@
 <div id="messageBox">
-  <!--  -->
-  <!-- <div id="message">
-    <div id="left"></div>
-    <div id="right">
-      <div id="msg1">Attachment Equipped</div>
-      <div id="msg2">Singuard Arms 16.6" SOCOM</div>
-    </div>
-  </div>
-  <div id="message">
-    <div id="left"></div>
-    <div id="right">
-      <div id="msg1">Attachment Equipped</div>
-      <div id="msg2">Singuard Arms 16.6" SOCOM</div>
-    </div>
-  </div> -->
-<!--  -->
-
-<div id="message" *ngFor="let message of messageService.messages">
+  <div id="message" *ngFor="let message of messageService.messages">
     <div id="left"></div>
     <div id="right">
       <div id="msg1">{{message.msg1}}</div>
       <div id="msg2">{{message.msg2}}</div>
     </div>
   </div>
+
+  <!-- <div id="message">
+    <div id="left"></div>
+    <div id="right">
+      <div id="msg1">test message 1</div>
+      <div id="msg2">test info 1</div>
+    </div>
+  </div>
+  <div id="message">
+    <div id="left"></div>
+    <div id="right">
+      <div id="msg1">test message 2</div>
+      <div id="msg2">test info 2</div>
+    </div>
+  </div> -->
+
 </div>

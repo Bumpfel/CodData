@@ -2,22 +2,22 @@
 
 #messageBox {
   // border: 2px dotted orange;
-  display: block;
+  display: table;
   float: right;
   margin-right: 20px;
   margin-top: -10px;
   z-index: 2;
+  border-spacing: 0 50px;
   
   #message {
-    margin-bottom: 50px;
-    
-    $height: 50px;
+    display: table-row;
+    // margin-bottom: 50px;
+
     #left {
-      display: inline-block;
+      display: table-cell;
       background-color: black;
       vertical-align: top;
       padding: 5px;
-      height: $height;
       box-sizing: border-box;
       
       &::before {
@@ -34,7 +34,7 @@
     }
     
     #right {
-      display: inline-block;
+      display: table-cell;
       $cut: 20px;
       clip-path: polygon(0 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);     
       
@@ -47,19 +47,18 @@
       #msg1 {
         padding: 3px 10px;
         box-sizing: border-box;
-        height: $height / 2 - 5px;
       }
       
       #msg2 {
         padding: 5px 10px 7px;
         box-sizing: border-box;
-        height: $height / 2 + 5px;
       }
       
     }
   }
 }
-  
+
+// not used
 @keyframes fade-in-out {
   0% { opacity: 0; }
   20% { opacity: 1; }
