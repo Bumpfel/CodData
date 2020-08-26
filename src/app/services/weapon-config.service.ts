@@ -84,8 +84,6 @@ export class WeaponConfigService {
 
   async getWeaponData(weaponName: string) {
     let result = await TgdService.getWeaponData(weaponName)
-    // console.log(result)
-
     return result
   }
 

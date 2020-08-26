@@ -28,8 +28,8 @@
     <div id="pros">
       PROS
       <div *ngFor="let effect of hoveredAttachmentPositiveEffects" class="stat">
-        {{getEffectDisplayName(effect.label)}}
-        <div>{{getEffectDisplayValue(effect.label, effect.value, true)}}</div>
+        {{effect.key}}
+        <div>{{(effect.value)}}</div>
       </div>
     </div>
     
@@ -37,8 +37,8 @@
     <div id="cons">
       CONS
       <div *ngFor="let effect of hoveredAttachmentNegativeEffects" class="stat">
-        {{getEffectDisplayName(effect.label)}}
-        <div>{{getEffectDisplayValue(effect.label, effect.value, false)}}</div>
+        {{effect.key}}
+        <div>{{effect.value}}</div>
       </div>
     </div>
     <!-- <div class="meter"></div> -->

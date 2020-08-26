@@ -15,7 +15,6 @@ import { typeWithParameters } from '@angular/compiler/src/render3/util';
 })
 export class AttachmentSelectComponent implements OnInit {
 
-  private baseWeaponData: any // tgd weapon
   attachmentSlot: string
   attachments: any[]
   selectedAttachmentName: string // tgd attachment
@@ -41,9 +40,6 @@ export class AttachmentSelectComponent implements OnInit {
   }
   
   async mapAttachments(weaponName: string): Promise<void> {
-    if(!this.baseWeaponData) {
-      this.baseWeaponData = await this.configService.getWeaponData(weaponName)
-    } 
     this.attachments = await this.configService.getAttachments(weaponName, this.attachmentSlot)
     this.setHoveredAttachment(this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0])
   }
@@ -76,55 +72,10 @@ export class AttachmentSelectComponent implements OnInit {
     return false
   }
 
-  setHoveredAttachment(attachment: any): void { // TODO keeping this here adds dependency to TgdData. maybe move to weaponConfigService
+  async setHoveredAttachment(attachment: any): Promise<void> { // TODO keeping this here adds dependency to TgdData. maybe move to weaponConfigService
     this.hoveredAttachment = attachment
-    this.hoveredAttachmentPositiveEffects = []
-    this.hoveredAttachmentNegativeEffects = []
-
-    // PROS and CONS
-    for(let mod in this.hoveredAttachment) {
-      const value = this.hoveredAttachment[mod]
-      
-      const positiveModEffect = TgdData.positiveModEffect.get(mod)
-      
-      let comparableEffect: number // positive effect = pro, negative effect = con, neutral effect = none
-      if(positiveModEffect) {
-        if(TgdData.isMissingMod(mod)) {
-          const difference = value - this.baseWeaponData[1][mod]
-          // e.g. -1.23 reload time = positive 
-          // e.g. 30 mag size = positive
-          if(difference != 0) {
-            if(positiveModEffect === TgdData.positiveEffects.positive)
-            comparableEffect
-          }
-        } else if(positiveModEffect === TgdData.positiveEffects.greaterThan1) {
-          comparableEffect = value - 1
-        } else if(positiveModEffect === TgdData.positiveEffects.lessThan1) {
-          comparableEffect = (value - 1) * -1
-        } else if(positiveModEffect === TgdData.positiveEffects.negative) {
-          comparableEffect = value * -1
-        }
-
-        const obj = {label: mod, value: value}
-        if(comparableEffect > 0) {
-          this.hoveredAttachmentPositiveEffects.push(obj)
-        } else if(comparableEffect < 0) {
-          this.hoveredAttachmentNegativeEffects.push(obj)
-        }
-      }
-    }
-    // console.log(attachment)
     
-    // console.log(this.hoveredAttachmentPositiveEffects.length + ' PROS: ', this.hoveredAttachmentPositiveEffects)
-    // console.log(this.hoveredAttachmentNegativeEffects.length + ' CONS', this.hoveredAttachmentNegativeEffects)
+    this.hoveredAttachmentPositiveEffects = await TgdData.getPositiveEffects(attachment)
+    this.hoveredAttachmentNegativeEffects = await TgdData.getNegativeEffects(attachment)
   }
-
-  getEffectDisplayName(effectLabel: string): string {
-    return TgdData.getEffectDisplayName(effectLabel)
-  }
-
-  getEffectDisplayValue(effectLabel: string, effectValue: number, isPositive: boolean): string {
-   return TgdData.getEffectDisplayValue(effectLabel, effectValue, isPositive)
-  }
-
 }

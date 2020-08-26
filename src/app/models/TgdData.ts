@@ -1,34 +1,89 @@
+import { TgdService } from '../services/tgd.service'
 // ---- Missing / weird stuff ----
 // there is no data for non stat effects like "sound suppression"
-// there is no data for base magasine size or reload time. have to compare with base weapon 
+// there is no attachment data for base magasine size or reload time. have to compare with base weapon
+// the attachment data given for the reload time is not the reduction in reload time, but rather the new total reload time
 // attachments affecting damage stat are listed as their own weapons
 
-export class TgdData { // TODO make all variables private. getters should be used to reduce the hidden dependencies (user needing to know which data structure is used)
 
-  static getEffectDisplayName(effectLabel: string): string {
-    return TgdData.displayNames.get(effectLabel)
+export class TgdData { // TODO not really a model, yet it's in the models folder
+  // TODO doing double work (iterates through the entire attachment object for both negative and positive effects)
+  
+  static async getPositiveEffects(attachment: any): Promise<any> { //, baseWeaponData) {
+    return await TgdData.getAttachmentEffects(attachment, true)
+  }
+  
+  static async getNegativeEffects(attachment: any): Promise<any> { //, baseWeaponData) {
+    return await TgdData.getAttachmentEffects(attachment, false)
   }
 
-  static getEffectDisplayValue(effectLabel: string, effectValue: number, isPositive: boolean): string {
-    let unit = TgdData.displayUnits.get(effectLabel)
 
-    if(unit === TgdData.units.ms) {
-      return (effectValue > 0 ? '+' : '') + effectValue + ' ' + unit
-    } else if(unit === TgdData.units.percent) {
-      let calc = Math.round((effectValue - 1) * 1000) / 10
-      calc *= this.flipSign.has(effectLabel) ? -1 : 1
-      return (calc > 0 ? '+' : '') + calc + ' %'
+  private static getEffectDisplayValue(attachment: string, value: number): string {
+    let unit = TgdData.displayUnits.get(attachment)
+
+    if(unit === TgdData.units.percent) {
+      let calc = Math.round((value - 1) * 1000) / 10
+      value = calc * (this.flipSign.has(attachment) ? -1 : 1)
+    } else {
+      value = Math.round(value * 100) / 100 // round to at most 2 decimals
     }
-    return null
+    return (value > 0 ? '+' : '') + (value) + ' ' + unit
   }
 
-  static isMissingMod(attachmentName: string): boolean {
-    return this.missingMods.has(attachmentName)
+  private static async getAttachmentEffects(attachment: any, getPositiveEffects: boolean): Promise<any[]> {
+    console.log(attachment)
+    
+    const arr: Array<any> = []
+    let baseWeaponData = await TgdService.getWeaponData(attachment.gun)
+    baseWeaponData = baseWeaponData[1]   
+    
+    for(let mod in attachment) {
+      const positiveModEffect = TgdData.positiveModEffect.get(mod)
+
+      let comparableEffect: number // positive effect = pro, negative effect = con, neutral effect = none
+      if(positiveModEffect) {
+        
+        let value = attachment[mod]
+        if(TgdData.missingMods.has(mod)) {
+          
+          const difference = value - baseWeaponData[mod]
+          if(difference != 0) {
+            if(positiveModEffect === TgdData.positiveEffects.positive) {
+              comparableEffect = value - baseWeaponData[mod]
+            } else if(positiveModEffect === TgdData.positiveEffects.negative) {
+              comparableEffect = baseWeaponData[mod] - value
+            }
+
+            // special - calc reload mod value
+            if(mod == TgdData.mods.reload) {
+              value -= baseWeaponData.reload
+            }
+          }
+        } else if(positiveModEffect === TgdData.positiveEffects.greaterThan1) {
+          comparableEffect = value - 1
+        } else if(positiveModEffect === TgdData.positiveEffects.lessThan1) {
+          comparableEffect = (value - 1) * -1
+        } else if(positiveModEffect === TgdData.positiveEffects.negative) {
+          comparableEffect = value * -1
+        }
+
+        const obj: object = {
+          key: TgdData.displayNames.get(mod),
+          value: TgdData.getEffectDisplayValue(mod, value)
+        }
+        if(comparableEffect > 0 && getPositiveEffects) {
+          arr.push(obj)
+        } else if(comparableEffect < 0 && !getPositiveEffects) {
+          arr.push(obj)
+        }
+      }
+    }
+    return arr
   }
 
-  static positiveEffects = { negative: '-', positive: '+', greaterThan1: '>', lessThan1: '<' }
+  private static positiveEffects = { negative: '-', positive: '+', greaterThan1: '>', lessThan1: '<' }
 
-  private static units = { s: 's', ms: 'ms', mps: 'm/s', percent: '%', area: 'kPixel^2' }
+  private static units = { s: 's', ms: 'ms', mps: 'm/s', percent: '%', area: 'kPixel^2', rounds: 'rounds'}
   
   private static mods = {
     ads_mod: 'ads_mod',
@@ -51,13 +106,13 @@ export class TgdData { // TODO make all variables private. getters should be use
   ])
 
   // since tgd calls e.g. "Recoil Control" "Horizontal Bounce", it flips the logic
-  static flipSign: Set<string> = new Set([
+  private static flipSign: Set<string> = new Set([
     TgdData.mods.hipfire_area_mod,
     TgdData.mods.horiz_bounce_mod,
     TgdData.mods.vert_recoil_mod,
   ])
 
-  static positiveModEffect: Map<string, string> = new Map([
+  private static positiveModEffect: Map<string, string> = new Map([
     [TgdData.mods.ads_mod, TgdData.positiveEffects.negative],
     [TgdData.mods.ads_move_mod, TgdData.positiveEffects.greaterThan1],
     [TgdData.mods.bullet_velocity_mod, TgdData.positiveEffects.greaterThan1],
@@ -102,6 +157,7 @@ export class TgdData { // TODO make all variables private. getters should be use
     [TgdData.mods.stfe, TgdData.units.ms],
     [TgdData.mods.vert_recoil_mod, TgdData.units.percent],
     [TgdData.mods.reload, TgdData.units.s],
+    [TgdData.mods.mag_size, TgdData.units.rounds],
   ])
 
   // might need for summary units ?
