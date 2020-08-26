@@ -1,25 +1,29 @@
 @import "./vars.scss";
 
 * {
-  font-family: 'Roboto'; // TODO not matching that great
+  // font-family: 'Roboto'; // TODO not matching that great
+  font-family: 'Roboto Light';
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 
-body { 
-  width: 100%;
+body {
   margin: 0;
-  // background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(30, 30, 30));
-  background-image: url('./assets/images/tempBG.png'); // TODO temp
-  background-size: cover;
+  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
+  user-select: none;
+  // background-image: url('./assets/images/tempBG.png'); // TODO temp
+  // background-size: cover;
 }
 
 a, a * {
   text-decoration: none;
   cursor: url('./assets/images/pointer-link.png'), pointer;
+  
+  -webkit-user-drag: none;
+  -moz-user-drag: none; 
 }
 
-// ###############
-// Scrollbar
+// ###################
+// ###  Scrollbar  ###
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -46,101 +50,29 @@ a, a * {
   border-right: 0;
 }
 
-// ##################
-// ####  Header  ####
-
-// $titleColour: rgb(89, 121, 133);
-$titleColour: white;
-
-nav {
-  $trimHeight: 4px;
-  $trimColour: rgb(182, 190, 192);
-  // $selectedLinkBG: rgb(40, 67, 84);
-  $selectedLinkBG: rgb(80, 61, 43);
- 
-  padding-top: 30px;
-  text-transform: uppercase;
-  
-  background-color: $darkBG;
-  user-select: none;
-
-  // &::before {
-  //   content: '';
-  //   z-index: -1;
-  //   background-size: cover;
-  //   position: absolute;
-
-  //   top: 0;
-  //   left: 0;
-  //   right: 0;
-  //   bottom: 0;
-  //   background-image: url('../../../assets/images/vector-trails.jpg');
-  //   // opacity: .05;
-  // }
-
-  #title {
-    width: 600px;
-    color: $titleColour;
-    font-size: 50px;
-    font-weight: thin;
-    border-bottom: 1px solid $titleColour;
-    text-align: right;
-  }
-
-  #menu {
-    display: flex;
-    padding-left: 100px;
-    
-    a {
-      width: 160px;
-      padding: 15px 0;
-      margin: 0 3px;
-
-      display: inline-block;
-      color: $inactiveColour;
-      font-weight: bold;
-      font-size: 13px;
-      text-align: center;
-      white-space: nowrap;
-      text-decoration: none;
-
-      &:hover {
-        background-image: linear-gradient(to top, lighten($selectedLinkBG, 10%) $trimHeight, transparent);
-      }
-
-      &:hover, &.selected {
-        color: $active;
-      }   
-      
-      &.selected {
-        background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, $selectedLinkBG $trimHeight, transparent 100%);
-        
-        &:hover {
-          background-image: linear-gradient(to top, $trimColour, $trimColour $trimHeight, lighten($selectedLinkBG, 10%)  $trimHeight, transparent 100%);
-        }
-      }
-    }    
-  }
-}
-
 main {
-  margin: 50px 5%; //100px;
-  
-  a {
+  margin: 50px $leftPageMargin;
+
+  // Buttons 
+  a, .disabledButton {
     opacity: .4;
     
     text-transform: capitalize;
-    user-select: none;
     color: $highlightColour;
-    font-size: 23px;
+    font-size: 18px;
     background-image:
-    linear-gradient($darkColour, $darkColour),
-    url('./assets/images/square-pattern.png');
-    
+      linear-gradient($darkColour, $darkColour),
+      url('./assets/images/square-pattern.png'),
+    ;
+    position: relative;
+    display: inline-block;
+    min-width: fit-content;
+    margin: 0;
+    padding: 10px;
+   
     &:hover {
-      $trimHeight: 2px;
       $trimColour: rgb(60, 146, 202); // TODO see if it can be merged
-      
+      $trimHeight: 2px;
       opacity: 1;
       background-image: 
       linear-gradient(to right, $darkBG, transparent 50%, $darkBG 100%),
@@ -153,5 +85,157 @@ main {
       url('./assets/images/square-pattern.png'),
       ;
     }
+    
+    &.small {
+      vertical-align: top;
+      margin-left: 7px;
+      width: fit-content;
+      padding: 15px 20px 20px;
+      
+      img {
+        width: 75px;
+        -webkit-user-drag: none;
+        -moz-user-drag: none; 
+      }
+    }
   }
+
+  .disabledButton {
+    filter: grayscale(100%) opacity(.5);
+    // -webkit-filter: grayscale(100%);
+    // -moz-filter:    grayscale(100%);
+    // -ms-filter:     grayscale(100%);
+    // -o-filter:      grayscale(100%);
+  }
+
+  // Scrollbox
+  .scrollBox {
+    display: inline-block;
+    height: 600px;
+    padding-left: 15px;
+    width: auto;
+    
+    overflow-y: auto;
+    overflow-x: hidden;
+    direction: rtl;
+
+    div {
+      direction: ltr;
+    }
+  }
+
+  // ###  Stats  ###
+  // ###############
+  .stats {
+    display: inline-block;
+    padding: 10px 20px;
+    $cut: 20px;
+    background: $darkBG;
+    clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
+
+    color: $inactiveColour;
+    font-size: 15px;
+    line-height: 23px;
+
+    > div {
+      direction: rtl;
+    }
+
+    .title {
+      display: inline-block;
+      padding-right: 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    
+    .meter {
+      // border: 1px solid blue;
+      direction: ltr;
+      display: inline-flex;
+      height: 5px;
+      width: 200px;
+      background-color: $meterBG;
+      vertical-align: middle;
+      
+      &:hover {
+        &::before {
+          content: 'test';
+          padding: 0 5px;
+          // width: 50px;
+          // height: 25px;
+          position: absolute;
+          // top: 5px;
+          z-index: 2;
+          background-color: #333;
+        }
+      }
+
+      .filled {
+        width: 150px; // TODO temp
+        background-color: $inactiveColour;
+      }
+      
+      .first {
+        width: 100px; // TODO temp
+        background-color: $inactiveColour;
+      }
+      .second {
+        width: 180px; // TODO temp
+        background-color: darken($inactiveColour, 20%);
+      }
+      .last {
+        background-color: darken($inactiveColour, 40%);
+      }
+    }
+  }
+}
+
+.circle {
+  display: inline-block;
+  $size: 15px;
+  width: $size;
+  height: $size;
+  padding: 3px;
+  
+  vertical-align: middle;
+  border: 1px solid $inactiveColour;
+  border-radius: 50%; 
+
+  &.filled {
+    background-color: black;
+    border-color: $active;
+    
+    &::before {
+      content: '';
+      vertical-align: top;
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      background-color: $active;
+      border-radius: 50%;
+    }
+  }
+}
+
+.right {
+  float: right;
+}
+
+.disabled {
+  color: white;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.gone {
+  display: none;
+}
+
+.powerOf {
+  display: inline-block;
+  font-size: 75%;
+  position: relative;
+  top: -7px;
 }

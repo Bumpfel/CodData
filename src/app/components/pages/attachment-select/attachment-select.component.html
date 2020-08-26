@@ -1,0 +1,46 @@
+<title>Attachment Select</title>
+
+<app-top-menu [title]="attachmentSlot"></app-top-menu>
+
+<main>
+  <div class="scrollBox" id="attachments">
+    <div>
+      <a *ngFor="let attachment of attachments" (click)="selectAttachment(attachment.attachment); soundService.select()" (mouseenter)="setHoveredAttachment(attachment); soundService.hover()">
+        {{attachment.attachment}}
+        <div *ngIf="isSelectedAttachment(attachment)" class="circle filled small right"></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div id="title" *ngIf="hoveredAttachment">
+      {{hoveredAttachment.attachment}}
+    </div>
+
+    <div class="equipped">
+      <ng-container *ngIf="isSelectedAttachment(hoveredAttachment)">
+        <div class="circle filled"></div>
+        <div id="title">Equipped</div>
+      </ng-container>
+    </div>
+
+    <!-- PROS -->
+    <div id="pros">
+      PROS
+      <div *ngFor="let effect of hoveredAttachmentPositiveEffects" class="stat">
+        {{getEffectDisplayName(effect.label)}}
+        <div>{{getEffectDisplayValue(effect.label, effect.value, true)}}</div>
+      </div>
+    </div>
+    
+    <!-- CONS -->
+    <div id="cons">
+      CONS
+      <div *ngFor="let effect of hoveredAttachmentNegativeEffects" class="stat">
+        {{getEffectDisplayName(effect.label)}}
+        <div>{{getEffectDisplayValue(effect.label, effect.value, false)}}</div>
+      </div>
+    </div>
+    <!-- <div class="meter"></div> -->
+  </div>
+</main>

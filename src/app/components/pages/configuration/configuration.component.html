@@ -1,0 +1,23 @@
+<title>Configs</title>
+
+<app-top-menu title="configurations"></app-top-menu>
+
+<main>
+  <div class="scrollBox">
+    <div>
+      <div *ngFor="let config of configurations">
+        <a (mouseenter)="showGunsmithButton(config.comparisonSlot); soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + config.comparisonSlot + '/weapon-select'">
+          <app-weapon-card [config]="config"></app-weapon-card>
+        </a>
+        <a class="small hidden" (mouseenter)="soundService.hover()" (click)="soundService.select()" [id]="'gunsmith-slot' + config.comparisonSlot" [routerLink]="'/' + config.comparisonSlot + '/gunsmith'">
+          Gunsmith
+          <br>
+          <img src="/assets/images/gunsmith.png">
+        </a>
+      </div>
+      <a (mouseenter)="showGunsmithButton(); soundService.hover()" [routerLink]="'/' + nextSlot + '/weapon-select'" class="add">
+        +
+      </a>
+    </div>
+  </div>
+</main>

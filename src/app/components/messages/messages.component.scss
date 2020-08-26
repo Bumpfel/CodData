@@ -1,0 +1,76 @@
+@import '../../../vars.scss';
+
+#messageBox {
+  // border: 2px dotted orange;
+  display: table;
+  position: fixed;
+  right: 20px;
+  top: 50px;
+
+  margin-right: 20px;
+  margin-top: -10px;
+  z-index: 2;
+  border-spacing: 0 50px;
+  
+  #message {
+    display: table-row;
+    position: relative;
+    // animation: fade-in 1.5s forwards;
+    animation: slide-in .4s forwards;
+    
+    #left {
+      display: table-cell;
+      background-color: black;
+      vertical-align: top;
+      padding: 5px;
+      box-sizing: border-box;
+      
+      &::before {
+        content: 'i';
+        
+        $sz: 35px;
+        color: white;
+        font-size: $sz;
+        font-weight: bold;
+        border: 2px solid white;
+        padding: 0 calc(#{$sz} / 2);
+        border-radius: 50%;
+      }
+    }
+    
+    #right {
+      display: table-cell;
+      $cut: 20px;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);     
+      
+      div {
+        background-color: $active;
+        width: 300px;
+        margin-bottom: 1px;
+      }
+      
+      #msg1 {
+        padding: 3px 10px;
+        box-sizing: border-box;
+      }
+      
+      #msg2 {
+        padding: 5px 10px 7px;
+        box-sizing: border-box;
+      }
+      
+    }
+  }
+}
+
+
+@keyframes slide-in {
+  0% { right: -500px; }
+  60% { right: 60px }
+  100% { right: 20px }
+}
+
+@keyframes fade-in {
+  from { opacity: 0%; }
+  to { opacity: 100%; }
+}

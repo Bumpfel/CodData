@@ -1,0 +1,17 @@
+@import "../../../../vars.scss";
+
+a {
+  box-sizing: border-box;
+  width: 400px; // duplicated value (weapon-select). can do commmon css class in styles
+  margin-bottom: 10px;
+
+  &.add {
+    text-align: center;
+    color: white;
+    font-size: 70px;
+  }
+}
+
+.scrollBox {
+  height: auto;
+}
