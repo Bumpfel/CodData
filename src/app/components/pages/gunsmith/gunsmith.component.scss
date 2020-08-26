@@ -13,11 +13,12 @@ main {
     }
 
     &#lowerAttachments {
-      text-align: right; // TODO this is used to align the buttons, but causes text to get the wrong alignment
+      text-align: right;
       margin-top: -110px;
     }
     
     &#lowerAttachments a {
+      text-align: left;
       margin-left: 3%;
     }   
 

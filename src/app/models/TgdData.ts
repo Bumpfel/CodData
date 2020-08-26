@@ -3,7 +3,7 @@
 // there is no data for base magasine size or reload time. have to compare with base weapon 
 // attachments affecting damage stat are listed as their own weapons
 
-export class TgdData {
+export class TgdData { // TODO make all variables private. getters should be used to reduce the hidden dependencies (user needing to know which data structure is used)
 
   static getEffectDisplayName(effectLabel: string): string {
     return TgdData.displayNames.get(effectLabel)
@@ -22,11 +22,15 @@ export class TgdData {
     return null
   }
 
-  static positiveEffects = { negative: '-', greaterThan1: '>', lessThan1: '<' }
+  static isMissingMod(attachmentName: string): boolean {
+    return this.missingMods.has(attachmentName)
+  }
+
+  static positiveEffects = { negative: '-', positive: '+', greaterThan1: '>', lessThan1: '<' }
 
   private static units = { s: 's', ms: 'ms', mps: 'm/s', percent: '%', area: 'kPixel^2' }
   
-  private static mods = { 
+  private static mods = {
     ads_mod: 'ads_mod',
     ads_move_mod: 'ads_move_mod',
     bullet_velocity_mod: 'bullet_velocity_mod',
@@ -37,8 +41,14 @@ export class TgdData {
     sstfe: 'sstfe',
     stfe: 'stfe',
     vert_recoil_mod: 'vert_recoil_mod',
-    reload: 'reload'
+    reload: 'reload',
+    mag_size: 'mag_size',
   }
+
+  private static missingMods: Set<string> = new Set([
+    TgdData.mods.reload,
+    TgdData.mods.mag_size,
+  ])
 
   // since tgd calls e.g. "Recoil Control" "Horizontal Bounce", it flips the logic
   static flipSign: Set<string> = new Set([
@@ -58,6 +68,8 @@ export class TgdData {
     [TgdData.mods.sstfe, TgdData.positiveEffects.negative],
     [TgdData.mods.stfe, TgdData.positiveEffects.negative],
     [TgdData.mods.vert_recoil_mod, TgdData.positiveEffects.lessThan1],
+    [TgdData.mods.reload, TgdData.positiveEffects.negative],
+    [TgdData.mods.mag_size, TgdData.positiveEffects.positive],
   ])
 
   private static displayNames: Map<string, string> = new Map([
@@ -71,6 +83,9 @@ export class TgdData {
     [TgdData.mods.sstfe, 'Tactical Sprint to Fire Speed'],
     [TgdData.mods.stfe, 'Sprint to Fire Speed'],
     [TgdData.mods.vert_recoil_mod, 'Recoil Control (Vertical)'],
+    [TgdData.mods.reload, 'Reload time'],
+    [TgdData.mods.mag_size, 'Magasine Size'],
+
     // [?, 'Damage'], // listed as different weapons on TGD
   ])
 

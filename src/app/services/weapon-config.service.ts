@@ -82,7 +82,7 @@ export class WeaponConfigService {
     return result
   }
 
-  async getWeapon(weaponName: string) {
+  async getWeaponData(weaponName: string) {
     let result = await TgdService.getWeaponData(weaponName)
     // console.log(result)
 

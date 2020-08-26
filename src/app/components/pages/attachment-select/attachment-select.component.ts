@@ -6,6 +6,7 @@ import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
 import { TgdData } from 'src/app/models/TgdData'
 import { stringify } from '@angular/compiler/src/util';
+import { typeWithParameters } from '@angular/compiler/src/render3/util';
 
 @Component({
   selector: 'app-attachment-select',
@@ -14,7 +15,7 @@ import { stringify } from '@angular/compiler/src/util';
 })
 export class AttachmentSelectComponent implements OnInit {
 
-  // private weaponData: any // tgd weapon
+  private baseWeaponData: any // tgd weapon
   attachmentSlot: string
   attachments: any[]
   selectedAttachmentName: string // tgd attachment
@@ -25,7 +26,7 @@ export class AttachmentSelectComponent implements OnInit {
 
   constructor(private configService: WeaponConfigService, private soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
-  ngOnInit(): void {   
+  async ngOnInit(): Promise<void> {   
     this.attachmentSlot = this.route.snapshot.paramMap.get('attachmentSlot')
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     
@@ -37,12 +38,14 @@ export class AttachmentSelectComponent implements OnInit {
     const weaponConfig = this.configService.getWeaponConfig(slot)
 
     this.mapAttachments(weaponConfig.weaponName)
-    // this.weaponData = this.configService.getWeapon(weaponConfig.weaponName)    
   }
   
   async mapAttachments(weaponName: string): Promise<void> {
+    if(!this.baseWeaponData) {
+      this.baseWeaponData = await this.configService.getWeaponData(weaponName)
+    } 
     this.attachments = await this.configService.getAttachments(weaponName, this.attachmentSlot)
-   this.setHoveredAttachment(this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0])
+    this.setHoveredAttachment(this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0])
   }
 
   getAttachmentData(attachmentName: string): any {
@@ -73,19 +76,28 @@ export class AttachmentSelectComponent implements OnInit {
     return false
   }
 
-  setHoveredAttachment(attachment: any): void { // TODO keeping this here adds dependency to TgdData
+  setHoveredAttachment(attachment: any): void { // TODO keeping this here adds dependency to TgdData. maybe move to weaponConfigService
     this.hoveredAttachment = attachment
     this.hoveredAttachmentPositiveEffects = []
     this.hoveredAttachmentNegativeEffects = []
 
-    for(let key in this.hoveredAttachment) { // TODO not the best variable names here
-      const value = this.hoveredAttachment[key]
+    // PROS and CONS
+    for(let mod in this.hoveredAttachment) {
+      const value = this.hoveredAttachment[mod]
       
-      const positiveModEffect = TgdData.positiveModEffect.get(key)
-
+      const positiveModEffect = TgdData.positiveModEffect.get(mod)
+      
       let comparableEffect: number // positive effect = pro, negative effect = con, neutral effect = none
       if(positiveModEffect) {
-        if(positiveModEffect === TgdData.positiveEffects.greaterThan1) {
+        if(TgdData.isMissingMod(mod)) {
+          const difference = value - this.baseWeaponData[1][mod]
+          // e.g. -1.23 reload time = positive 
+          // e.g. 30 mag size = positive
+          if(difference != 0) {
+            if(positiveModEffect === TgdData.positiveEffects.positive)
+            comparableEffect
+          }
+        } else if(positiveModEffect === TgdData.positiveEffects.greaterThan1) {
           comparableEffect = value - 1
         } else if(positiveModEffect === TgdData.positiveEffects.lessThan1) {
           comparableEffect = (value - 1) * -1
@@ -93,8 +105,7 @@ export class AttachmentSelectComponent implements OnInit {
           comparableEffect = value * -1
         }
 
-        const obj = {label: key, value: value}
-        
+        const obj = {label: mod, value: value}
         if(comparableEffect > 0) {
           this.hoveredAttachmentPositiveEffects.push(obj)
         } else if(comparableEffect < 0) {
