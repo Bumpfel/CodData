@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from '../models/WeaponConfig'
 import { TgdService } from './tgd.service'
+import { stringify } from '@angular/compiler/src/util';
 
 @Injectable({
   providedIn: 'root'
@@ -31,14 +32,12 @@ export class WeaponConfigService {
     // melee: ['Riot Shield', 'Combat Knife', 'Kali Sticks', 'Dual Kodachis']
   }
 
-  private attachmentData: any = {}
-
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3, BLOCKED: 4 }
 
-  // private weaponConfig: WeaponConfig // TODO possibly phase this one out and pass this data as arguments in the methods instead
+  private attachmentData: any = {} // cache var
+  private maxAttachments: number = 5
 
   constructor() {
-    // this.getActiveConfig()
   }
 
   getWeaponTypes(): string[] {
@@ -52,10 +51,14 @@ export class WeaponConfigService {
     return null
   }
 
-  async getAttachmentData(weaponName: string): Promise<any> {
+  /**
+   * Used internally. Caches retrieved data in variable
+   * @param weaponName
+   */
+  private async getAttachmentData(weaponName: string): Promise<any> {
     let result: any
+    
     if(!this.attachmentData[weaponName]) {
-      console.log('fetching new data')
       result = await TgdService.getAttachmentData(weaponName)
       this.attachmentData[weaponName] = result
     } else {
@@ -63,7 +66,7 @@ export class WeaponConfigService {
     }
     return result
   }
-
+ 
   async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
     let result = await this.getAttachmentData(weaponName)
     
@@ -75,17 +78,16 @@ export class WeaponConfigService {
   
   async getAttachments(weaponName: string, attachmentType: string): Promise<string[]> {
     let result = await this.getAttachmentData(weaponName)
-    // let result = await TgdService.getAttachmentData(weaponName)
-    result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)
-    
-    // console.log(result)
-    
+    result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)  
     return result
   }
 
-  // getAttachments(attachmentType: string): string[] {
-  //   return this.attachments[attachmentType]
-  // }
+  async getWeapon(weaponName: string) {
+    let result = await TgdService.getWeaponData(weaponName)
+    // console.log(result)
+
+    return result
+  }
 
   getSelectedAttachmentName(slot: number, attachmentType: string): string {
     // return this.weaponConfig.attachments[attachmentType]
@@ -135,6 +137,10 @@ export class WeaponConfigService {
     return 0
   }
 
+  getIterableNrOfEmptyAttachmentSlots(weaponConfig: WeaponConfig) { // for angular iterator (*ngFor)
+    return new Array(this.maxAttachments - Object.keys(weaponConfig.attachments).length)
+  }
+
   saveConfig(weaponConfig: WeaponConfig, isArmoryConfig: boolean = false): void {
     if(isArmoryConfig) {
       // TODO save as array with weaponName as key
@@ -167,5 +173,10 @@ export class WeaponConfigService {
       this.saveConfig(weaponConfig)
       return this.editStatus.EQUIPPED
     }
+  }
+
+  removeAttachment(weaponConfig: WeaponConfig, attachmentSlot: string): void {
+    delete weaponConfig.attachments[attachmentSlot]
+    this.saveConfig(weaponConfig)
   }
 }

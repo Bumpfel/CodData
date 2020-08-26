@@ -1,38 +1,41 @@
-import { Injectable } from '@angular/core';
-import { cors } from 'cors'
+// import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+// @Injectable({
+//   providedIn: 'root'
+// })
 
 // TODO could probably just have been a functions class, not a service since everything's static
 export class TgdService {
 
   private constructor() { }
 
-  private static path = { weapons: 'grab_guns.php', attachments: 'grab_attachment_data.php' }
-
-  static getWeaponData(weaponType: string) {
-    return this.getTGDData(this.path.weapons, weaponType)
+  private static request = {  // TODO type (make interface?)
+    weapons: { path: 'grab_guns.php', key: 'selectedGunType' },
+    weapon: { path: 'base_stats.php', key: 'gun' },
+    attachments: { path: 'grab_attachment_data.php', key: 'selectedGun' },
   }
 
-  static getAttachmentData(weaponName) {
-    return this.getTGDData(this.path.attachments, weaponName)
+  static getWeaponsData(weaponType: string) {
+    return this.getTGDData(this.request.weapons, weaponType)
+  }
+
+  static getWeaponData(weaponName: string) {
+    return this.getTGDData(this.request.weapon, weaponName)
+  }
+
+  static getAttachmentData(weaponName: string) {
+    return this.getTGDData(this.request.attachments, weaponName)
   }
 
 
-  private static async getTGDData(path: string, formData: string): Promise<any> {
-    // const proxyurl = "https://cors-anywhere.herokuapp.com/";
-    const proxyurl = "http://localhost:4000/";
+  private static async getTGDData(request: any, formData: string): Promise<any> {
+    // const proxyurl = "https://cors-anywhere.herokuapp.com/"
+    const proxyurl = "http://localhost:4100/"
 
-    var urlencoded = new URLSearchParams();
-    if(path === this.path.weapons) {
-      urlencoded.append("selectedGunType", "\"" + formData + "\"")
-    } else if(path === this.path.attachments) {
-      urlencoded.append("selectedGun", "\"" + formData + "\"")
-    }
+    var urlencoded = new URLSearchParams()
+    urlencoded.append(request.key, "\"" + formData + "\"")
 
-    let response = await fetch(proxyurl + 'https://www.truegamedata.com/' + path, {
+    let response = await fetch(proxyurl + 'https://www.truegamedata.com/' + request.path, {
       method: 'POST',
       body: urlencoded,
     })

@@ -132,4 +132,38 @@ main {
       }
     }
   }
+
+  .popup {
+    pointer-events: none;
+    display: inline-block;
+    position: absolute;
+    padding: 4px 10px;
+    background-color: lighten(rgb(52, 82, 101, .9), 10%);
+    border: 1px solid rgb(131, 180, 200);
+    color: white;
+
+    div {
+      display: inline-block;
+      padding: 0 5px;
+      background-color: white;
+      border-radius: 2px;
+      color: black;
+    }
+  }
+
+  .fade-in {
+    animation: fade-in 1s forwards;
+  }
+
+  .gone {
+    display: none;
+    
+  }
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    60% { opacity: 0; }
+    100% { opacity: 1; }
+  }
 }
+

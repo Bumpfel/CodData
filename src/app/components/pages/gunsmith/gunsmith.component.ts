@@ -15,23 +15,22 @@ export class GunsmithComponent implements OnInit {
   weaponConfig: WeaponConfig
   upperAttachments: string[]
   lowerAttachments: string[]
-  
-  loaded: boolean = false
+
+  deselectPopup: HTMLElement 
 
   upperAttachmentsMap: Map<string, number>
   lowerAttachmentsMap: Map<string, number>
 
-  constructor(private route: ActivatedRoute, private router: Router, private globalService: GlobalService, private configService: WeaponConfigService, private soundService: SoundService) { }
+  eventCallback
+
+  constructor(private route: ActivatedRoute, private router: Router, private globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
 
   ngOnInit(): void {
     this.globalService.goBackOnEscape()
+    this.deselectPopup = document.querySelector('#deselect')
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
-
-    // using these to show the most common attachment slots before the async call has returned
-    // this.upperAttachments = ['muzzle', 'barrel', 'laser', 'optic', 'stock']
-    // this.lowerAttachments = ['underbarrel', 'ammunition', 'rear grip', 'perk']
 
     this.upperAttachmentsMap = new Map([
       ['muzzle', 0],
@@ -64,7 +63,7 @@ export class GunsmithComponent implements OnInit {
       }
     })
 
-    this.mapAttachmentSlots() // async
+    this.mapAttachmentSlots()
   }
 
 
@@ -84,14 +83,42 @@ export class GunsmithComponent implements OnInit {
         this.lowerAttachments[lowerIndex] = attachment
       }
     }
-    this.loaded = true
   }
 
-  navigate(attachmentSlot: string) {
+  navigate(attachmentSlot: string): void {
     // console.log(attachmentSlot)
     
     if(!this.configService.getBlockingAttachment(this.weaponConfig, attachmentSlot)) {
       this.router.navigate([attachmentSlot], { relativeTo: this.route })
     }
+  }
+  
+  enableAttachmentRemoval(attachmentSlot: string, event): void {    
+    this.eventCallback = (e: KeyboardEvent) => {
+      if(e.key === 'r') {
+        this.configService.removeAttachment(this.weaponConfig, attachmentSlot)
+        this.disableAttachmentRemoval()
+      }
+    }
+    
+    if(this.weaponConfig.attachments[attachmentSlot]) {     
+      this.deselectPopup.classList.remove('gone')
+      this.deselectPopup.classList.add('fade-in')
+      
+      this.deselectPopup.style.left = event.clientX + 'px'
+      this.deselectPopup.style.top = event.clientY + 'px'
+      
+      document.addEventListener('keydown', this.eventCallback)
+    }
+  }
+  
+  disableAttachmentRemoval(): void {
+    this.deselectPopup.classList.add('gone')
+    this.deselectPopup.classList.remove('fade-in')
+    document.removeEventListener('keydown', this.eventCallback)
+  }
+
+  getNrOfAttachments() {
+    return Object.keys(this.weaponConfig.attachments).length
   }
 }

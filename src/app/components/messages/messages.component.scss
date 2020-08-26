@@ -3,7 +3,10 @@
 #messageBox {
   // border: 2px dotted orange;
   display: table;
-  float: right;
+  position: fixed;
+  right: 20px;
+  top: 50px;
+
   margin-right: 20px;
   margin-top: -10px;
   z-index: 2;
@@ -11,8 +14,10 @@
   
   #message {
     display: table-row;
-    // margin-bottom: 50px;
-
+    position: relative;
+    // animation: fade-in 1.5s forwards;
+    animation: slide-in .4s forwards;
+    
     #left {
       display: table-cell;
       background-color: black;
@@ -58,26 +63,14 @@
   }
 }
 
-// not used
-@keyframes fade-in-out {
-  0% { opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+
+@keyframes slide-in {
+  0% { right: -500px; }
+  60% { right: 60px }
+  100% { right: 20px }
 }
 
-@keyframes slide-from-bottom {
-  0% { height: 0; }
-  /* 5% { padding-top: 5px; } */
-  20% { height: auto; }
-  80% { height: auto; }
-  /* 95% { padding-top: 5px; } */
-  100% { height: 0; }
-}
-
-@keyframes slide-from-bottom-pos {
-  0% { bottom: -26px }
-  20% { bottom: 0 }
-  80% { bottom: 0 }
-  100% { bottom: -26px }
+@keyframes fade-in {
+  from { opacity: 0%; }
+  to { opacity: 100%; }
 }

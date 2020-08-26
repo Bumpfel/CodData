@@ -2,6 +2,7 @@
 
 # mine
 /cors
+/local
 
 # compiled output
 /dist

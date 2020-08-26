@@ -18,10 +18,10 @@ export class WeaponCardComponent implements OnInit {
   ngOnInit(): void {
   }
   
-  emptyAttachmentSlots(): number[] {
-    let emptyAttachmentSlots: number = 5 - Object.keys(this.config.attachments).length
-    return [...Array(emptyAttachmentSlots).keys()]
-  }
+  // emptyAttachmentSlots(): number[] {
+  //   let emptyAttachmentSlots: number = 5 - Object.keys(this.config.attachments).length
+  //   return new Array(emptyAttachmentSlots)
+  // }
 
   err(event) {
     event.target.src = '/assets/images/no_image.png'

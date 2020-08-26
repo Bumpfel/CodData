@@ -1,7 +1,8 @@
 @import "./vars.scss";
 
 * {
-  font-family: 'Roboto', 'sans-serif'; // TODO not matching that great
+  // font-family: 'Roboto'; // TODO not matching that great
+  font-family: 'Roboto Light';
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 
@@ -230,4 +231,11 @@ main {
 
 .gone {
   display: none;
+}
+
+.powerOf {
+  display: inline-block;
+  font-size: 75%;
+  position: relative;
+  top: -7px;
 }

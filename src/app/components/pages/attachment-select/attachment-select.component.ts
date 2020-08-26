@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
+import { TgdData } from 'src/app/models/TgdData'
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-attachment-select',
@@ -12,10 +14,14 @@ import { MessageService } from 'src/app/services/message.service';
 })
 export class AttachmentSelectComponent implements OnInit {
 
+  // private weaponData: any // tgd weapon
   attachmentSlot: string
   attachments: any[]
   selectedAttachmentName: string // tgd attachment
   hoveredAttachment: any // tgd attachment
+
+  hoveredAttachmentPositiveEffects: Array<object> = []
+  hoveredAttachmentNegativeEffects: Array<object> = []
 
   constructor(private configService: WeaponConfigService, private soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
@@ -28,12 +34,15 @@ export class AttachmentSelectComponent implements OnInit {
     
     this.selectedAttachmentName = this.configService.getSelectedAttachmentName(slot, this.attachmentSlot)
 
-    this.getAttachments(this.configService.getWeaponConfig(slot).weaponName)
+    const weaponConfig = this.configService.getWeaponConfig(slot)
+
+    this.mapAttachments(weaponConfig.weaponName)
+    // this.weaponData = this.configService.getWeapon(weaponConfig.weaponName)    
   }
   
-  async getAttachments(weaponName: string): Promise<void> {
+  async mapAttachments(weaponName: string): Promise<void> {
     this.attachments = await this.configService.getAttachments(weaponName, this.attachmentSlot)
-    this.hoveredAttachment = this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0]
+   this.setHoveredAttachment(this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0])
   }
 
   getAttachmentData(attachmentName: string): any {
@@ -64,7 +73,47 @@ export class AttachmentSelectComponent implements OnInit {
     return false
   }
 
-  setHoveredAttachment(attachment: any): void {
+  setHoveredAttachment(attachment: any): void { // TODO keeping this here adds dependency to TgdData
     this.hoveredAttachment = attachment
+    this.hoveredAttachmentPositiveEffects = []
+    this.hoveredAttachmentNegativeEffects = []
+
+    for(let key in this.hoveredAttachment) { // TODO not the best variable names here
+      const value = this.hoveredAttachment[key]
+      
+      const positiveModEffect = TgdData.positiveModEffect.get(key)
+
+      let comparableEffect: number // positive effect = pro, negative effect = con, neutral effect = none
+      if(positiveModEffect) {
+        if(positiveModEffect === TgdData.positiveEffects.greaterThan1) {
+          comparableEffect = value - 1
+        } else if(positiveModEffect === TgdData.positiveEffects.lessThan1) {
+          comparableEffect = (value - 1) * -1
+        } else if(positiveModEffect === TgdData.positiveEffects.negative) {
+          comparableEffect = value * -1
+        }
+
+        const obj = {label: key, value: value}
+        
+        if(comparableEffect > 0) {
+          this.hoveredAttachmentPositiveEffects.push(obj)
+        } else if(comparableEffect < 0) {
+          this.hoveredAttachmentNegativeEffects.push(obj)
+        }
+      }
+    }
+    // console.log(attachment)
+    
+    // console.log(this.hoveredAttachmentPositiveEffects.length + ' PROS: ', this.hoveredAttachmentPositiveEffects)
+    // console.log(this.hoveredAttachmentNegativeEffects.length + ' CONS', this.hoveredAttachmentNegativeEffects)
   }
+
+  getEffectDisplayName(effectLabel: string): string {
+    return TgdData.getEffectDisplayName(effectLabel)
+  }
+
+  getEffectDisplayValue(effectLabel: string, effectValue: number, isPositive: boolean): string {
+   return TgdData.getEffectDisplayValue(effectLabel, effectValue, isPositive)
+  }
+
 }

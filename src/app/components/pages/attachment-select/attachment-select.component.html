@@ -2,8 +2,6 @@
 
 <app-top-menu [title]="attachmentSlot"></app-top-menu>
 
-<app-messages></app-messages>
-
 <main>
   <div class="scrollBox" id="attachments">
     <div>
@@ -25,22 +23,23 @@
         <div id="title">Equipped</div>
       </ng-container>
     </div>
-      
+
+    <!-- PROS -->
     <div id="pros">
       PROS
-      <div class="stat">Sound Suppression</div>
-      <div class="stat">
-        Damage Range
-        <div>10%</div>
+      <div *ngFor="let effect of hoveredAttachmentPositiveEffects" class="stat">
+        {{getEffectDisplayName(effect.label)}}
+        <div>{{getEffectDisplayValue(effect.label, effect.value, true)}}</div>
       </div>
     </div>
+    
+    <!-- CONS -->
     <div id="cons">
-      CONS      
-      <div class="stat">
-        Aim Down Sight Speed
-        <div>67 ms</div>
+      CONS
+      <div *ngFor="let effect of hoveredAttachmentNegativeEffects" class="stat">
+        {{getEffectDisplayName(effect.label)}}
+        <div>{{getEffectDisplayValue(effect.label, effect.value, false)}}</div>
       </div>
-      <div class="stat">Aim Walking Steadiness</div>
     </div>
     <!-- <div class="meter"></div> -->
   </div>

@@ -108,6 +108,7 @@ a {
       
       &::before {
         content: '+';
+        // content: '&#9547;';
         border: 1px solid $green;
       }
     }
