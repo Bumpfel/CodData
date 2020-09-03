@@ -4,9 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
-import { TgdData } from 'src/app/models/TgdData'
-import { stringify } from '@angular/compiler/src/util';
-import { typeWithParameters } from '@angular/compiler/src/render3/util';
+import { WeaponConfig } from 'src/app/models/WeaponConfig';
+import { Effect } from 'src/app/models/Effect';
 
 @Component({
   selector: 'app-attachment-select',
@@ -15,17 +14,20 @@ import { typeWithParameters } from '@angular/compiler/src/render3/util';
 })
 export class AttachmentSelectComponent implements OnInit {
 
+  weaponConfig: WeaponConfig
   attachmentSlot: string
   attachments: any[]
   selectedAttachmentName: string // tgd attachment
   hoveredAttachment: any // tgd attachment
 
-  hoveredAttachmentPositiveEffects: Array<object> = []
-  hoveredAttachmentNegativeEffects: Array<object> = []
+  hoveredAttachmentEffects: Array<Effect> = []
+
+  // hoveredAttachmentPositiveEffects: Array<Effect> = []
+  // hoveredAttachmentNegativeEffects: Array<Effect> = []
 
   constructor(private configService: WeaponConfigService, private soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
-  async ngOnInit(): Promise<void> {   
+  ngOnInit(): void {   
     this.attachmentSlot = this.route.snapshot.paramMap.get('attachmentSlot')
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     
@@ -34,13 +36,13 @@ export class AttachmentSelectComponent implements OnInit {
     
     this.selectedAttachmentName = this.configService.getSelectedAttachmentName(slot, this.attachmentSlot)
 
-    const weaponConfig = this.configService.getWeaponConfig(slot)
+    this.weaponConfig = this.configService.getWeaponConfig(slot)
 
-    this.mapAttachments(weaponConfig.weaponName)
+    this.mapAttachments()
   }
   
-  async mapAttachments(weaponName: string): Promise<void> {
-    this.attachments = await this.configService.getAttachments(weaponName, this.attachmentSlot)
+  async mapAttachments(): Promise<void> {
+    this.attachments = await this.configService.getAttachments(this.weaponConfig.weaponName, this.attachmentSlot)
     this.setHoveredAttachment(this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0])
   }
 
@@ -72,10 +74,8 @@ export class AttachmentSelectComponent implements OnInit {
     return false
   }
 
-  async setHoveredAttachment(attachment: any): Promise<void> { // TODO keeping this here adds dependency to TgdData. maybe move to weaponConfigService
+  async setHoveredAttachment(attachment: any): Promise<void> {
     this.hoveredAttachment = attachment
-    
-    this.hoveredAttachmentPositiveEffects = await TgdData.getPositiveEffects(attachment)
-    this.hoveredAttachmentNegativeEffects = await TgdData.getNegativeEffects(attachment)
+    // this.hoveredAttachmentEffects = await this.configService.getAttachmentEffects(attachment, this.weaponConfig.weaponName)
   }
 }

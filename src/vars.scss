@@ -1,5 +1,6 @@
 $darkColour: rgba(0, 0, 0, .8);
 $darkBG: rgba(0, 0, 0, .5);
+// $darkBG: rgba(50, 50, 50, .5);
 $highlightColour: rgb(120, 215, 253);
 $highlightColourTransparent: rgba(120, 215, 253, .5);
 $active: rgb(255, 158, 65);
@@ -9,7 +10,10 @@ $meterBG: #4448;
 
 $leftPageMargin: 100px;
 
+// Pros & Cons
+$green: rgb(140, 198, 109);
+$greenBG: rgba(140, 198, 109, .2);
+$red: rgb(154, 59, 42);
+$redBG: rgba(154, 59, 42, .2);
 
 // $textColour: rgb(120, 215, 253);
-
-// TODO clean up. merge. 

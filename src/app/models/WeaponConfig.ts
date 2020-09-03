@@ -38,5 +38,7 @@ export class WeaponConfig {
     //   return this.attachments[attachmentType]
     // }
 
+
+    
     
 }

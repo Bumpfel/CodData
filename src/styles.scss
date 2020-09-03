@@ -10,16 +10,9 @@ body {
   margin: 0;
   background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
   user-select: none;
+  overflow-x: hidden;
   // background-image: url('./assets/images/tempBG.png'); // TODO temp
   // background-size: cover;
-}
-
-a, a * {
-  text-decoration: none;
-  cursor: url('./assets/images/pointer-link.png'), pointer;
-  
-  -webkit-user-drag: none;
-  -moz-user-drag: none; 
 }
 
 // ###################
@@ -50,9 +43,16 @@ a, a * {
   border-right: 0;
 }
 
-main {
-  margin: 50px $leftPageMargin;
+a, a * {
+  text-decoration: none;
+  cursor: url('./assets/images/pointer-link.png'), pointer;
+  
+  -webkit-user-drag: none;
+  -moz-user-drag: none; 
+}
 
+
+main, footer {
   // Buttons 
   a, .disabledButton {
     opacity: .4;
@@ -69,7 +69,7 @@ main {
     min-width: fit-content;
     margin: 0;
     padding: 10px;
-   
+    
     &:hover {
       $trimColour: rgb(60, 146, 202); // TODO see if it can be merged
       $trimHeight: 2px;
@@ -99,15 +99,20 @@ main {
       }
     }
   }
+}
 
-  .disabledButton {
-    filter: grayscale(100%) opacity(.5);
-    // -webkit-filter: grayscale(100%);
-    // -moz-filter:    grayscale(100%);
-    // -ms-filter:     grayscale(100%);
-    // -o-filter:      grayscale(100%);
-  }
+.disabledButton {
+  filter: grayscale(100%) opacity(.5);
+  // -webkit-filter: grayscale(100%);
+  // -moz-filter:    grayscale(100%);
+  // -ms-filter:     grayscale(100%);
+  // -o-filter:      grayscale(100%);
+}
 
+main {
+  margin: 50px $leftPageMargin;
+  padding-bottom: 50px; // compensates for footer
+  
   // Scrollbox
   .scrollBox {
     display: inline-block;
@@ -128,31 +133,34 @@ main {
   // ###############
   .stats {
     display: inline-block;
-    padding: 10px 20px;
+    white-space: nowrap;
+    min-height: 50px;
+    margin-top: 20px;
+    padding: 10px 20px 20px;
     $cut: 20px;
     background: $darkBG;
     clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
 
     color: $inactiveColour;
-    font-size: 15px;
-    line-height: 23px;
-
-    > div {
-      direction: rtl;
-    }
-
+    font-size: 14px;
+    
     .title {
-      display: inline-block;
-      padding-right: 10px;
-      text-align: right;
+      width: 200px;
+      // text-align: right;
       white-space: nowrap;
+    }
+    
+    .text {
+      // width: 100px;
+      margin-left: 20px;
+      // display: inline-block;
     }
     
     .meter {
       // border: 1px solid blue;
-      direction: ltr;
+      margin: 10px;
       display: inline-flex;
-      height: 5px;
+      height: 4px;
       width: 200px;
       background-color: $meterBG;
       vertical-align: middle;
@@ -207,6 +215,7 @@ main {
     
     &::before {
       content: '';
+      // content: '\25C9';
       vertical-align: top;
       display: inline-block;
       width: 100%;

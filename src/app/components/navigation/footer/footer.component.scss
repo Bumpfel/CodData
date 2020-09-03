@@ -1,0 +1,27 @@
+@import "../../../../vars.scss";
+
+footer {
+  background-color: $darkBG; //#0005
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 20px $leftPageMargin+30px;
+  
+  a {
+    opacity: .7;
+    padding: 0 15px;
+    // background-image:
+    //   linear-gradient($darkBG, $darkBG),
+    //   url('../assets/images/square-pattern.png'),
+    // ;
+    color: white;
+    font-size: 95%;
+
+    &::before {
+      content: '\2039';
+      font-size: 200%;
+      vertical-align: sub;
+      margin-right: 5px;
+    }
+  }
+}

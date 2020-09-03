@@ -17,6 +17,8 @@
       {{hoveredAttachment.attachment}}
     </div>
 
+    <strong>Proclaimer: </strong>Attachments might have other non-quantifiable pros and cons like "Sound Suppression" or "Scope Glint".  They are not listed here, and neither is aiming stability
+
     <div class="equipped">
       <ng-container *ngIf="isSelectedAttachment(hoveredAttachment)">
         <div class="circle filled"></div>
@@ -27,20 +29,26 @@
     <!-- PROS -->
     <div id="pros">
       PROS
-      <div *ngFor="let effect of hoveredAttachmentPositiveEffects" class="stat">
-        {{effect.key}}
-        <div>{{(effect.value)}}</div>
-      </div>
+      <ng-container *ngFor="let effect of hoveredAttachmentEffects">
+        <div *ngIf="effect.isPositive()"  class="stat">
+          {{effect.key}}
+          <div>{{(effect.value)}}</div>
+        </div>
+      </ng-container>
     </div>
     
     <!-- CONS -->
     <div id="cons">
       CONS
-      <div *ngFor="let effect of hoveredAttachmentNegativeEffects" class="stat">
-        {{effect.key}}
-        <div>{{effect.value}}</div>
-      </div>
+      <ng-container *ngFor="let effect of hoveredAttachmentEffects">
+        <div *ngIf="effect.isNegative()"  class="stat">
+          {{effect.key}}
+          <div>{{effect.value}}</div>
+        </div>
+      </ng-container>
     </div>
     <!-- <div class="meter"></div> -->
   </div>
 </main>
+
+<app-footer></app-footer>

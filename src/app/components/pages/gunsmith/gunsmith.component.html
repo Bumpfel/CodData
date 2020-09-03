@@ -39,64 +39,170 @@
       <div *ngFor="let i of weaponConfig.attachments | keyvalue" class="filled circle"></div>
       <div *ngFor="let i of configService.getIterableNrOfEmptyAttachmentSlots(weaponConfig)" class="circle"></div>
     </div>
+  </div> 
 
+    <!-- Lower Attachments -->
+    <!----------------------->
+    <!-- code duplication here -->
+    <div class="attachments" id="lowerAttachments">
+      <ng-container *ngFor="let attachmentSlot of lowerAttachments">
+        <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+          {{attachmentSlot}}
+          <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
+          <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
+        </a>
+        <ng-template #disabledSlot>
+          <div class="disabledButton" [id]="attachmentSlot">
+            <!-- <img src="/assets/images/blocked.png"> -->
+            {{attachmentSlot}}
+            <div class="white">Blocked by {{configService.getBlockingAttachment(weaponConfig, attachmentSlot)}}</div>
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+    
     <!-- Stats -->
+    <!----------->
     <div class="stats">
+      <!-- <ng-container *ngIf="statSummary else loadingStatSummary">     
+        <div *ngFor="let stat of statSummary | keyvalue">
+          <div class="cell title">{{stat.key}}</div>
+          <div class="cell text">{{stat.value}}</div>
+        </div>
+      </ng-container>
+      <ng-template #loadingStatSummary>
+        Loading...
+      </ng-template> -->
+      
+      <!-- <div>
+        <div>header 1</div>
+        <div>header 2</div>
+        <div>header 3</div>
+      </div>
+      <div>
+        <div>data 1_1</div>
+        <div>data 1_2</div>
+        <div>data 1_3</div>
+      </div>
+      <div>
+        <div>data 2_1</div>
+        <div>data 2_2</div>
+        <div>data 2_3</div>
+      </div> -->
+
+
+      <table>
+        <tr>
+          <th></th>
+        </tr>
+      <!-- &nbsp; -->
+        <tr *ngFor="let stat of statOrder">
+          <th>{{stat}}</th>
+        </tr>
+      </table>
+
+      <ng-container *ngIf="statSummary">
+        <table>
+          <tr class="summary">
+            <th>
+              Summary
+            </th>
+          </tr>
+          <tr class="summary" *ngFor="let stat of statOrder">
+            <td>
+              <ng-container *ngIf="statSummary.get(stat)">
+                {{statSummary.get(stat).value}}
+              </ng-container>
+            </td>
+          </tr>
+        </table>
+
+        <table *ngFor="let attachment of attachmentSummary | keyvalue">
+          <tr>
+            <th>{{attachment.key}}</th>
+          </tr>
+          <tr [class.summary]="isSummary(attachment.key)" *ngFor="let stat of statOrder">
+            <td [class.positive]="attachment.value.get(stat).isPositive()">{{attachment.value.get(stat).value}}</td>
+          </tr>
+        </table>
+      </ng-container>
+
+      <!-- <ng-container *ngIf="statSummary">
+        <div>
+          <div>&nbsp;</div>
+          <div>
+            stat
+          </div>
+        </div>
+        <div *ngFor="let item of statSummary | keyvalue; let i = index">
+          <div>
+            {{item.key}}
+          </div>
+          <div *ngFor="let stat of statOrder">
+              {{item.value[stat]}}
+            </div>
+            {{item.value['Aim Down Sight Speed']}}
+          <div *ngFor="let stat of item.value | keyvalue">
+            {{stat.value}}
+          </div>
+        </div>
+      </ng-container> -->
+
+
+    </div>
+
+    <!-- <div class="stats">
+      <ng-container *ngIf="statSummary else loadingStatSummary">     
+        <div class="cell" *ngFor="let stat of statSummary | keyvalue">
+          <div class="title">{{stat.key}}</div>
+        </div>
+        <div class="cell" *ngFor="let stat of statSummary | keyvalue">
+          <div class="text">{{stat.value}}</div>
+        </div>
+      </ng-container>
+      <ng-template #loadingStatSummary>
+        Loading...
+      </ng-template>
+    </div> -->
+
+<!-- 
       <div id="ads">
-        <!-- 291 ms -->
+        <div class="title">ADS</div>
         <div class="meter">
           <div class="filled"></div>
         </div>
-        <div class="title">ADS</div>
+        <div class="text">291 ms</div>
       </div>
+
       <div id="range">
-  
+        <div class="title">Drop-Offs</div>
         <div class="meter">
           <div class="first"></div>
           <div class="second"></div>
           <div class="last"></div>
         </div>
-        <div class="title">Drop-Offs</div>
       </div>
+
       <div id="bullet velocity">
-        <!-- 1259 m/s -->
-        <div class="meter">
-          <div class="filled"></div>
-        </div>
         <div class="title">Bullet Velocity</div>
-      </div>
-      <div id="reload-time">
-        <!-- 2.3 s -->
         <div class="meter">
           <div class="filled"></div>
         </div>
-        <div class="title">Reload Time</div>
+        <div class="text">1259 m/s</div>
       </div>
-    </div>
-  </div>
-  
-  <!-- Lower Attachments -->
-  <!----------------------->
-  <!-- code duplication here -->
-  <div class="attachments" id="lowerAttachments">
-    <ng-container *ngFor="let attachmentSlot of lowerAttachments">
-      <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
-        {{attachmentSlot}}
-        <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
-        <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
-      </a>
-      <ng-template #disabledSlot>
-        <div class="disabledButton" [id]="attachmentSlot">
-          <!-- <img src="/assets/images/blocked.png"> -->
-          {{attachmentSlot}}
-          <div class="white">Blocked by {{configService.getBlockingAttachment(weaponConfig, attachmentSlot)}}</div>
+
+      <div id="reload-time">
+        <div class="title">Reload Time</div>
+        <div class="meter">
+          <div class="filled"></div>
         </div>
-      </ng-template>
-    </ng-container>
-  </div>
+        <div class="text">2.3 s</div>
+      </div> -->
 
   <div id="deselect" class="popup gone">
     <div>R</div>
     Deselect
   </div>
 </main>
+
+<app-footer></app-footer>

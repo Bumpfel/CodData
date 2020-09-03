@@ -70,20 +70,23 @@ main {
   // ###  IMG  ###
   // #############
   img {
+    // border: 1px dashed grey;
     $width: 70%;
     height: auto;
     min-height: 150px;
     width: $width;
     margin: 0 calc((100% - #{$width}) / 2);
-    z-index: -1;
+    // z-index: -1;
   }
 
   // ###  Misc Info  ###
   // ###################
   #miscInfo {
-    margin: 5px;
+    display: inline-block;
+    // border: 1px dashed red;
+    margin: 10px;
     margin-left: 40px;
-    margin-top: -80px;
+    margin-top: -40px;
     
     #equippedSummary, #save {
       margin-left: 30px;
@@ -102,6 +105,7 @@ main {
       }
     }
     #equippedSummary {
+      // border: 1px dotted orange;
       color: rgb(52, 91, 120); // TODO var?
       margin-bottom: 5px;
     }
@@ -134,6 +138,7 @@ main {
     }
   }
 
+  // deselect
   .popup {
     pointer-events: none;
     display: inline-block;
@@ -166,5 +171,49 @@ main {
     60% { opacity: 0; }
     100% { opacity: 1; }
   }
-}
 
+  .stats {
+    table {
+      // border: 1px solid orange;
+      display: inline-block;
+      vertical-align: top;
+      border-collapse: collapse;
+      
+      &:not(:first-child) th {
+        width: 100px;
+        max-width: 150px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      
+
+      tr {
+        &:nth-child(2n) {
+          background-color: lighten($darkBG, 20%);
+        }
+        
+        &.summary {
+          color: white;
+        }
+  
+        th, td {
+          height: 20px; 
+          text-align: left;
+          padding: 5px;
+        }
+  
+        &:not(.summary) {
+          td {
+            color: $red;
+            
+            &.positive {
+              color: $green;
+            }
+          }
+        }
+      }   
+    
+      
+    }
+  }
+}

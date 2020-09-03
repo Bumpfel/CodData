@@ -4,6 +4,8 @@ import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { SoundService } from 'src/app/services/sound.service';
+import { Stats } from '../../../models/Stats'
+import { Effect } from '../../../models/Effect'
 
 @Component({
   selector: 'app-gunsmith',
@@ -21,6 +23,12 @@ export class GunsmithComponent implements OnInit {
   upperAttachmentsMap: Map<string, number>
   lowerAttachmentsMap: Map<string, number>
 
+  baseSummary: any
+  attachmentSummary: any
+  statSummary: any
+
+  statOrder: string[]
+
   eventCallback
 
   constructor(private route: ActivatedRoute, private router: Router, private globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
@@ -32,6 +40,11 @@ export class GunsmithComponent implements OnInit {
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
 
+    this.statOrder = Stats.getAllOrderedStats()
+
+    this.mapStatSummary()
+
+    // determines order of attachment buttons
     this.upperAttachmentsMap = new Map([
       ['muzzle', 0],
       ['cable', 0],
@@ -43,7 +56,6 @@ export class GunsmithComponent implements OnInit {
       ['stock', 4],
       ['pumps', 4],
     ])
-
     this.lowerAttachmentsMap = new Map([
       ['underbarrel', 0],
       ['trigger action', 0],
@@ -66,6 +78,24 @@ export class GunsmithComponent implements OnInit {
     this.mapAttachmentSlots()
   }
 
+  ngOnDestroy(): void {
+    this.disableAttachmentRemoval()
+  }
+
+  async mapStatSummary(): Promise<void> {
+    const result = await this.configService.getWeaponSummary(this.weaponConfig)
+    this.statSummary = result['Summary']
+    this.attachmentSummary = result
+    delete this.attachmentSummary['Summary']
+
+    this.baseSummary = await this.configService.getWeaponData(this.weaponConfig.weaponName)
+
+    // console.log('statSummary ', this.statSummary)
+    // console.log('attachmentSummary ', this.attachmentSummary)
+    
+    
+    // console.log(this.statSummary)
+  }
 
   async mapAttachmentSlots(): Promise<void> {
     const availableAttachmentSlots: Set<string> = await this.configService.getAvailableAttachmentSlots(this.weaponConfig.weaponName)
@@ -84,19 +114,12 @@ export class GunsmithComponent implements OnInit {
       }
     }
   }
-
-  navigate(attachmentSlot: string): void {
-    // console.log(attachmentSlot)
-    
-    if(!this.configService.getBlockingAttachment(this.weaponConfig, attachmentSlot)) {
-      this.router.navigate([attachmentSlot], { relativeTo: this.route })
-    }
-  }
   
-  enableAttachmentRemoval(attachmentSlot: string, event): void {    
+  enableAttachmentRemoval(attachmentSlot: string, event: MouseEvent): void {
     this.eventCallback = (e: KeyboardEvent) => {
       if(e.key === 'r') {
         this.configService.removeAttachment(this.weaponConfig, attachmentSlot)
+        this.mapStatSummary()
         this.disableAttachmentRemoval()
       }
     }
@@ -121,4 +144,36 @@ export class GunsmithComponent implements OnInit {
   getNrOfAttachments() {
     return Object.keys(this.weaponConfig.attachments).length
   }
+
+  // isPositiveEffect(mod: string, value: string) {
+  //   const temp = this.configService.getWeaponData(this.weaponConfig.weaponName)
+  //   console.log('done', temp)
+    
+  //   return Stats.isPositiveEffect(mod, value, this.configService.getWeaponData(this.weaponConfig.weaponName))
+  // }
+
+  isSummary(field: string): boolean {    
+    return field.toLowerCase() === "summary"
+  }
+
+  summaryFirst(a, b) {
+    if(a.key === 'Summary') {
+      return -1
+    }
+    return 0
+  }
+
+  log(...what) { // TODO debug
+    console.log(what)
+  }
+  
+  // print(arr: Effect[], stat: string) { // TODO badness 10000
+  //   for(let effect of arr) {
+      
+  //     if(effect.key === stat) {
+  //       return effect.value
+  //     }
+  //   }
+  // }
+  
 }

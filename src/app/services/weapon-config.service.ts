@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from '../models/WeaponConfig'
 import { TgdService } from './tgd.service'
-import { stringify } from '@angular/compiler/src/util';
+import { TgdData } from '../models/TgdData';
+import { Effect } from '../models/Effect';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,9 @@ export class WeaponConfigService {
     ['FSS 12.4 Predator', 'muzzle'], // m4
     ['Tempus Cyclone', 'muzzle'], // m13
     ['ZLR 18 Deadfall', 'muzzle'], // fennec
-    ['23.0 Romanian', 'underbarrel'] // ak-47
+    ['23.0 Romanian', 'underbarrel'], // ak-47
+    ['26 Bull Barrel', 'muzzle'], // HDR
+    ['17.2 Bull Barrel', 'muzzle'], // HDR
   ])
 
   private weaponTypes: string[] = ['assault rifles', 'smgs', 'shotguns', 'lmgs', 'marksman rifles', 'sniper rifles', 'handguns']
@@ -24,7 +27,7 @@ export class WeaponConfigService {
     smgs: ['AUG', 'P90', 'MP5', 'Uzi', 'PP19 Bizon', 'MP7', 'Striker 45', 'Fennec', 'ISO'],
     shotguns: ['R9-0 Shotgun', '725', 'Origin 12 Shotgun', 'VLK Rogue'],
     lmgs: ['PKM', 'SA87', 'M91', 'MG34', 'Holger-26', 'Bruen MK9'],
-    marksmanrifles: ['EBR-14', 'MK2 Carbine', 'Kar98K', 'Crossbow', 'SKS'],
+    marksmanrifles: ['EBR', 'MK2 Carbine', 'Kar98K', 'Crossbow', 'SKS'], // EBR-14
     sniperrifles: ['Dragunov', 'HDR', 'AX-50', 'Rytec AMR'],
     handguns: ['X16', '1911', '.357', 'M19', '.50 GS', 'Renetti'],
     // TODO keep only to make browsable?
@@ -34,7 +37,9 @@ export class WeaponConfigService {
 
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3, BLOCKED: 4 }
 
+  private weaponData: any = {} // cache var
   private attachmentData: any = {} // cache var
+  private summaryData: Map<string, any> = new Map() // cache var. uses stringifed WeaponConfig as key
   private maxAttachments: number = 5
 
   constructor() {
@@ -51,22 +56,32 @@ export class WeaponConfigService {
     return null
   }
 
-  /**
-   * Used internally. Caches retrieved data in variable
-   * @param weaponName
-   */
-  private async getAttachmentData(weaponName: string): Promise<any> {
+  async getWeaponData(weaponName: string) {
     let result: any
     
-    if(!this.attachmentData[weaponName]) {
-      result = await TgdService.getAttachmentData(weaponName)
-      this.attachmentData[weaponName] = result
+    if(!this.weaponData[weaponName]) {      
+      result = await TgdService.getWeaponData(weaponName)
+      this.weaponData[weaponName] = result
     } else {
-      result = this.attachmentData[weaponName]
+      result = this.weaponData[weaponName]
     }
+    
     return result
   }
- 
+  
+  async getAttachmentEffects(attachment: any, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
+    const weaponData = await this.getWeaponData(weaponName)
+    return TgdData.getAttachmentEffects(attachment, weaponData[1])
+  }
+
+  // async getPositiveEffects(attachment: any, weaponName: string): Promise<Effect[]> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
+  //   return TgdData.getAttachmentEffects(attachment, true, await this.getWeaponData(weaponName))
+  // }
+
+  // async getNegativeEffects(attachment: any, weaponName: string): Promise<Effect[]> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
+  //   return TgdData.getAttachmentEffects(attachment, false, await this.getWeaponData(weaponName))
+  // }
+
   async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
     let result = await this.getAttachmentData(weaponName)
     
@@ -82,13 +97,42 @@ export class WeaponConfigService {
     return result
   }
 
-  async getWeaponData(weaponName: string) {
-    let result = await TgdService.getWeaponData(weaponName)
+  /**
+   * Used internally. Fetches raw attachment data and caches retrieved data in a variable
+   * @param weaponName
+   */
+  private async getAttachmentData(weaponName: string): Promise<any> {
+    let result: any
+    
+    if(!this.attachmentData[weaponName]) {
+      result = await TgdService.getAttachmentData(weaponName)
+      this.attachmentData[weaponName] = result
+    } else {
+      result = this.attachmentData[weaponName]
+    }
     return result
   }
 
+  /**
+   * Fetches stats data for each attachment and a summary of all the attachment effects
+   * @param weaponConfig 
+   */
+  async getWeaponSummary(weaponConfig: WeaponConfig): Promise<any> {
+    // create new object to prevent modifying original
+    let tempConfig: WeaponConfig = JSON.parse(JSON.stringify(weaponConfig))
+    delete tempConfig.comparisonSlot
+    const key = JSON.stringify(tempConfig)
+    
+    const baseWeaponData = await this.getWeaponData(weaponConfig.weaponName)
+    if(!this.summaryData.has(key)) {
+      this.summaryData.set(key, await TgdService.getWeaponSummaryData(weaponConfig)) // cache data
+    }
+    const result: any[] = this.summaryData.get(key) // get cached data
+
+    return TgdData.getAllWeaponEffects(result, baseWeaponData[baseWeaponData.length - 1])
+  }
+
   getSelectedAttachmentName(slot: number, attachmentType: string): string {
-    // return this.weaponConfig.attachments[attachmentType]
     let weaponConfig: WeaponConfig = this.getWeaponConfig(slot)
     if(!weaponConfig.attachments) {
       return null
@@ -97,17 +141,19 @@ export class WeaponConfigService {
   }
   
   getBlockingAttachment(weaponConfig: WeaponConfig, attachmentSlot: string): string {
-    for(const configAttachmentSlot in weaponConfig.attachments) {
-      const attachment = weaponConfig.attachments[configAttachmentSlot]
-      if(this.attachmentBlocks.get(attachment) === attachmentSlot) {
-        return attachment
+    if(attachmentSlot) {
+      for(const configAttachmentSlot in weaponConfig.attachments) {
+        const attachment = weaponConfig.attachments[configAttachmentSlot]
+        
+        if(this.attachmentBlocks.get(attachment) === attachmentSlot) {
+          return attachment
+        }
       }
     }
     return null
   }
 
   getWeaponConfig(slot: number): WeaponConfig {
-    // return this.weaponConfig
     let weaponConfig = window.sessionStorage.getItem('' + slot)
     return JSON.parse(weaponConfig)
   }
@@ -149,7 +195,7 @@ export class WeaponConfigService {
   }
 
   setAttachment(saveSlot: number, attachmentSlot: string, attachmentName: string): any { // TODO return not typed
-    let weaponConfig: WeaponConfig = this.getWeaponConfig(saveSlot)  
+    let weaponConfig: WeaponConfig = this.getWeaponConfig(saveSlot)
 
     if(this.getBlockingAttachment(weaponConfig, attachmentSlot)) {
       return this.editStatus.BLOCKED
