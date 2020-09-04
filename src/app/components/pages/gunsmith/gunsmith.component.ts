@@ -23,23 +23,25 @@ export class GunsmithComponent implements OnInit {
   upperAttachmentsMap: Map<string, number>
   lowerAttachmentsMap: Map<string, number>
 
+  // TODO type vars when done with res-structure
   baseSummary: any
-  attachmentSummary: any
-  statSummary: any
+  attachmentSummary: Array<Map<string, Effect>> = []
+  testAttachmentSummary: Array<Map<string, Effect>> = []
+  weaponStatSummary: Map<string, Effect>
 
   statOrder: string[]
 
   eventCallback: (e: KeyboardEvent) => void
 
-  constructor(private route: ActivatedRoute, private router: Router, private globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
+  constructor(private route: ActivatedRoute, private globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {   
     this.globalService.goBackOnEscape()
     this.deselectPopup = document.querySelector('#deselect')
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
-
+   
     this.statOrder = Stats.getAllOrderedStats()
 
     this.mapStatSummary()
@@ -83,20 +85,18 @@ export class GunsmithComponent implements OnInit {
   }
 
   async mapStatSummary(): Promise<void> {
-    const result = await this.configService.getWeaponSummary(this.weaponConfig)
-    this.statSummary = result['Summary']
-    this.attachmentSummary = result
-    delete this.attachmentSummary['Summary']
+    this.weaponStatSummary = null // clear obsolete data
 
-    this.baseSummary = await this.configService.getWeaponData(this.weaponConfig.weaponName)
-    // console.log(this.baseSummary)
-    
+    // Gets attachment summary (should be cached already)
+    for(let attachmentSlot in this.weaponConfig.attachments) {
+      const attachmentName = this.weaponConfig.attachments[attachmentSlot]
+      const attachmentData = await this.configService.getAttachmentData(this.weaponConfig.weaponName, attachmentName) // TODO this class shouldn't really deal with raw data
+      this.attachmentSummary[attachmentName] = await this.configService.getEffects(attachmentData, this.weaponConfig.weaponName)
+    }
 
-    // console.log('statSummary ', this.statSummary)
-    // console.log('attachmentSummary ', this.attachmentSummary)
+    this.weaponStatSummary = await this.configService.getWeaponSummary(this.weaponConfig)
     
-    
-    // console.log(this.statSummary)
+    // this.baseSummary = await this.configService.getWeaponData(this.weaponConfig.weaponName) // TODO not done
   }
 
   async mapAttachmentSlots(): Promise<void> {
@@ -120,7 +120,10 @@ export class GunsmithComponent implements OnInit {
   enableAttachmentRemoval(attachmentSlot: string, event: MouseEvent): void {
     this.eventCallback = (e: KeyboardEvent) => {
       if(e.key === 'r') {
+        const removedAttachment = this.weaponConfig.attachments[attachmentSlot]
         this.configService.removeAttachment(this.weaponConfig, attachmentSlot)
+        delete this.attachmentSummary[removedAttachment]
+
         this.mapStatSummary()
         this.disableAttachmentRemoval()
       }
@@ -146,13 +149,6 @@ export class GunsmithComponent implements OnInit {
   getNrOfAttachments(): number {
     return Object.keys(this.weaponConfig.attachments).length
   }
-
-  // isPositiveEffect(mod: string, value: string) {
-  //   const temp = this.configService.getWeaponData(this.weaponConfig.weaponName)
-  //   console.log('done', temp)
-    
-  //   return Stats.isPositiveEffect(mod, value, this.configService.getWeaponData(this.weaponConfig.weaponName))
-  // }
 
   isSummary(field: string): boolean {    
     return field.toLowerCase() === "summary"

@@ -1,10 +1,8 @@
 export class Effect {
-  // key: string
   value: string
   status: number
 
-  constructor(value: string, status: number) { // key: string, 
-    // this.key = key
+  constructor(value: string, status: number) {
     this.value = value
     this.status = status
   }

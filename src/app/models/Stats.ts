@@ -1,5 +1,3 @@
-// import { TgdData } from './TgdData'
-
 export class Stats {
 
   static names = {
@@ -34,8 +32,4 @@ export class Stats {
     ]
     return arr
   }
-
-  // static isPositiveEffect(mod: string, value: string, baseWeaponData): boolean {
-  //   return TgdData.isPositiveModEffect(mod, value, baseWeaponData)
-  // }
 }

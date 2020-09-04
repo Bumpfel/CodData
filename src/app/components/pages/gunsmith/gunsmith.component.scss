@@ -179,6 +179,11 @@ main {
       vertical-align: top;
       border-collapse: collapse;
       
+      div {
+        padding: 10px;
+        animation: flash 2s infinite;
+      }
+
       &:not(:first-child) th {
         width: 100px;
         max-width: 150px;
@@ -216,4 +221,10 @@ main {
       
     }
   }
+}
+
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
 }

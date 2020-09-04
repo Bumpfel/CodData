@@ -2,9 +2,7 @@ import { WeaponConfig } from '../models/WeaponConfig'
 import { AttachmentData, WeaponData } from '../models/TGD/Data'
 import { WeaponDamage } from '../models/TGD/WeaponDamage'
 
-
-// TODO could probably just have been a functions class, not a service since everything's static
-export class TgdService {
+export class TgdFetch {
 
   private constructor() { }
 
@@ -15,7 +13,7 @@ export class TgdService {
     summary: { path: 'grab_attachments_summary.php', key: 'attachmentSummary' },
   }
 
-  static async getWeaponsData(weaponType: string): Promise<Array<Array<string>>> { //Promise<string[][]> {
+  static async getWeaponsData(weaponType: string): Promise<Array<Array<string>>> { // dno why there is a second array here, but it is what it is
     return this.getTGDData(this.request.weapons, weaponType)
   }
 
@@ -25,27 +23,39 @@ export class TgdService {
    * [1] = base weapon data
    * @param weaponName
    */
-  static getWeaponData(weaponName: string): Promise<Array<Array<WeaponDamage> | WeaponData>> { //(WeaponDamage[] | WeaponData)[]> {
+  static getWeaponData(weaponName: string): Promise<Array<Array<WeaponDamage> | WeaponData>> {
     return this.getTGDData(this.request.weapon, weaponName)
   }
 
-  static getAttachmentData(weaponName: string): Promise<Array<AttachmentData>> { //Promise<AttachmentData[]> {
+  static getAttachmentData(weaponName: string): Promise<Array<AttachmentData>> {
     return this.getTGDData(this.request.attachments, weaponName)
   }
 
   /**
+   * @deprecated Use getWeaponSummaryData() instead
+   * 
    * Fetches summary data and data for all equipped attachments for a weapon
    * Last item arr is summary. The rest of the slots contains attachment data in the order given in the weaponConfig
    * @param weaponConfig 
    */
-  static getWeaponSummaryData(weaponConfig: WeaponConfig): Promise<Array<AttachmentData>> {
+  static getSummaryData(weaponConfig: WeaponConfig): Promise<Array<AttachmentData>> {
     const arr = []
     arr.push(weaponConfig.weaponName)
     for(const key in weaponConfig.attachments) {
       arr.push(weaponConfig.attachments[key])
     }
+    console.log(arr)
 
     return this.getTGDData(this.request.summary, arr)
+  }
+
+  /**
+   * Fetches summary data for weapon
+   * @param weaponConfig 
+   */
+  static async getWeaponSummaryData(weaponConfig: WeaponConfig): Promise<AttachmentData> {
+    const result = await this.getTGDData(this.request.summary, Array.of(weaponConfig.weaponName))
+    return result[0]
   }
 
   private static async getTGDData(request: any, formData: any): Promise<any> {

@@ -37,12 +37,9 @@ export class AttachmentSelectComponent implements OnInit {
   }
   
   async mapAttachments(): Promise<void> {
-    this.attachments = await this.configService.getAttachments(this.weaponConfig.weaponName, this.attachmentSlot)
-    this.setHoveredAttachment(this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0])
-  }
-
-  getAttachmentData(attachmentName: string): AttachmentData {
-    return this.attachments.find(attachment => attachment.attachment === attachmentName)
+    this.attachments = await this.configService.getAttachmentsOfType(this.weaponConfig.weaponName, this.attachmentSlot) // TODO class should not deal with raw TGD data
+    const attachmentData = this.attachments.find(attachment => attachment.attachment === this.selectedAttachmentName)   
+    this.setHoveredAttachment(this.selectedAttachmentName ? attachmentData : this.attachments[0])
   }
   
   selectAttachment(attachmentName: string): void {
@@ -69,12 +66,12 @@ export class AttachmentSelectComponent implements OnInit {
     return false
   }
 
-  async setHoveredAttachment(attachment: AttachmentData): Promise<void> {
+  private async setHoveredAttachment(attachment: AttachmentData): Promise<void> {
     this.hoveredAttachment = attachment
-    this.hoveredAttachmentEffects = await this.configService.getAttachmentEffects(attachment, this.weaponConfig.weaponName)
+    this.hoveredAttachmentEffects = await this.configService.getEffects(attachment, this.weaponConfig.weaponName)
   }
 
-  log(...what: any[]) { // TODO debug
+  log(...what: any[]): void { // TODO debug
     console.log(what)
   }
 }

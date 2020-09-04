@@ -64,15 +64,6 @@
     <!-- Stats -->
     <!----------->
     <div class="stats">
-      <!-- <ng-container *ngIf="statSummary else loadingStatSummary">     
-        <div *ngFor="let stat of statSummary | keyvalue">
-          <div class="cell title">{{stat.key}}</div>
-          <div class="cell text">{{stat.value}}</div>
-        </div>
-      </ng-container>
-      <ng-template #loadingStatSummary>
-        Loading...
-      </ng-template> -->
       
       <!-- <div>
         <div>header 1</div>
@@ -90,33 +81,40 @@
         <div>data 2_3</div>
       </div> -->
 
-
       <table>
         <tr>
           <th></th>
         </tr>
-      <!-- &nbsp; -->
         <tr *ngFor="let stat of statOrder">
           <th>{{stat}}</th>
         </tr>
       </table>
 
-      <ng-container *ngIf="statSummary">
-        <table>
-          <tr class="summary">
-            <th>
-              Summary
-            </th>
-          </tr>
+      <!-- Weapon Stat Summary -->
+      <table>
+        <tr class="summary">
+          <th>
+            Summary
+          </th>
+        </tr>
+          <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
           <tr class="summary" *ngFor="let stat of statOrder">
             <td>
-              <ng-container *ngIf="statSummary.get(stat)">
-                {{statSummary.get(stat).value}}
+              <ng-container *ngIf="weaponStatSummary.get(stat)">
+                {{weaponStatSummary.get(stat).value}}
               </ng-container>
             </td>
           </tr>
-        </table>
-
+        </ng-container>
+        <ng-template #loadingWeaponStatSummary>
+          <div>
+            Loading...
+          </div>
+        </ng-template>
+      </table>
+      
+      <!-- Attachment Summaries -->
+      <ng-container *ngIf="attachmentSummary else loadingAttachmentSummary">
         <table *ngFor="let attachment of attachmentSummary | keyvalue">
           <tr>
             <th>{{attachment.key}}</th>
@@ -126,44 +124,11 @@
           </tr>
         </table>
       </ng-container>
-
-      <!-- <ng-container *ngIf="statSummary">
-        <div>
-          <div>&nbsp;</div>
-          <div>
-            stat
-          </div>
-        </div>
-        <div *ngFor="let item of statSummary | keyvalue; let i = index">
-          <div>
-            {{item.key}}
-          </div>
-          <div *ngFor="let stat of statOrder">
-              {{item.value[stat]}}
-            </div>
-            {{item.value['Aim Down Sight Speed']}}
-          <div *ngFor="let stat of item.value | keyvalue">
-            {{stat.value}}
-          </div>
-        </div>
-      </ng-container> -->
-
-
-    </div>
-
-    <!-- <div class="stats">
-      <ng-container *ngIf="statSummary else loadingStatSummary">     
-        <div class="cell" *ngFor="let stat of statSummary | keyvalue">
-          <div class="title">{{stat.key}}</div>
-        </div>
-        <div class="cell" *ngFor="let stat of statSummary | keyvalue">
-          <div class="text">{{stat.value}}</div>
-        </div>
-      </ng-container>
-      <ng-template #loadingStatSummary>
+      <ng-template #loadingAttachmentSummary>
         Loading...
       </ng-template>
-    </div> -->
+
+    </div>
 
 <!-- 
       <div id="ads">

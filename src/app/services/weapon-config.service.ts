@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from '../models/WeaponConfig'
-import { AttachmentData, WeaponData } from '../models/TGD/Data'
-import { TgdService } from './tgd.service'
-import { TgdData } from '../models/TgdData';
+import { TGDData, AttachmentData, WeaponData } from '../models/TGD/Data'
+import { TgdFetch } from '../functions/TgdFetch'
+import { TgdFormatter } from '../functions/TgdFormatter';
 import { Effect } from '../models/Effect';
 import { WeaponDamage } from '../models/TGD/WeaponDamage';
 
@@ -57,27 +57,9 @@ export class WeaponConfigService {
     }
     return null
   }
-
-  async getWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
-    let result: (WeaponDamage[] | AttachmentData)[]
-    
-    if(!this.weaponData[weaponName]) {
-      result = await TgdService.getWeaponData(weaponName)
-      this.weaponData[weaponName] = result
-    } else {
-      result = this.weaponData[weaponName]
-    }
-    
-    return result
-  }
   
-  async getAttachmentEffects(attachment: AttachmentData, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
-    const weaponData = await this.getWeaponData(weaponName)
-    return TgdData.getAttachmentEffects(attachment, weaponData[1] as WeaponData)
-  }
-
   async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
-    let result = await this.getAttachmentData(weaponName)
+    let result = await this.getAttachmentsData(weaponName)
     
     let attachmentSlots: Set<string> = new Set()
     result.forEach(attachment => attachmentSlots.add(attachment.slot.toLowerCase()))
@@ -85,22 +67,53 @@ export class WeaponConfigService {
     return attachmentSlots
   }
   
-  async getAttachments(weaponName: string, attachmentType: string): Promise<AttachmentData[]> {
-    let result = await this.getAttachmentData(weaponName)
-    result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)     
+  /**
+   * 
+   * @param weaponName 
+   * @param attachmentType 
+   */
+  // TODO used by attachment-select only. should be private. attachment-select should not deal with raw DATA
+  async getAttachmentsOfType(weaponName: string, attachmentType: string): Promise<AttachmentData[]> {
+    let result = await this.getAttachmentsData(weaponName)
+    result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)
 
     return result
   }
 
   /**
+   * Fetches RAW attachment data
+   * @param weaponName
+   * @param attachmentName 
+   */
+  // TODO used by gunsmith only. should be private. gunsmith should not deal with raw data
+  async getAttachmentData(weaponName: string, attachmentName: string): Promise<AttachmentData> {
+    let result = await this.getAttachmentsData(weaponName)
+    result = result.filter(attachment => attachment.attachment === attachmentName)
+    
+    return result[0]
+  }
+
+  /**
+   * Fetches and formats the effects of an attachment or weapon into displayable values
+   * @param attachment
+   * @param weaponName
+   */
+  // TODO should not have TGDData as parameter
+  async getEffects(tgdData: TGDData, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
+    const weaponData = await this.getWeaponData(weaponName)
+    return TgdFormatter.getAttachmentEffects(tgdData, weaponData[1] as WeaponData)
+  }
+
+
+  /**
    * Used internally. Fetches raw attachment data and caches retrieved data in a variable
    * @param weaponName
    */
-  private async getAttachmentData(weaponName: string): Promise<AttachmentData[]> {
+  private async getAttachmentsData(weaponName: string): Promise<AttachmentData[]> {
     let result: AttachmentData[]
     
     if(!this.attachmentData[weaponName]) {
-      result = await TgdService.getAttachmentData(weaponName)
+      result = await TgdFetch.getAttachmentData(weaponName)
       this.attachmentData[weaponName] = result
     } else {
       result = this.attachmentData[weaponName]
@@ -108,12 +121,29 @@ export class WeaponConfigService {
     
     return result
   }
+  
+  /**
+   * Internal method that fetches raw weapon damage data w. ranges drop-offs, and base weapon data
+   * @param weaponName
+   */
+  private async getWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
+    let result: (WeaponDamage[] | AttachmentData)[]
+    
+    if(!this.weaponData[weaponName]) {
+      result = await TgdFetch.getWeaponData(weaponName)
+      this.weaponData[weaponName] = result
+    } else {
+      result = this.weaponData[weaponName]
+    }
+    
+    return result
+  }
 
   /**
-   * Fetches stats data for each attachment and a summary of all the attachment effects
+   * Fetches weapon stats summary
    * @param weaponConfig 
    */
-  async getWeaponSummary(weaponConfig: WeaponConfig): Promise<Array<Map<string, Effect>>> {
+  async getWeaponSummary(weaponConfig: WeaponConfig): Promise<Map<string, Effect>> {
     // create new object to prevent modifying original
     let tempConfig: WeaponConfig = JSON.parse(JSON.stringify(weaponConfig))
     delete tempConfig.comparisonSlot
@@ -121,11 +151,11 @@ export class WeaponConfigService {
     
     const baseWeaponData = await this.getWeaponData(weaponConfig.weaponName)
     if(!this.summaryData.has(key)) {
-      this.summaryData.set(key, await TgdService.getWeaponSummaryData(weaponConfig)) // cache data
+      this.summaryData.set(key, await TgdFetch.getWeaponSummaryData(weaponConfig)) // cache data
     }
-    const result: AttachmentData[] = this.summaryData.get(key) || [] // get cached data
+    const result: AttachmentData = this.summaryData.get(key) || {} // get cached data
 
-    return TgdData.getAllWeaponEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData)
+    return TgdFormatter.getAttachmentEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData)
   }
 
   getSelectedAttachmentName(slot: number, attachmentType: string): string {
