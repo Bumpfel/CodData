@@ -6,6 +6,7 @@ import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { SoundService } from 'src/app/services/sound.service';
 import { Stats } from '../../../models/Stats'
 import { Effect } from '../../../models/Effect'
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-gunsmith',
@@ -33,7 +34,7 @@ export class GunsmithComponent implements OnInit {
 
   eventCallback: (e: KeyboardEvent) => void
 
-  constructor(private route: ActivatedRoute, private globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
+  constructor(private route: ActivatedRoute, private dataService: DataService, private globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
 
   ngOnInit(): void {   
     this.globalService.goBackOnEscape()
@@ -90,17 +91,17 @@ export class GunsmithComponent implements OnInit {
     // Gets attachment summary (should be cached already)
     for(let attachmentSlot in this.weaponConfig.attachments) {
       const attachmentName = this.weaponConfig.attachments[attachmentSlot]
-      const attachmentData = await this.configService.getAttachmentData(this.weaponConfig.weaponName, attachmentName) // TODO this class shouldn't really deal with raw data
-      this.attachmentSummary[attachmentName] = await this.configService.getEffects(attachmentData, this.weaponConfig.weaponName)
+      const attachmentData = await this.dataService.getAttachmentData(this.weaponConfig.weaponName, attachmentName) // TODO this class shouldn't really deal with raw data
+      this.attachmentSummary[attachmentName] = await this.dataService.getEffects(attachmentData, this.weaponConfig.weaponName)
     }
 
-    this.weaponStatSummary = await this.configService.getWeaponSummary(this.weaponConfig)
+    this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
     
     // this.baseSummary = await this.configService.getWeaponData(this.weaponConfig.weaponName) // TODO not done
   }
 
   async mapAttachmentSlots(): Promise<void> {
-    const availableAttachmentSlots = await this.configService.getAvailableAttachmentSlots(this.weaponConfig.weaponName)
+    const availableAttachmentSlots = await this.dataService.getAvailableAttachmentSlots(this.weaponConfig.weaponName)
 
     this.upperAttachments = new Array(5)
     this.lowerAttachments = new Array(4)

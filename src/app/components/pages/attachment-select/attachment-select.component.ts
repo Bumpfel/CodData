@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GlobalService } from 'src/app/services/global.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
+import { DataService } from 'src/app/services/data.service';
 import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
@@ -22,7 +23,7 @@ export class AttachmentSelectComponent implements OnInit {
   hoveredAttachment: AttachmentData // tgd attachment
   hoveredAttachmentEffects: Map<string, Effect>
 
-  constructor(private configService: WeaponConfigService, public soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
+  constructor(private configService: WeaponConfigService, private dataService: DataService, public soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
   ngOnInit(): void {   
     this.attachmentSlot = this.route.snapshot.paramMap.get('attachmentSlot')
@@ -37,7 +38,7 @@ export class AttachmentSelectComponent implements OnInit {
   }
   
   async mapAttachments(): Promise<void> {
-    this.attachments = await this.configService.getAttachmentsOfType(this.weaponConfig.weaponName, this.attachmentSlot) // TODO class should not deal with raw TGD data
+    this.attachments = await this.dataService.getAttachmentsOfType(this.weaponConfig.weaponName, this.attachmentSlot) // TODO class should not deal with raw TGD data
     const attachmentData = this.attachments.find(attachment => attachment.attachment === this.selectedAttachmentName)   
     this.setHoveredAttachment(this.selectedAttachmentName ? attachmentData : this.attachments[0])
   }
@@ -68,7 +69,7 @@ export class AttachmentSelectComponent implements OnInit {
 
   private async setHoveredAttachment(attachment: AttachmentData): Promise<void> {
     this.hoveredAttachment = attachment
-    this.hoveredAttachmentEffects = await this.configService.getEffects(attachment, this.weaponConfig.weaponName)
+    this.hoveredAttachmentEffects = await this.dataService.getEffects(attachment, this.weaponConfig.weaponName)
   }
 
   log(...what: any[]): void { // TODO debug

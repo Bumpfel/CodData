@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { SoundService } from 'src/app/services/sound.service';
+import { DataService } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-weapon-select',
@@ -17,13 +18,13 @@ export class WeaponSelectComponent implements OnInit {
   hoveredSlot: HTMLElement
   armourySaves: Map<string, number> = new Map()
   
-  constructor(public globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router) { }
+  constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     // this.globalService.navigateOnEscape('/configurations', this.router)
     this.globalService.goBackOnEscape()
     
-    this.weaponTypes = this.configService.getWeaponTypes()
+    this.weaponTypes = this.dataService.getWeaponTypes()
     
     this.route.params.subscribe(params => {
       if(!params.weaponType) {
@@ -31,7 +32,7 @@ export class WeaponSelectComponent implements OnInit {
         this.router.navigate([this.globalService.nameToLink(this.weaponTypes[0])], { relativeTo: this.route, replaceUrl: true })
       } else {
         // get weapons and map nr of armouryConfigs
-        this.weaponNames = this.configService.getWeapons(this.globalService.linkToName(params.weaponType))
+        this.weaponNames = this.dataService.getWeapons(this.globalService.linkToName(params.weaponType))
         for(let weaponName of this.weaponNames) {          
           let saves = this.configService.getArmouryConfigs(this.globalService.nameToLink(weaponName))
           this.armourySaves.set(weaponName, saves ? saves.length : 0)
