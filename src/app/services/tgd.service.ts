@@ -1,6 +1,6 @@
-// import { Injectable } from '@angular/core';
-
 import { WeaponConfig } from '../models/WeaponConfig'
+import { Attachment } from '../models/TGD/Attachment'
+import { WeaponDamage } from '../models/TGD/WeaponDamage'
 
 // @Injectable({
 //   providedIn: 'root'
@@ -18,19 +18,32 @@ export class TgdService {
     summary: { path: 'grab_attachments_summary.php', key: 'attachmentSummary' },
   }
 
-  static getWeaponsData(weaponType: string) {
+  static async getWeaponsData(weaponType: string): Promise<string[][]> {
+    console.log(await this.getTGDData(this.request.weapons, weaponType))
+
     return this.getTGDData(this.request.weapons, weaponType)
   }
 
-  static getWeaponData(weaponName: string) {
+  /**
+   * Returns array of 
+   * [0] = array of damage and drop-off ranges
+   * [1] = base weapon data
+   * @param weaponName 
+   */
+  static getWeaponData(weaponName: string): Promise<(WeaponDamage[] | Attachment)[]> {
     return this.getTGDData(this.request.weapon, weaponName)
   }
 
-  static getAttachmentData(weaponName: string) {
+  static getAttachmentData(weaponName: string): Promise<Attachment[]> {
     return this.getTGDData(this.request.attachments, weaponName)
   }
 
-  static getWeaponSummaryData(weaponConfig: WeaponConfig) {
+  /**
+   * Fetches summary data and data for all equipped attachments for a weapon
+   * Last item arr is summary. The rest of the slots contains attachment data in the order given in the weaponConfig
+   * @param weaponConfig 
+   */
+  static getWeaponSummaryData(weaponConfig: WeaponConfig): Promise<Attachment[]> {
     const arr = []
     arr.push(weaponConfig.weaponName)
     for(const key in weaponConfig.attachments) {
@@ -40,7 +53,7 @@ export class TgdService {
     return this.getTGDData(this.request.summary, arr)
   }
 
-  private static async getTGDData(request: any, formData: any): Promise<any> {
+  private static async getTGDData(request: any, formData: any): Promise<any> { //Promise<(WeaponDamage | Attachment)[]> {
     // const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const proxyurl = "http://localhost:4100/"
 

@@ -6,6 +6,7 @@ import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { Effect } from 'src/app/models/Effect';
+import { Attachment } from 'src/app/models/TGD/Attachment';
 
 @Component({
   selector: 'app-attachment-select',
@@ -16,16 +17,12 @@ export class AttachmentSelectComponent implements OnInit {
 
   weaponConfig: WeaponConfig
   attachmentSlot: string
-  attachments: any[]
+  attachments: Attachment[]
   selectedAttachmentName: string // tgd attachment
-  hoveredAttachment: any // tgd attachment
+  hoveredAttachment: Attachment // tgd attachment
+  hoveredAttachmentEffects: Map<string, Effect>
 
-  hoveredAttachmentEffects: Array<Effect> = []
-
-  // hoveredAttachmentPositiveEffects: Array<Effect> = []
-  // hoveredAttachmentNegativeEffects: Array<Effect> = []
-
-  constructor(private configService: WeaponConfigService, private soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
+  constructor(private configService: WeaponConfigService, public soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
   ngOnInit(): void {   
     this.attachmentSlot = this.route.snapshot.paramMap.get('attachmentSlot')
@@ -46,14 +43,14 @@ export class AttachmentSelectComponent implements OnInit {
     this.setHoveredAttachment(this.selectedAttachmentName ? this.getAttachmentData(this.selectedAttachmentName) : this.attachments[0])
   }
 
-  getAttachmentData(attachmentName: string): any {
+  getAttachmentData(attachmentName: string): Attachment { 
     return this.attachments.find(attachment => attachment.attachment === attachmentName)
   }
   
   selectAttachment(attachmentName: string): void {
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
 
-    let status = this.configService.setAttachment(slot, this.attachmentSlot, attachmentName)
+    let status: number = this.configService.setAttachment(slot, this.attachmentSlot, attachmentName)
     if(status === this.configService.editStatus.EQUIPPED) {
       this.messageService.addMessage('Attachment Equipped', attachmentName) // temp
       window.history.back()
@@ -67,15 +64,20 @@ export class AttachmentSelectComponent implements OnInit {
     }
   }
 
-  isSelectedAttachment(attachment: any): boolean {
+  isSelectedAttachment(attachment: Attachment): boolean {
     if(attachment) {
       return attachment.attachment === this.selectedAttachmentName
     }
     return false
   }
 
-  async setHoveredAttachment(attachment: any): Promise<void> {
+  async setHoveredAttachment(attachment: Attachment): Promise<void> {
     this.hoveredAttachment = attachment
-    // this.hoveredAttachmentEffects = await this.configService.getAttachmentEffects(attachment, this.weaponConfig.weaponName)
+    this.hoveredAttachmentEffects = await this.configService.getAttachmentEffects(attachment, this.weaponConfig.weaponName)
+  }
+
+  log(what) { // TODO debug
+    console.log(what)
+    
   }
 }

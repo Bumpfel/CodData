@@ -89,6 +89,8 @@ export class GunsmithComponent implements OnInit {
     delete this.attachmentSummary['Summary']
 
     this.baseSummary = await this.configService.getWeaponData(this.weaponConfig.weaponName)
+    // console.log(this.baseSummary)
+    
 
     // console.log('statSummary ', this.statSummary)
     // console.log('attachmentSummary ', this.attachmentSummary)

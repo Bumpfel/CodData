@@ -29,10 +29,10 @@
     <!-- PROS -->
     <div id="pros">
       PROS
-      <ng-container *ngFor="let effect of hoveredAttachmentEffects">
-        <div *ngIf="effect.isPositive()"  class="stat">
+      <ng-container *ngFor="let effect of hoveredAttachmentEffects | keyvalue">
+        <div *ngIf="effect.value.isPositive()"  class="stat">
           {{effect.key}}
-          <div>{{(effect.value)}}</div>
+          <div>{{(effect.value.value)}}</div>
         </div>
       </ng-container>
     </div>
@@ -40,10 +40,10 @@
     <!-- CONS -->
     <div id="cons">
       CONS
-      <ng-container *ngFor="let effect of hoveredAttachmentEffects">
-        <div *ngIf="effect.isNegative()"  class="stat">
+      <ng-container *ngFor="let effect of hoveredAttachmentEffects | keyvalue">
+        <div *ngIf="effect.value.isNegative()"  class="stat">
           {{effect.key}}
-          <div>{{effect.value}}</div>
+          <div>{{effect.value.value}}</div>
         </div>
       </ng-container>
     </div>

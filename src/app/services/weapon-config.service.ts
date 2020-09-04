@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from '../models/WeaponConfig'
+import { Attachment } from '../models/TGD/Attachment'
 import { TgdService } from './tgd.service'
 import { TgdData } from '../models/TgdData';
 import { Effect } from '../models/Effect';
+import { WeaponDamage } from '../models/TGD/WeaponDamage';
 
 @Injectable({
   providedIn: 'root'
@@ -56,44 +58,37 @@ export class WeaponConfigService {
     return null
   }
 
-  async getWeaponData(weaponName: string) {
-    let result: any
-    
-    if(!this.weaponData[weaponName]) {      
+  async getWeaponData(weaponName: string): Promise<(WeaponDamage[] | Attachment)[]> {
+    let result: (WeaponDamage[] | Attachment)[]
+
+    if(!this.weaponData[weaponName]) {
       result = await TgdService.getWeaponData(weaponName)
       this.weaponData[weaponName] = result
     } else {
       result = this.weaponData[weaponName]
-    }
+    }   
     
     return result
   }
   
-  async getAttachmentEffects(attachment: any, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
+  async getAttachmentEffects(attachment: Attachment, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
     const weaponData = await this.getWeaponData(weaponName)
     return TgdData.getAttachmentEffects(attachment, weaponData[1])
   }
 
-  // async getPositiveEffects(attachment: any, weaponName: string): Promise<Effect[]> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
-  //   return TgdData.getAttachmentEffects(attachment, true, await this.getWeaponData(weaponName))
-  // }
-
-  // async getNegativeEffects(attachment: any, weaponName: string): Promise<Effect[]> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
-  //   return TgdData.getAttachmentEffects(attachment, false, await this.getWeaponData(weaponName))
-  // }
-
   async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
-    let result = await this.getAttachmentData(weaponName)
+    let result: Attachment[] = await this.getAttachmentData(weaponName)
     
     let attachmentSlots: Set<string> = new Set()
     result.forEach(attachment => attachmentSlots.add(attachment.slot.toLowerCase()))
-    
+
     return attachmentSlots
   }
   
-  async getAttachments(weaponName: string, attachmentType: string): Promise<string[]> {
+  async getAttachments(weaponName: string, attachmentType: string): Promise<Attachment[]> {
     let result = await this.getAttachmentData(weaponName)
-    result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)  
+    result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)     
+
     return result
   }
 
@@ -101,8 +96,8 @@ export class WeaponConfigService {
    * Used internally. Fetches raw attachment data and caches retrieved data in a variable
    * @param weaponName
    */
-  private async getAttachmentData(weaponName: string): Promise<any> {
-    let result: any
+  private async getAttachmentData(weaponName: string): Promise<Attachment[]> {
+    let result: Attachment[]
     
     if(!this.attachmentData[weaponName]) {
       result = await TgdService.getAttachmentData(weaponName)
@@ -110,6 +105,7 @@ export class WeaponConfigService {
     } else {
       result = this.attachmentData[weaponName]
     }
+    
     return result
   }
 
