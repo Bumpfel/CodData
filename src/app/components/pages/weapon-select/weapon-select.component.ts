@@ -14,7 +14,6 @@ export class WeaponSelectComponent implements OnInit {
 
   weaponTypes: string[]
   weaponNames: string[]
-  // comparisonSlot: number
   hoveredSlot: HTMLElement
   armourySaves: Map<string, number> = new Map()
   
@@ -41,13 +40,13 @@ export class WeaponSelectComponent implements OnInit {
     })
   }
   
-  selectWeapon(weaponName: string) {
+  selectWeapon(weaponName: string): void {
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.configService.saveConfig(new WeaponConfig(slot, weaponName))
     window.history.back()
   }
 
-  showArmouryButton(weaponName: string) { // TODO slight duplicate or similar as the one in configurations
+  showArmouryButton(weaponName: string): void { // TODO slight duplicate or similar as the one in configurations
     if(this.hoveredSlot) {
       this.hoveredSlot.querySelector('#armoury-slot-small').classList.remove('gone')
       this.hoveredSlot.querySelector('#armoury-slot-expanded').classList.add('gone')

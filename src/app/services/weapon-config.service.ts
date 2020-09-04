@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from '../models/WeaponConfig'
-import { Attachment } from '../models/TGD/Attachment'
+import { AttachmentData, WeaponData } from '../models/TGD/Data'
 import { TgdService } from './tgd.service'
 import { TgdData } from '../models/TgdData';
 import { Effect } from '../models/Effect';
@@ -24,7 +24,7 @@ export class WeaponConfigService {
 
   private weaponTypes: string[] = ['assault rifles', 'smgs', 'shotguns', 'lmgs', 'marksman rifles', 'sniper rifles', 'handguns']
 
-  private weapons: object = {
+  private weapons = {
     assaultrifles: ['Kilo 141', 'FAL', 'M4A1', 'FR 5.56', 'Oden', 'M13', 'FN Scar 17', 'AK-47' ,'RAM-7', 'Grau 5.56', 'CR 56 AMAX', 'AN-94'],
     smgs: ['AUG', 'P90', 'MP5', 'Uzi', 'PP19 Bizon', 'MP7', 'Striker 45', 'Fennec', 'ISO'],
     shotguns: ['R9-0 Shotgun', '725', 'Origin 12 Shotgun', 'VLK Rogue'],
@@ -39,7 +39,7 @@ export class WeaponConfigService {
 
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3, BLOCKED: 4 }
 
-  private weaponData: any = {} // cache var
+  private weaponData: Array<(Array<(Array<WeaponDamage> | AttachmentData)>)> = [] // cache var. PITA typing
   private attachmentData: any = {} // cache var
   private summaryData: Map<string, any> = new Map() // cache var. uses stringifed WeaponConfig as key
   private maxAttachments: number = 5
@@ -58,26 +58,26 @@ export class WeaponConfigService {
     return null
   }
 
-  async getWeaponData(weaponName: string): Promise<(WeaponDamage[] | Attachment)[]> {
-    let result: (WeaponDamage[] | Attachment)[]
-
+  async getWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
+    let result: (WeaponDamage[] | AttachmentData)[]
+    
     if(!this.weaponData[weaponName]) {
       result = await TgdService.getWeaponData(weaponName)
       this.weaponData[weaponName] = result
     } else {
       result = this.weaponData[weaponName]
-    }   
+    }
     
     return result
   }
   
-  async getAttachmentEffects(attachment: Attachment, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
+  async getAttachmentEffects(attachment: AttachmentData, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
     const weaponData = await this.getWeaponData(weaponName)
-    return TgdData.getAttachmentEffects(attachment, weaponData[1])
+    return TgdData.getAttachmentEffects(attachment, weaponData[1] as WeaponData)
   }
 
   async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
-    let result: Attachment[] = await this.getAttachmentData(weaponName)
+    let result = await this.getAttachmentData(weaponName)
     
     let attachmentSlots: Set<string> = new Set()
     result.forEach(attachment => attachmentSlots.add(attachment.slot.toLowerCase()))
@@ -85,7 +85,7 @@ export class WeaponConfigService {
     return attachmentSlots
   }
   
-  async getAttachments(weaponName: string, attachmentType: string): Promise<Attachment[]> {
+  async getAttachments(weaponName: string, attachmentType: string): Promise<AttachmentData[]> {
     let result = await this.getAttachmentData(weaponName)
     result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)     
 
@@ -96,8 +96,8 @@ export class WeaponConfigService {
    * Used internally. Fetches raw attachment data and caches retrieved data in a variable
    * @param weaponName
    */
-  private async getAttachmentData(weaponName: string): Promise<Attachment[]> {
-    let result: Attachment[]
+  private async getAttachmentData(weaponName: string): Promise<AttachmentData[]> {
+    let result: AttachmentData[]
     
     if(!this.attachmentData[weaponName]) {
       result = await TgdService.getAttachmentData(weaponName)
@@ -113,7 +113,7 @@ export class WeaponConfigService {
    * Fetches stats data for each attachment and a summary of all the attachment effects
    * @param weaponConfig 
    */
-  async getWeaponSummary(weaponConfig: WeaponConfig): Promise<any> {
+  async getWeaponSummary(weaponConfig: WeaponConfig): Promise<Array<Map<string, Effect>>> {
     // create new object to prevent modifying original
     let tempConfig: WeaponConfig = JSON.parse(JSON.stringify(weaponConfig))
     delete tempConfig.comparisonSlot
@@ -123,13 +123,13 @@ export class WeaponConfigService {
     if(!this.summaryData.has(key)) {
       this.summaryData.set(key, await TgdService.getWeaponSummaryData(weaponConfig)) // cache data
     }
-    const result: any[] = this.summaryData.get(key) // get cached data
+    const result: AttachmentData[] = this.summaryData.get(key) || [] // get cached data
 
-    return TgdData.getAllWeaponEffects(result, baseWeaponData[baseWeaponData.length - 1])
+    return TgdData.getAllWeaponEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData)
   }
 
   getSelectedAttachmentName(slot: number, attachmentType: string): string {
-    let weaponConfig: WeaponConfig = this.getWeaponConfig(slot)
+    let weaponConfig = this.getWeaponConfig(slot)
     if(!weaponConfig.attachments) {
       return null
     }
@@ -139,10 +139,10 @@ export class WeaponConfigService {
   getBlockingAttachment(weaponConfig: WeaponConfig, attachmentSlot: string): string {
     if(attachmentSlot) {
       for(const configAttachmentSlot in weaponConfig.attachments) {
-        const attachment = weaponConfig.attachments[configAttachmentSlot]
+        const attachmentName: string = weaponConfig.attachments[configAttachmentSlot]
         
-        if(this.attachmentBlocks.get(attachment) === attachmentSlot) {
-          return attachment
+        if(this.attachmentBlocks.get(attachmentName) === attachmentSlot) {
+          return attachmentName
         }
       }
     }
@@ -190,8 +190,8 @@ export class WeaponConfigService {
     }
   }
 
-  setAttachment(saveSlot: number, attachmentSlot: string, attachmentName: string): any { // TODO return not typed
-    let weaponConfig: WeaponConfig = this.getWeaponConfig(saveSlot)
+  setAttachment(saveSlot: number, attachmentSlot: string, attachmentName: string): number {
+    let weaponConfig = this.getWeaponConfig(saveSlot)
 
     if(this.getBlockingAttachment(weaponConfig, attachmentSlot)) {
       return this.editStatus.BLOCKED

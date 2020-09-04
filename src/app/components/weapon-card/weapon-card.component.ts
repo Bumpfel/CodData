@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
@@ -18,12 +18,7 @@ export class WeaponCardComponent implements OnInit {
   ngOnInit(): void {
   }
   
-  // emptyAttachmentSlots(): number[] {
-  //   let emptyAttachmentSlots: number = 5 - Object.keys(this.config.attachments).length
-  //   return new Array(emptyAttachmentSlots)
-  // }
-
-  err(event) {
+  err(event): void {
     event.target.src = '/assets/images/no_image.png'
   }
 

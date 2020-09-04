@@ -1,26 +1,21 @@
 import { WeaponConfig } from '../models/WeaponConfig'
-import { Attachment } from '../models/TGD/Attachment'
+import { AttachmentData, WeaponData } from '../models/TGD/Data'
 import { WeaponDamage } from '../models/TGD/WeaponDamage'
 
-// @Injectable({
-//   providedIn: 'root'
-// })
 
 // TODO could probably just have been a functions class, not a service since everything's static
 export class TgdService {
 
   private constructor() { }
 
-  private static request = {  // TODO type (make interface?)
+  private static request = {
     weapons: { path: 'grab_guns.php', key: 'selectedGunType' },
     weapon: { path: 'base_stats.php', key: 'gun' },
     attachments: { path: 'grab_attachment_data.php', key: 'selectedGun' },
     summary: { path: 'grab_attachments_summary.php', key: 'attachmentSummary' },
   }
 
-  static async getWeaponsData(weaponType: string): Promise<string[][]> {
-    console.log(await this.getTGDData(this.request.weapons, weaponType))
-
+  static async getWeaponsData(weaponType: string): Promise<Array<Array<string>>> { //Promise<string[][]> {
     return this.getTGDData(this.request.weapons, weaponType)
   }
 
@@ -28,13 +23,13 @@ export class TgdService {
    * Returns array of 
    * [0] = array of damage and drop-off ranges
    * [1] = base weapon data
-   * @param weaponName 
+   * @param weaponName
    */
-  static getWeaponData(weaponName: string): Promise<(WeaponDamage[] | Attachment)[]> {
+  static getWeaponData(weaponName: string): Promise<Array<Array<WeaponDamage> | WeaponData>> { //(WeaponDamage[] | WeaponData)[]> {
     return this.getTGDData(this.request.weapon, weaponName)
   }
 
-  static getAttachmentData(weaponName: string): Promise<Attachment[]> {
+  static getAttachmentData(weaponName: string): Promise<Array<AttachmentData>> { //Promise<AttachmentData[]> {
     return this.getTGDData(this.request.attachments, weaponName)
   }
 
@@ -43,7 +38,7 @@ export class TgdService {
    * Last item arr is summary. The rest of the slots contains attachment data in the order given in the weaponConfig
    * @param weaponConfig 
    */
-  static getWeaponSummaryData(weaponConfig: WeaponConfig): Promise<Attachment[]> {
+  static getWeaponSummaryData(weaponConfig: WeaponConfig): Promise<Array<AttachmentData>> {
     const arr = []
     arr.push(weaponConfig.weaponName)
     for(const key in weaponConfig.attachments) {
@@ -53,7 +48,7 @@ export class TgdService {
     return this.getTGDData(this.request.summary, arr)
   }
 
-  private static async getTGDData(request: any, formData: any): Promise<any> { //Promise<(WeaponDamage | Attachment)[]> {
+  private static async getTGDData(request: any, formData: any): Promise<any> {
     // const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const proxyurl = "http://localhost:4100/"
 

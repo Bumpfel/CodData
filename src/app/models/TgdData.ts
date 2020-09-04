@@ -6,6 +6,7 @@
 
 import { Stats } from '../models/Stats'
 import { Effect } from './Effect'
+import { AttachmentData, WeaponData } from './TGD/Data'
 
 export class TgdData {
   // TODO doing double work (iterates through the entire attachment object for both negative and positive effects)
@@ -14,19 +15,19 @@ export class TgdData {
    * Formats TGD data into printable keys and values (TODO not sure I'll use at all)
    * @param summaryData
    */
-  static getAllWeaponEffects(summaryData: any[], weaponData: {}): {} {
-    const allEffects = {}
-    for(let i = 0; i < summaryData.length; i ++) {
-      const attachmentKey = summaryData[i].attachment || summaryData[i].gun 
+
+  static getAllWeaponEffects(summaryData: AttachmentData[], weaponData: WeaponData): Map<string, Effect>[] {
+    const allEffects: Map<string, Effect>[] = []
+    
+    for(let i = 0; i < summaryData.length; i ++) {     
+      const attachmentKey: string = summaryData[i].attachment || summaryData[i].gun
       allEffects[attachmentKey] = TgdData.getAttachmentEffects(summaryData[i], weaponData)
     }
-    // console.log(allEffects)
     
     return allEffects
   }
 
-  static getAttachmentEffects(attachment: {}, baseWeaponData: {}): Map<string, Effect> { // TODO type parameters
-    // const effects: Effect[] = []
+  static getAttachmentEffects(attachment: AttachmentData, baseWeaponData: WeaponData): Map<string, Effect> { // TODO type parameters
     const effects: Map<string, Effect> = new Map()
 
     for(let mod in attachment) {
@@ -35,17 +36,12 @@ export class TgdData {
       const status = this.getModEffectStatus(mod, value, baseWeaponData)
 
       const effect: Effect = new Effect(
-        // TgdData.displayNames.get(mod),
         TgdData.getEffectDisplayValue(mod, value, true),
         status
         // status: status > 0 ? Effect.Positive : (status < 0 ? Effect.Negative : Effect.Neutral)
       )
       effects.set(TgdData.displayNames.get(mod), effect)
-      // if(effect.key && effect.value) {
-      //   effects.push(effect)
-      // }
     }
-    // console.log(effects)
     
     return effects
   }
@@ -56,13 +52,13 @@ export class TgdData {
    * @param value raw value
    * @param baseWeaponData tgd base weapon data. use TgdService.getWeaponData()[1]
    */
-  private static getModEffectStatus(mod: string, value: number, baseWeaponData: any): number {
+  private static getModEffectStatus(mod: string, value: number, baseWeaponData: WeaponData ): number {
     
-    const positiveModEffect = TgdData.positiveModEffect.get(mod)
+    const positiveModEffect: string = TgdData.positiveModEffect.get(mod)
     let status: number // positive effect = pro, negative effect = con, neutral effect = none  
 
     if(TgdData.comparesToBase.has(mod)) {
-      const baseValue = baseWeaponData[mod]
+      const baseValue: number = baseWeaponData[mod]
       const difference = value - baseValue
       
       if(difference != 0) {

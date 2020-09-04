@@ -9,7 +9,7 @@ export class GlobalService {
   constructor(private soundService: SoundService) { 
   }
 
-  backAction() {
+  backAction(): void {
     this.soundService.goBack()
     window.history.back()
   }
@@ -21,7 +21,7 @@ export class GlobalService {
     }
   }
 
-  goBackOnEscape() : void{
+  goBackOnEscape(): void {
     document.addEventListener('keydown', this.goBackCallback)
   }
 

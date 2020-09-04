@@ -1,4 +1,4 @@
-export interface Attachment {
+export interface AttachmentData {
   ads_mod?: number
   ads_move_mod?: number
   attachment?: string
@@ -28,4 +28,8 @@ export interface Attachment {
   x_sway_mod?: number
   y_sway?: number
   y_sway_mod?: number
+}
+
+export interface WeaponData extends AttachmentData {
+
 }

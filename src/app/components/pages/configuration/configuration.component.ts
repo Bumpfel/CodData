@@ -28,7 +28,7 @@ export class ConfigurationComponent implements OnInit {
   }
 
 
-  showGunsmithButton(slot?: number) {
+  showGunsmithButton(slot?: number): void {
     if(this.hoveredSlot) {
       this.hoveredSlot.classList.add('hidden')
     }

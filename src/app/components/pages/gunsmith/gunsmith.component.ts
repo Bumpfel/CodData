@@ -29,7 +29,7 @@ export class GunsmithComponent implements OnInit {
 
   statOrder: string[]
 
-  eventCallback
+  eventCallback: (e: KeyboardEvent) => void
 
   constructor(private route: ActivatedRoute, private router: Router, private globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
 
@@ -100,7 +100,7 @@ export class GunsmithComponent implements OnInit {
   }
 
   async mapAttachmentSlots(): Promise<void> {
-    const availableAttachmentSlots: Set<string> = await this.configService.getAvailableAttachmentSlots(this.weaponConfig.weaponName)
+    const availableAttachmentSlots = await this.configService.getAvailableAttachmentSlots(this.weaponConfig.weaponName)
 
     this.upperAttachments = new Array(5)
     this.lowerAttachments = new Array(4)
@@ -143,7 +143,7 @@ export class GunsmithComponent implements OnInit {
     document.removeEventListener('keydown', this.eventCallback)
   }
 
-  getNrOfAttachments() {
+  getNrOfAttachments(): number {
     return Object.keys(this.weaponConfig.attachments).length
   }
 
@@ -158,24 +158,15 @@ export class GunsmithComponent implements OnInit {
     return field.toLowerCase() === "summary"
   }
 
-  summaryFirst(a, b) {
+  summaryFirst(a: any, b: any): number {
     if(a.key === 'Summary') {
       return -1
     }
     return 0
   }
 
-  log(...what) { // TODO debug
+  log(...what: any[]) { // TODO debug
     console.log(what)
   }
-  
-  // print(arr: Effect[], stat: string) { // TODO badness 10000
-  //   for(let effect of arr) {
-      
-  //     if(effect.key === stat) {
-  //       return effect.value
-  //     }
-  //   }
-  // }
   
 }
