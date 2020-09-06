@@ -20,6 +20,7 @@ export class WeaponConfigService {
     ['23.0 Romanian', 'underbarrel'], // ak-47
     ['26 Bull Barrel', 'muzzle'], // HDR
     ['17.2 Bull Barrel', 'muzzle'], // HDR
+    ['Monolithic Integral Suppressor', 'muzzle'], // MP5
   ])
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3, BLOCKED: 4 }
 

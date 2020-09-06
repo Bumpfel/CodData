@@ -15,7 +15,7 @@
           <img src="/assets/images/gunsmith.png">
         </a>
       </div>
-      <a (mouseenter)="showGunsmithButton(); soundService.hover()" [routerLink]="'/' + nextSlot + '/weapon-select'" class="add">
+      <a (mouseenter)="showGunsmithButton(); soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + nextSlot + '/weapon-select'" class="add">
         +
       </a>
     </div>

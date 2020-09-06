@@ -7,7 +7,8 @@ import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { Effect } from 'src/app/models/Effect';
-import { AttachmentData } from 'src/app/models/TGD/Data';
+import { variable } from '@angular/compiler/src/output/output_ast';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-attachment-select',
@@ -18,10 +19,10 @@ export class AttachmentSelectComponent implements OnInit {
 
   weaponConfig: WeaponConfig
   attachmentSlot: string
-  attachments: AttachmentData[]
+  attachments: Array<Map<string, Effect>>
   selectedAttachmentName: string // tgd attachment
-  hoveredAttachment: AttachmentData // tgd attachment
-  hoveredAttachmentEffects: Map<string, Effect>
+  hoveredAttachment: any //Map<string, Effect> // tgd attachment
+  hoveredAttachmentName: any //Map<string, Effect> // tgd attachment
 
   constructor(private configService: WeaponConfigService, private dataService: DataService, public soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
@@ -33,14 +34,17 @@ export class AttachmentSelectComponent implements OnInit {
     
     this.selectedAttachmentName = this.configService.getSelectedAttachmentName(slot, this.attachmentSlot)
     this.weaponConfig = this.configService.getWeaponConfig(slot)
-
+    
     this.mapAttachments()
   }
   
   async mapAttachments(): Promise<void> {
-    this.attachments = await this.dataService.getAttachmentsOfType(this.weaponConfig.weaponName, this.attachmentSlot) // TODO class should not deal with raw TGD data
-    const attachmentData = this.attachments.find(attachment => attachment.attachment === this.selectedAttachmentName)   
-    this.setHoveredAttachment(this.selectedAttachmentName ? attachmentData : this.attachments[0])
+    this.attachments = await this.dataService.getAttachmentsEffectsOfType(this.weaponConfig.weaponName, this.attachmentSlot) // TODO here!   
+    
+    // const attachmentData: Map<string, Effect> = this.attachments[this.selectedAttachmentName]
+    let firstInList = Object.keys(this.attachments).sort((a, b) => a.localeCompare(b))[0]
+
+    this.setHoveredAttachment(this.selectedAttachmentName ? this.selectedAttachmentName : firstInList) // TODO when nothings equipped, it doesn't select the first one in the list. it selects one you'd not expect 
   }
   
   selectAttachment(attachmentName: string): void {
@@ -48,7 +52,7 @@ export class AttachmentSelectComponent implements OnInit {
 
     let status = this.configService.setAttachment(slot, this.attachmentSlot, attachmentName)
     if(status === this.configService.editStatus.EQUIPPED) {
-      this.messageService.addMessage('Attachment Equipped', attachmentName) // temp
+      this.messageService.addMessage('Attachment Equipped', attachmentName)
       window.history.back()
     } else if(status === this.configService.editStatus.UNEQUIPPED) {
       this.selectedAttachmentName = undefined
@@ -60,16 +64,16 @@ export class AttachmentSelectComponent implements OnInit {
     }
   }
 
-  isSelectedAttachment(attachment: AttachmentData): boolean {
-    if(attachment) {
-      return attachment.attachment === this.selectedAttachmentName
+  isSelectedAttachment(attachmentName: string): boolean {    
+    if(attachmentName) {
+      return attachmentName === this.selectedAttachmentName
     }
     return false
   }
 
-  private async setHoveredAttachment(attachment: AttachmentData): Promise<void> {
-    this.hoveredAttachment = attachment
-    this.hoveredAttachmentEffects = await this.dataService.getEffects(attachment, this.weaponConfig.weaponName)
+  private async setHoveredAttachment(attachmentName: string): Promise<void> {
+    this.hoveredAttachment = this.attachments[attachmentName]
+    this.hoveredAttachmentName = attachmentName
   }
 
   log(...what: any[]): void { // TODO debug

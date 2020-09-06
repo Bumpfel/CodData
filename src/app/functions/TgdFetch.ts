@@ -23,7 +23,7 @@ export class TgdFetch {
    * [1] = base weapon data
    * @param weaponName
    */
-  static getWeaponData(weaponName: string): Promise<Array<Array<WeaponDamage> | WeaponData>> {
+  static getBaseWeaponData(weaponName: string): Promise<Array<Array<WeaponDamage> | WeaponData>> {
     return this.getTGDData(this.request.weapon, weaponName)
   }
 

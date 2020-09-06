@@ -27,7 +27,7 @@ export class DataService {
   }
 
   private weaponData: Array<(Array<(Array<WeaponDamage> | AttachmentData)>)> = [] // cache var. PITA typing
-  private attachmentData: any = {} // cache var
+  private attachmentData: Array<Array<AttachmentData>> = [] // cache var
   private summaryData: Map<string, any> = new Map() // cache var. uses stringifed WeaponConfig as key
 
   constructor() {
@@ -52,42 +52,70 @@ export class DataService {
 
     return attachmentSlots
   }
-  
+
   /**
-   * 
+   * Used by attachment-select
    * @param weaponName 
    * @param attachmentType 
    */
-  // TODO used by attachment-select only. should be private. attachment-select should not deal with raw DATA
-  async getAttachmentsOfType(weaponName: string, attachmentType: string): Promise<AttachmentData[]> {
-    let result = await this.getAttachmentsData(weaponName)
-    result = result.filter(attachment => attachment.slot.toLowerCase() === attachmentType)
+  async getAttachmentsEffectsOfType(weaponName: string,  attachmentType: string): Promise<Array<Map<string, Effect>>> {
+    let attachmentData = await this.getAttachmentsData(weaponName)
+    attachmentData = attachmentData.filter(attachment => attachment.slot.toLowerCase() === attachmentType)
 
-    return result
+    return this.extractAttachmentEffects(weaponName, attachmentData)
   }
 
   /**
-   * Fetches RAW attachment data
-   * @param weaponName
-   * @param attachmentName 
+   *  Used by gunsmith summary
+   * @param weaponConfig
    */
-  // TODO used by gunsmith only. should be private. gunsmith should not deal with raw data
-  async getAttachmentData(weaponName: string, attachmentName: string): Promise<AttachmentData> {
-    let result = await this.getAttachmentsData(weaponName)
-    result = result.filter(attachment => attachment.attachment === attachmentName)
+  async getAllAttachmentEffects(weaponConfig: WeaponConfig): Promise<Array<Map<string, Effect>>> {
+    const rawData = await this.getAttachmentsData(weaponConfig.weaponName)
+    const attachmentNames: Set<string> = new Set()
+    for(let attachmentSlot in weaponConfig.attachments) {
+      attachmentNames.add(weaponConfig.attachments[attachmentSlot])
+    }
+
+    const attachmentsData = rawData.filter(attachment => attachmentNames.has(attachment.attachment))
     
-    return result[0]
+    return this.extractAttachmentEffects(weaponConfig.weaponName, attachmentsData)
   }
 
   /**
-   * Fetches and formats the effects of an attachment or weapon into displayable values
-   * @param attachment
-   * @param weaponName
+   * Fetches weapon stats summary and returns formatted Effects. Used by gunsmith
+   * @param weaponConfig 
    */
-  // TODO should not have TGDData as parameter
-  async getEffects(tgdData: TGDData, weaponName: string): Promise<Map<string, Effect>> { // passing weaponName to avoid hidden dep., even though that data exists on the tgd attachment
-    const weaponData = await this.getWeaponData(weaponName)
-    return TgdFormatter.getAttachmentEffects(tgdData, weaponData[1] as WeaponData)
+  // this is perfect. no need to re-structure
+  async getWeaponSummary(weaponConfig: WeaponConfig): Promise<Map<string, Effect>> {
+    // create new object to prevent modifying original
+    let tempConfig: WeaponConfig = JSON.parse(JSON.stringify(weaponConfig))
+    delete tempConfig.comparisonSlot
+    const key = JSON.stringify(tempConfig)
+    
+    const baseWeaponData = await this.getBaseWeaponData(weaponConfig.weaponName)
+    if(!this.summaryData.has(key)) {
+      this.summaryData.set(key, await TgdFetch.getWeaponSummaryData(weaponConfig)) // cache data
+    }
+    const result: AttachmentData = this.summaryData.get(key) || {} // get cached data
+
+    return TgdFormatter.getAttachmentEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData)
+  }
+
+  /**
+   * Formats raw data to printable effects
+   * @param weaponName
+   * @param attachmentsData 
+   */
+  private async extractAttachmentEffects(weaponName: string, attachmentsData): Promise<Array<Map<string, Effect>>> {
+    const attachmentSummary: Array<Map<string, Effect>> = []
+    
+    for(let attachmentSlot in attachmentsData) {
+      const attachmentData = attachmentsData[attachmentSlot]
+      const weaponData = await this.getBaseWeaponData(weaponName)
+      attachmentSummary[attachmentData.attachment] = TgdFormatter.getAttachmentEffects(attachmentData, weaponData[1] as WeaponData)
+    }
+    
+    return attachmentSummary
   }
 
 
@@ -109,39 +137,20 @@ export class DataService {
   }
   
   /**
-   * Internal method that fetches raw weapon damage data w. ranges drop-offs, and base weapon data
+   * Internal method that fetches and caches raw weapon damage data w. ranges drop-offs, and base weapon data
    * @param weaponName
    */
-  private async getWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
+  private async getBaseWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
     let result: (WeaponDamage[] | AttachmentData)[]
     
     if(!this.weaponData[weaponName]) {
-      result = await TgdFetch.getWeaponData(weaponName)
+      result = await TgdFetch.getBaseWeaponData(weaponName)
       this.weaponData[weaponName] = result
     } else {
       result = this.weaponData[weaponName]
     }
     
     return result
-  }
-
-  /**
-   * Fetches weapon stats summary
-   * @param weaponConfig 
-   */
-  async getWeaponSummary(weaponConfig: WeaponConfig): Promise<Map<string, Effect>> {
-    // create new object to prevent modifying original
-    let tempConfig: WeaponConfig = JSON.parse(JSON.stringify(weaponConfig))
-    delete tempConfig.comparisonSlot
-    const key = JSON.stringify(tempConfig)
-    
-    const baseWeaponData = await this.getWeaponData(weaponConfig.weaponName)
-    if(!this.summaryData.has(key)) {
-      this.summaryData.set(key, await TgdFetch.getWeaponSummaryData(weaponConfig)) // cache data
-    }
-    const result: AttachmentData = this.summaryData.get(key) || {} // get cached data
-
-    return TgdFormatter.getAttachmentEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData)
   }
 
 }

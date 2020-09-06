@@ -15,19 +15,39 @@ import { DataService } from 'src/app/services/data.service';
 })
 export class GunsmithComponent implements OnInit {
 
+  // determines order of attachment buttons
+  upperAttachmentsMap: Map<string, number> = new Map([
+    ['muzzle', 0],
+    ['cable', 0],
+    ['pump grip', 0],
+    ['barrel', 1],
+    ['arms', 1],
+    ['laser', 2],
+    ['optic', 3],
+    ['stock', 4],
+    ['pumps', 4],
+  ])
+  
+  lowerAttachmentsMap: Map<string, number> = new Map([
+    ['underbarrel', 0],
+    ['trigger action', 0],
+    ['ammunition', 1],
+    ['bolt', 1],
+    ['rear grip', 2],
+    ['guard', 2],
+    ['perk', 3],
+  ])
+
   weaponConfig: WeaponConfig
   upperAttachments: string[]
   lowerAttachments: string[]
 
   deselectPopup: HTMLElement 
 
-  upperAttachmentsMap: Map<string, number>
-  lowerAttachmentsMap: Map<string, number>
-
-  // TODO type vars when done with res-structure
+  // TODO type vars when done with re-structure
   baseSummary: any
   attachmentSummary: Array<Map<string, Effect>> = []
-  testAttachmentSummary: Array<Map<string, Effect>> = []
+  // testAttachmentSummary: Array<Map<string, Effect>> = []
   weaponStatSummary: Map<string, Effect>
 
   statOrder: string[]
@@ -44,30 +64,6 @@ export class GunsmithComponent implements OnInit {
     this.weaponConfig = this.configService.getWeaponConfig(slot)
    
     this.statOrder = Stats.getAllOrderedStats()
-
-    this.mapStatSummary()
-
-    // determines order of attachment buttons
-    this.upperAttachmentsMap = new Map([
-      ['muzzle', 0],
-      ['cable', 0],
-      ['pump grip', 0],
-      ['barrel', 1],
-      ['arms', 1],
-      ['laser', 2],
-      ['optic', 3],
-      ['stock', 4],
-      ['pumps', 4],
-    ])
-    this.lowerAttachmentsMap = new Map([
-      ['underbarrel', 0],
-      ['trigger action', 0],
-      ['ammunition', 1],
-      ['bolt', 1],
-      ['rear grip', 2],
-      ['guard', 2],
-      ['perk', 3],
-    ])
     
     document.addEventListener('keydown', e => {     
       if(e.key === '1') { // TODO save once
@@ -77,27 +73,25 @@ export class GunsmithComponent implements OnInit {
         this.configService.saveConfig(this.weaponConfig, true)
       }
     })
-
+    
     this.mapAttachmentSlots()
+    this.mapWeaponStatSummary()
+    this.mapAttachmentSummary()
   }
 
   ngOnDestroy(): void {
     this.disableAttachmentRemoval()
   }
 
-  async mapStatSummary(): Promise<void> {
+  async mapAttachmentSummary(): Promise<void> {
     this.weaponStatSummary = null // clear obsolete data
-
-    // Gets attachment summary (should be cached already)
-    for(let attachmentSlot in this.weaponConfig.attachments) {
-      const attachmentName = this.weaponConfig.attachments[attachmentSlot]
-      const attachmentData = await this.dataService.getAttachmentData(this.weaponConfig.weaponName, attachmentName) // TODO this class shouldn't really deal with raw data
-      this.attachmentSummary[attachmentName] = await this.dataService.getEffects(attachmentData, this.weaponConfig.weaponName)
-    }
-
-    this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
+    this.attachmentSummary = await this.dataService.getAllAttachmentEffects(this.weaponConfig)
     
     // this.baseSummary = await this.configService.getWeaponData(this.weaponConfig.weaponName) // TODO not done
+  }
+  
+  async mapWeaponStatSummary(): Promise<void> {
+    this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig) // TODO waits for attachmentSummary? no need to. separ
   }
 
   async mapAttachmentSlots(): Promise<void> {
@@ -125,7 +119,8 @@ export class GunsmithComponent implements OnInit {
         this.configService.removeAttachment(this.weaponConfig, attachmentSlot)
         delete this.attachmentSummary[removedAttachment]
 
-        this.mapStatSummary()
+        this.mapAttachmentSummary()
+        this.mapWeaponStatSummary()
         this.disableAttachmentRemoval()
       }
     }

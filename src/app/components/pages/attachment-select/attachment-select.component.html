@@ -5,16 +5,16 @@
 <main>
   <div class="scrollBox" id="attachments">
     <div>
-      <a *ngFor="let attachment of attachments" (click)="selectAttachment(attachment.attachment); soundService.select()" (mouseenter)="setHoveredAttachment(attachment); soundService.hover()">
-        {{attachment.attachment}}
-        <div *ngIf="isSelectedAttachment(attachment)" class="circle filled small right"></div>
+      <a *ngFor="let attachment of attachments | keyvalue" (click)="selectAttachment(attachment.key); soundService.select()" (mouseenter)="setHoveredAttachment(attachment.key); soundService.hover()">
+        {{attachment.key}}
+        <div *ngIf="isSelectedAttachment(attachment.key)" class="circle filled small right"></div>
       </a>
     </div>
   </div>
 
   <div class="stats">
     <div id="title" *ngIf="hoveredAttachment">
-      {{hoveredAttachment.attachment}}
+      {{hoveredAttachmentName}}
     </div>
 
     <strong>Proclaimer: </strong>Attachments might have other non-quantifiable pros and cons like "Sound Suppression" or "Scope Glint".  They are not listed here, and neither is aiming stability
@@ -29,10 +29,10 @@
     <!-- PROS -->
     <div id="pros">
       PROS
-      <ng-container *ngFor="let effect of hoveredAttachmentEffects | keyvalue">
-        <div *ngIf="effect.value.isPositive()"  class="stat">
-          {{effect.key}}
-          <div>{{(effect.value.value)}}</div>
+      <ng-container *ngFor="let stat of hoveredAttachment | keyvalue">
+        <div *ngIf="stat.value.isPositive()"  class="stat">
+          {{stat.key}}
+          <div>{{(stat.value.value)}}</div>
         </div>
       </ng-container>
     </div>
@@ -40,10 +40,10 @@
     <!-- CONS -->
     <div id="cons">
       CONS
-      <ng-container *ngFor="let effect of hoveredAttachmentEffects | keyvalue">
-        <div *ngIf="effect.value.isNegative()"  class="stat">
-          {{effect.key}}
-          <div>{{effect.value.value}}</div>
+      <ng-container *ngFor="let stat of hoveredAttachment | keyvalue">
+        <div *ngIf="stat.value.isNegative()"  class="stat">
+          {{stat.key}}
+          <div>{{stat.value.value}}</div>
         </div>
       </ng-container>
     </div>
