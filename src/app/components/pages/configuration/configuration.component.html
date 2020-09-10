@@ -1,15 +1,17 @@
-<title>Configuration</title>
+<!-- <title>Configuration</title> -->
 
 <app-top-menu title="configurations"></app-top-menu>
 
-<main (mousedown)="closeContextMenu()">
+<main>
   <div class="scrollBox">
     <div>
       <div *ngFor="let weaponConfig of configurations">
-        <a [id]="'card-' + weaponConfig.comparisonSlot" (mouseleave)="closeContextMenu(1000)" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover(); keepContextMenu(weaponConfig.comparisonSlot)" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
+        <!-- Weapon Button -->
+        <a [id]="'weapon-slot' + weaponConfig.comparisonSlot" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover()" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
           <app-weapon-card [weaponConfig]="weaponConfig"></app-weapon-card>
         </a>
-        <a class="small hidden" (mouseenter)="soundService.hover()" (click)="soundService.select()" [id]="'gunsmith-slot' + weaponConfig.comparisonSlot" [routerLink]="'/' + weaponConfig.comparisonSlot + '/gunsmith'">
+        <!-- Gusmith Button -->
+        <a [id]="'gunsmith-slot' + weaponConfig.comparisonSlot" class="small hidden" (mouseenter)="soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/gunsmith'">
           Gunsmith
           <br>
           <img src="/assets/images/gunsmith.png" alt="gunsmith">
@@ -21,13 +23,12 @@
     </div>
   </div>
 
-  <!-- <template id="contextMenu"> -->
-    <!-- Right click ContextMenu -->
+  <!-- Right click ContextMenu -->
+  <div id="contextMenuOverlay" class="overlay hidden" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault(); closeContextMenu()">
     <div id="contextMenu" class="small">
-      <!-- [id]="'dropdown' + weaponConfig.comparisonSlot"> -->
       <div>{{getActiveConfigName()}}</div>
       <a (click)="deleteConfig()">Delete</a>
-      <a>Rename</a>
+      <!-- <a>Rename</a> -->
     </div>
-  <!-- </template> -->
+  </div>
 </main>

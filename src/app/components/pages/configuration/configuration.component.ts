@@ -17,13 +17,14 @@ export class ConfigurationComponent implements OnInit {
   //   { name: 'Kilo 141', type: 'Assault Rifle', configName: 'Kilo Ranged', attachments: { muzzle: 'Monolithic Suppressor' } },
   //   { name: 'MP7',  type: 'Submachine Gun', configName: 'MP7 Hybrid', attachments: { muzzle: 'Monolithic Suppressor' } },
   // ]
+
   nextSlot: number
   hoveredSlot: number
   activeConfig: WeaponConfig
   contextMenu: HTMLElement
-  menuTimeout
+  contextOverlay: HTMLElement
 
-  configurations: WeaponConfig[] // use type
+  configurations: WeaponConfig[]
 
   ngOnInit(): void {
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
@@ -32,12 +33,9 @@ export class ConfigurationComponent implements OnInit {
     //   this.configurations.sort((a, b) => a.comparisonSlot - b.comparisonSlot)
     // })
     this.nextSlot = this.configService.getNextFreeComparisonSlot()
-   
-    // const smt: HTMLTemplateElement = document.querySelector('#contextMenu')
-    // this.contextMenu = smt.content.cloneNode(true
     
+    this.contextOverlay = document.querySelector('#contextMenuOverlay')
     this.contextMenu = document.querySelector('#contextMenu')
-    this.closeContextMenu()
   }
   
   deleteConfig(): void {
@@ -50,7 +48,7 @@ export class ConfigurationComponent implements OnInit {
     if(this.hoveredSlot >= 0) {
       document.querySelector('#gunsmith-slot' + this.hoveredSlot).classList.add('hidden')
     }
-    if(slot >= 0) { // add button sends has slot. but uses this method to hide gunsmith buttons
+    if(slot >= 0) { // add button passes no slot argument, but uses this method to hide gunsmith buttons
       document.querySelector('#gunsmith-slot' + slot).classList.remove('hidden')
       this.hoveredSlot = slot
     }
@@ -60,23 +58,16 @@ export class ConfigurationComponent implements OnInit {
     event.preventDefault()
     this.activeConfig = weaponConfig
 
-    document.querySelector('#card-' + weaponConfig.comparisonSlot).append(this.contextMenu)
-    // this.contextMenu.style.left = event.clientX + 'px'
-    // this.contextMenu.style.top = event.clientY + 'px'
+    this.contextOverlay.classList.remove('hidden')
+    document.querySelector('#weapon-slot' + weaponConfig.comparisonSlot).classList.add('hovered')
+    
+    this.contextMenu.style.left = event.clientX + 'px'
+    this.contextMenu.style.top = event.clientY + 'px'
   }
   
-  closeContextMenu(delay?: number): void {
-    this.menuTimeout = setTimeout(() => { this.contextMenu.remove() }, delay)
-  }
-
-  keepContextMenu(slot: number): void {
-    const hasActiveMenu = document.querySelector('#card-' + slot).querySelector('#contextMenu')
-
-    if(hasActiveMenu) {
-      console.log('clearing timeout')
-      
-      clearTimeout(this.menuTimeout)
-    }
+  closeContextMenu(): void {
+    this.contextOverlay.classList.add('hidden')
+    document.querySelector('#weapon-slot' + this.activeConfig.comparisonSlot).classList.remove('hovered')
   }
 
   getActiveConfigName(): string {   
