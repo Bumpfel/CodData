@@ -20,11 +20,11 @@ export class DataService {
   ])
 
   private weapons = {
-    assaultrifles: ['Kilo 141', 'FAL', 'M4A1', 'FR 5.56', 'Oden', 'M13', 'FN Scar 17', 'AK-47' ,'RAM-7', 'Grau 5.56', 'CR 56 AMAX', 'AN-94'],
+    assaultrifles: ['Kilo 141', 'FAL', 'M4A1', 'FR 5.56', 'Oden', 'M13', 'FN Scar 17', 'AK-47' ,'RAM-7', 'Grau 5.56', 'CR-56 AMAX', 'AN-94'],
     smgs: ['AUG', 'P90', 'MP5', 'Uzi', 'PP19 Bizon', 'MP7', 'Striker 45', 'Fennec', 'ISO'],
     shotguns: ['R9-0 Shotgun', '725', 'Origin 12 Shotgun', 'VLK Rogue'],
-    lmgs: ['PKM', 'SA87', 'M91', 'MG34', 'Holger-26', 'Bruen MK9', 'FiNN LMG'], //'FiNN LMG',
-    marksmanrifles: ['EBR-14', 'MK2 Carbine', 'Kar98K', 'Crossbow', 'SKS'], // EBR-14
+    lmgs: ['PKM', 'SA87', 'M91', 'MG34', 'Holger-26', 'Bruen Mk9', 'FiNN LMG'], // 'FiNN LMG Factory Adverse'],
+    marksmanrifles: ['EBR', 'Mk2 Carbine', 'Kar98k', 'Crossbow', 'SKS'], // EBR-14
     sniperrifles: ['Dragunov', 'HDR', 'AX-50', 'Rytec AMR'],
     handguns: ['X16', '1911', '.357', 'M19', '.50 GS', 'Renetti'],
     // TODO keep only to make browsable?
@@ -49,7 +49,7 @@ export class DataService {
    * Fetches and caches weapons
    * @param type
    */
-  async TGD_getWeapons(type: string): Promise<string[]> { // TODO should use this one, but I don't like how he's displaying different versions of the same weapons sometimes
+  async tgd_getWeapons(type: string): Promise<string[]> { // TODO should use this one, but I don't like how he's displaying different versions of the same weapons sometimes
     const tgdType = this.menuToTGDWeaponTypes.get(type)
     
     if(type) {
@@ -59,12 +59,17 @@ export class DataService {
         for(const weapon of weapons) {
           this.weaponTypesData[tgdType].push(weapon[0])
         }
-      }      
+      }
+
       return this.weaponTypesData[tgdType]
     }
     return null
   }
   
+  /**
+   * @deprecated Uses internally listed weapons
+   * @param type
+   */
   getWeapons(type: string): string[] {
     if(type) {
       return this.weapons[type.split(' ').join('')]
@@ -72,6 +77,9 @@ export class DataService {
     return null
   }
 
+  /**
+   * Fetches and caches attachment data for the given weapon
+   */
   async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
     let result = await this.getAllAttachmentData(weaponName)
     
@@ -115,16 +123,16 @@ export class DataService {
    * @param weaponConfig 
    */
   async getWeaponSummary(weaponConfig: WeaponConfig): Promise<Map<string, Effect>> {
-    const ordered = Object.keys(weaponConfig.attachments).sort()
-    const key = weaponConfig.weaponName + JSON.stringify(ordered)    
-    
+    const ordered = Object.values(weaponConfig.attachments).sort() 
+    const cacheKey = weaponConfig.weaponName + JSON.stringify(ordered)
+   
     const baseWeaponData = await this.getBaseWeaponData(weaponConfig.weaponName)
-    if(!this.summaryData.has(key)) {
-      this.summaryData.set(key, await TgdFetch.getWeaponSummaryData(weaponConfig)) // cache data
+    if(!this.summaryData.has(cacheKey)) {
+      this.summaryData.set(cacheKey, await TgdFetch.getWeaponSummaryData(weaponConfig)) // cache data
     }
-    const result: AttachmentData = this.summaryData.get(key) || {} // get cached data
+    const result: AttachmentData = this.summaryData.get(cacheKey) || {} // get cached data
 
-    return TgdFormatter.getAttachmentEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData)
+    return TgdFormatter.getAttachmentEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData, true)
   }
 
   /**
@@ -132,13 +140,13 @@ export class DataService {
    * @param weaponName
    * @param attachmentsData 
    */
-  private async extractAttachmentEffects(weaponName: string, attachmentsData): Promise<Array<Map<string, Effect>>> {
+  private async extractAttachmentEffects(weaponName: string, attachmentsData: AttachmentData[]): Promise<Array<Map<string, Effect>>> {
     const attachmentSummary: Array<Map<string, Effect>> = []
-    
+        
+    const weaponData = await this.getBaseWeaponData(weaponName)
     for(let attachmentSlot in attachmentsData) {
       const attachmentData = attachmentsData[attachmentSlot]
-      const weaponData = await this.getBaseWeaponData(weaponName)
-      
+
       attachmentSummary[attachmentData.attachment] = TgdFormatter.getAttachmentEffects(attachmentData, weaponData[1] as WeaponData)
     }
     
@@ -166,7 +174,7 @@ export class DataService {
    * Internal method that fetches and caches raw weapon damage data w. ranges drop-offs, and base weapon data
    * @param weaponName
    */
-   private async getBaseWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
+    private async getBaseWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
     let result: (WeaponDamage[] | AttachmentData)[]
     
     if(!this.weaponData[weaponName]) {

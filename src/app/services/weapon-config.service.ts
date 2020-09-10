@@ -54,6 +54,20 @@ export class WeaponConfigService {
     return arr
   }
 
+  saveConfig(weaponConfig: WeaponConfig, isArmoryConfig: boolean = false): void {
+    if(isArmoryConfig) {
+      const weaponConfigs = this.getArmouryConfigs(weaponConfig.weaponName) || {}
+      weaponConfigs[weaponConfig.armouryName] = weaponConfig
+      window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(weaponConfigs))
+    } else {
+      window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
+    }
+  }
+
+  deleteConfig(slot: number) {
+    window.sessionStorage.removeItem('' + slot)
+  }
+
   getNextFreeComparisonSlot(): number {
     let temp = this.getComparisonConfigs()   
     if(temp.length) {
@@ -80,20 +94,6 @@ export class WeaponConfigService {
       return menuPathToWeaponType.get(weaponConfig.weaponType)
     }
     return null
-  }
-
-  saveConfig(weaponConfig: WeaponConfig, isArmoryConfig: boolean = false): void {
-
-    if(isArmoryConfig) {
-      // TODO save as array with weaponName as key
-      window.localStorage.setItem(weaponConfig.armouryName, JSON.stringify(weaponConfig))
-    } else {
-      window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
-    }
-  }
-
-  deleteConfig(slot: number) {
-    window.sessionStorage.removeItem('' + slot)
   }
 
   setAttachment(saveSlot: number, attachmentSlot: string, attachmentName: string): number {

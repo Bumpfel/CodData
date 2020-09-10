@@ -35,8 +35,9 @@ export class WeaponSelectComponent implements OnInit {
         this.weaponType = this.globalService.linkToName(params.weaponType)
         // get weapons and map nr of armouryConfigs
         this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType))
-        for(let weaponName of this.weaponNames) {          
-          let saves = this.configService.getArmouryConfigs(this.globalService.nameToLink(weaponName))
+        for(let weaponName of this.weaponNames) {
+          let saves = this.configService.getArmouryConfigs(weaponName)
+          
           this.armourySaves.set(weaponName, saves ? saves.length : 0)
         }
       }
@@ -50,7 +51,8 @@ export class WeaponSelectComponent implements OnInit {
   selectWeapon(weaponName: string): void {
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
 
-    this.configService.saveConfig(new WeaponConfig(slot, weaponName, this.weaponType))
+    this.configService.saveConfig(new WeaponConfig(weaponName, slot, this.weaponType))
+    this.dataService.getAvailableAttachmentSlots(weaponName) // for caching
     // this.setWeaponType(slot)
     window.history.back()
   }
@@ -66,7 +68,7 @@ export class WeaponSelectComponent implements OnInit {
   //   this.configService.saveConfig(config)
   // }
 
-  showArmouryButton(weaponName: string): void { // TODO slight duplicate or similar as the one in configurations
+  showArmouryButton(weaponName: string): void {    
     if(this.hoveredSlot) {
       this.hoveredSlot.querySelector('#armoury-slot-small').classList.remove('gone')
       this.hoveredSlot.querySelector('#armoury-slot-expanded').classList.add('gone')

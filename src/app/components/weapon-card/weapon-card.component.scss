@@ -15,9 +15,10 @@
     height: $sz;
     margin-left: 5px;
     border: 1px solid $inactiveColour;
-
+    
   }
   .filled {
+    border: 1px solid $active;
     background-color: $active;
   }
 
@@ -26,6 +27,7 @@
     color: white;
     font-size: $sz;
     height: $sz + 10px;
+    text-transform: none;
 
     &.small {
       font-size: 12px;

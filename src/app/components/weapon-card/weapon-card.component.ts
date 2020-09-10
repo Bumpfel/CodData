@@ -12,15 +12,23 @@ export class WeaponCardComponent implements OnInit {
 
   @Input() weaponConfig: WeaponConfig
   @Input() link: string
-  @Input() displayType: boolean = true
+  @Input() displayExtras: boolean = true
 
   constructor(public globalService: GlobalService, private configService: WeaponConfigService) { }
 
   ngOnInit(): void {
   }
 
-  getFullWeaponType(weaponConfig: WeaponConfig): string {    
-    return this.displayType === true ? this.configService.getFullWeaponType(weaponConfig) : undefined
+  getFullWeaponType(): string {
+    return this.displayExtras === true ? this.configService.getFullWeaponType(this.weaponConfig) : undefined
+  }
+
+  getConfigName(): string {
+    return this.displayExtras === true
+      ? (this.weaponConfig.armouryName
+        ? this.weaponConfig.armouryName
+        : 'slot #' + this.weaponConfig.comparisonSlot)
+      : undefined
   }
   
   err(event): void {

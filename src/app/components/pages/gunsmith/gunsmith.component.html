@@ -1,4 +1,3 @@
-<title>{{weaponConfig.weaponName}} Gunsmith</title>
 <app-top-menu [title]="weaponConfig.weaponName + ' gunsmith'"></app-top-menu>
 
 <app-messages></app-messages>
@@ -8,14 +7,14 @@
   <!----------------------->
   <div class="attachments" id="upperAttachments">
     <ng-container *ngFor="let attachmentSlot of upperAttachments">
-      <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+      <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
         {{attachmentSlot}}
         <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
         <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
       </a>
       <ng-template #disabledSlot>
         <div class="disabledButton" [id]="attachmentSlot">
-          <!-- <img src="/assets/images/blocked.png"> -->
+          <!-- <img src="/assets/images/blocked.png" alt="blocked"> -->
           {{attachmentSlot}}
           <div class="white">Blocked by {{configService.getBlockingAttachment(weaponConfig, attachmentSlot)}}</div>
         </div>
@@ -24,8 +23,7 @@
   </div>
   
   <!-- Image -->
-  <img [src]="'../../../assets/images/weapons/' + globalService.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'">
-  <!-- <img id="VLK" src="/assets/images/attachments/VLK.png"> -->
+  <img [src]="getImageLink(weaponConfig)" [alt]="weaponConfig.weaponName">
 
   <!-- Misc Info -->
   <!--------------->
@@ -44,17 +42,17 @@
 
     <!-- Lower Attachments -->
     <!----------------------->
-    <!-- code duplication here -->
+    <!-- code duplication here. make template? -->
     <div class="attachments" id="lowerAttachments">
       <ng-container *ngFor="let attachmentSlot of lowerAttachments">
-        <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+        <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
           {{attachmentSlot}}
           <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
           <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
         </a>
         <ng-template #disabledSlot>
           <div class="disabledButton" [id]="attachmentSlot">
-            <!-- <img src="/assets/images/blocked.png"> -->
+            <!-- <img src="/assets/images/blocked.png" alt="blocked"> -->
             {{attachmentSlot}}
             <div class="white">Blocked by {{configService.getBlockingAttachment(weaponConfig, attachmentSlot)}}</div>
           </div>
@@ -82,9 +80,9 @@
         <div>data 2_3</div>
       </div> -->
 
-      <table>
+      <table aria-describedby="stats">
         <tr>
-          <th></th>
+          <td></td>
         </tr>
         <tr *ngFor="let stat of statOrder">
           <th>{{stat}}</th>
@@ -92,15 +90,15 @@
       </table>
 
       <!-- Weapon Stat Summary -->
-      <table>
+      <table aria-describedby="weapon stat summary">
         <tr class="summary">
-          <th>
+          <th scope="summary title">
             Summary
           </th>
         </tr>
-          <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
+        <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
           <tr class="summary" *ngFor="let stat of statOrder">
-            <td>
+            <td [class.positive]="weaponStatSummary.get(stat).isPositive()" [class.negative]="weaponStatSummary.get(stat).isNegative()">
               <ng-container *ngIf="weaponStatSummary.get(stat)">
                 {{weaponStatSummary.get(stat).value}}
               </ng-container>
@@ -116,11 +114,11 @@
       
       <!-- Attachment Summaries -->
       <ng-container *ngIf="attachmentSummary else loadingAttachmentSummary">
-        <table *ngFor="let attachment of attachmentSummary | keyvalue">
+        <table *ngFor="let attachment of attachmentSummary | keyvalue" aria-describedby="attachment summaries">
           <tr>
-            <th>{{attachment.key}}</th>
+            <th [scope]="attachment.key">{{attachment.key}}</th>
           </tr>
-          <tr [class.summary]="isSummary(attachment.key)" *ngFor="let stat of statOrder">
+          <tr *ngFor="let stat of statOrder"><!-- [class.summary]="isSummary(attachment.key)" -->
             <td [class.positive]="attachment.value.get(stat).isPositive()">{{attachment.value.get(stat).value}}</td>
           </tr>
         </table>

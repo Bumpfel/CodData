@@ -18,7 +18,6 @@ export class GlobalService {
     if(e.key === 'Escape') {
       this.backAction()
       this.disableGoBackOnEscape()
-      // document.removeEventListener('keydown', this.goBackCallback)
     }
   }
 

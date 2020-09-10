@@ -3,11 +3,10 @@
   <div class="right" *ngIf="weaponConfig.attachments">
     <div *ngFor="let key of weaponConfig.attachments | keyvalue" class="small circle filled"></div>
     <div *ngFor="let i of configService.getIterableNrOfEmptyAttachmentSlots(weaponConfig)" class="small circle"></div>
-    <!-- <div *ngFor="let i of 5 - weapon.attachments" class="circle"></div> -->
   </div>
-  <div class="info">{{weaponConfig.armouryName}}</div>
+  <div class="info">{{getConfigName()}}</div>
   <div class="img">
-    <img [src]="'/assets/images/weapons/' + globalService.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'" (error)="err($event)">
+    <img [src]="'/assets/images/weapons/' + globalService.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'" (error)="err($event)" [alt]="weaponConfig.weaponName">
   </div>
-  <div class="info small">{{getFullWeaponType(weaponConfig)}}</div>
+  <div class="info small">{{getFullWeaponType()}}</div>
 </div>

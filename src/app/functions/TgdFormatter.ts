@@ -10,101 +10,6 @@ import { AttachmentData, WeaponData, TGDData } from '../models/TGD/Data'
 
 export class TgdFormatter {
 
-  /**
-   * @deprecated Use getAttachmentEffects
-   * Formats TGD data into printable keys and values (TODO not sure I'll use at all)
-   * @param summaryData
-   */
-  static getAllWeaponEffects(summaryData: AttachmentData[], weaponData: WeaponData): Array<Map<string, Effect>> {
-    const allEffects: Map<string, Effect>[] = []
-    
-    for(let i = 0; i < summaryData.length; i ++) {
-      const attachmentKey: string = summaryData[i].attachment || summaryData[i].gun
-      allEffects[attachmentKey] = TgdFormatter.getAttachmentEffects(summaryData[i], weaponData)
-    }
-    
-    return allEffects
-  }
-
-  // TODO rename to reflect its used by weapon summary data as well
-  static getAttachmentEffects(tgdData: TGDData, baseWeaponData: WeaponData): Map<string, Effect> {
-    const effects: Map<string, Effect> = new Map()
-
-    for(let mod in tgdData) {
-      const value = tgdData[mod]
-
-      const status = this.getModEffectStatus(mod, value, baseWeaponData)
-          
-      const effect: Effect = new Effect(
-        TgdFormatter.getEffectDisplayValue(mod, value, true, baseWeaponData),
-        status
-        // status: status > 0 ? Effect.Positive : (status < 0 ? Effect.Negative : Effect.Neutral)
-      )
-      
-      effects.set(TgdFormatter.displayNames.get(mod), effect) 
-    }
-    
-    return effects
-  }
-
-/**
-   * Returns a negative, 0 (neutral), or positive value
-   * @param mod 
-   * @param value raw value
-   * @param baseWeaponData tgd base weapon data. use TgdService.getWeaponData()[1]
-   */
-  private static getModEffectStatus(mod: string, value: number, baseWeaponData: WeaponData ): number {
-    const positiveModEffect: string = TgdFormatter.positiveModEffect.get(mod)
-    let status: number // positive effect = pro, negative effect = con, neutral effect = none
-
-    if(TgdFormatter.comparesToBase.has(mod)) {
-      const baseValue: number = baseWeaponData[mod]
-      const difference = value - baseValue
-      
-      if(difference != 0) {
-        if(positiveModEffect === TgdFormatter.positiveEffects.positive) {
-          status = value - baseWeaponData[mod]
-        } else if(positiveModEffect === TgdFormatter.positiveEffects.negative) {
-          status = baseWeaponData[mod] - value
-        }
-        value = difference
-      }
-    } else if(positiveModEffect === TgdFormatter.positiveEffects.greaterThan1) {
-      status = value - 1
-    } else if(positiveModEffect === TgdFormatter.positiveEffects.lessThan1) {
-      status = (value - 1) * -1
-    } else if(positiveModEffect === TgdFormatter.positiveEffects.negative) {
-      status = value * -1
-    }
-    
-    return status
-  }
-
-  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean, baseWeaponData: WeaponData): string {
-    let unit = TgdFormatter.displayUnits.get(mod)
-
-    if(TgdFormatter.comparesToBase.has(mod)) {
-      // console.log(baseWeaponData[mod])
-      
-      // value = value - baseWeaponData[mod]
-    }
-
-    if(unit === TgdFormatter.units.percent) {
-      let calc = Math.round((value - 1) * 1000) / 10
-      value = calc * (this.flipSign.has(mod) ? -1 : 1)
-    } else {
-      // round to at most 4 numbers (at most 2 decimals)
-      let roundRatio = value > 1000 ? 1 : (value > 1000 ? 10 : 100)
-      value = Math.round(value * roundRatio) / roundRatio 
-    }
-
-    return (value === 0 ? '' : (addSign && value > 0 ? '+' : '') + value + ' ' + unit)
-  }
-
-  private static positiveEffects = { negative: '-', positive: '+', greaterThan1: '>', lessThan1: '<' }
-
-  private static units = { s: 's', ms: 'ms', mps: 'm/s', percent: '%', area: 'kPixel^2', rounds: 'rounds'}
-  
   private static mods = {
     ads_mod: 'ads_mod',
     ads_move_mod: 'ads_move_mod',
@@ -127,19 +32,124 @@ export class TgdFormatter {
     bullet_velocity: 'bullet_velocity',
     sstf: 'sstf',
     stf: 'stf',
+
+    // base
+    base_ads: 'base_ads',
+    base_move: 'base_move',
+    base_ads_move: 'base_ads_move',
+    hipfire_base_area: 'hipfire_base_area',
   }
 
-  private static comparesToBase: Set<string> = new Set([
-    TgdFormatter.mods.reload,
-    TgdFormatter.mods.mag_size,
+  
+  /**
+   * @deprecated Use getAttachmentEffects
+   * Formats TGD data into printable keys and values (TODO not sure I'll use at all)
+   * @param summaryData
+   */
+  static getAllWeaponEffects(summaryData: AttachmentData[], weaponData: WeaponData): Array<Map<string, Effect>> {
+    const allEffects: Map<string, Effect>[] = []
+    
+    for(let i = 0; i < summaryData.length; i ++) {
+      const attachmentKey: string = summaryData[i].attachment || summaryData[i].gun
+      allEffects[attachmentKey] = TgdFormatter.getAttachmentEffects(summaryData[i], weaponData)
+    }
+    
+    return allEffects
+  }
+
+  // TODO rename to reflect its used by weapon summary data as well
+  static getAttachmentEffects(tgdData: TGDData, baseWeaponData: WeaponData, isSummary: boolean = false): Map<string, Effect> {
+    const effects: Map<string, Effect> = new Map()   
+
+    for(let mod in tgdData) {
+      const value = tgdData[mod]
+      
+      const effect: Effect = new Effect(
+        TgdFormatter.getEffectDisplayValue(mod, value, (isSummary && TgdFormatter.summaryValuesWithSign.has(mod) || !isSummary), baseWeaponData, isSummary),
+        this.getModEffectStatus(mod, value, baseWeaponData)
+      )
+      
+      effects.set(TgdFormatter.displayNames.get(mod), effect)
+    }
+    
+    return effects
+  }
+
+/**
+   * Returns a negative, 0 (neutral), or positive value (used to determine whether the value is semantically negative or positive (good or bad))
+   * @param mod 
+   * @param value raw value
+   * @param baseWeaponData tgd base weapon data. use TgdService.getWeaponData()[1]
+   */
+  private static getModEffectStatus(mod: string, value: number, baseWeaponData: WeaponData): number {
+    const positiveModEffect: string = TgdFormatter.positiveModEffect.get(mod)
+    let status: number // positive effect = pro, negative effect = con, neutral effect = none
+
+    const compareToBaseMod = TgdFormatter.compareToBaseMods.get(mod)
+    // if(TgdFormatter.comparesToBase.has(mod)) {
+    if(compareToBaseMod) {
+      const baseValue: number = baseWeaponData[compareToBaseMod]
+      const difference = value - baseValue
+      
+      if(difference != 0) {
+        if(positiveModEffect === TgdFormatter.positiveEffects.positive) {
+          status = value - baseWeaponData[compareToBaseMod]
+        } else if(positiveModEffect === TgdFormatter.positiveEffects.negative) {
+          status = baseWeaponData[compareToBaseMod] - value
+        }
+        value = difference
+      }
+    } else if(positiveModEffect === TgdFormatter.positiveEffects.greaterThan1) {
+      status = value - 1
+    } else if(positiveModEffect === TgdFormatter.positiveEffects.lessThan1) {
+      status = (value - 1) * -1
+    } else if(positiveModEffect === TgdFormatter.positiveEffects.negative) {
+      status = value * -1
+    }
+    
+    return status
+  }
+
+  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean, baseWeaponData: WeaponData, isSummary: boolean = false): string {
+    let unit = TgdFormatter.displayUnits.get(mod)
+
+    if(!isSummary && TgdFormatter.compareToBaseMods.has(mod)) {          
+      value = value - baseWeaponData[mod]
+    }
+
+    if(unit === TgdFormatter.units.percent) {
+      let calc = Math.round((value - 1) * 1000) / 10
+      value = calc * (this.flipSign.has(mod) ? -1 : 1)
+    } else {
+      // round to at most 4 numbers (at most 2 decimals)
+      let roundRatio = value > 1000 ? 1 : (value > 1000 ? 10 : 100)
+      value = Math.round(value * roundRatio) / roundRatio 
+    }
+
+    return (value === 0 && !isSummary
+      ? '' 
+      : (addSign && value > 0 
+        ? '+' 
+        : '')
+      + value + ' ' + unit)
+  }
+
+  private static positiveEffects = { negative: '-', positive: '+', greaterThan1: '>', lessThan1: '<' }
+
+  private static units = { s: 's', ms: 'ms', mps: 'm/s', percent: '%', area: 'kPixel^2', rounds: 'rounds'}
+
+  private static compareToBaseMods: Map<string, string> = new Map([
+    [TgdFormatter.mods.reload, TgdFormatter.mods.reload],
+    [TgdFormatter.mods.mag_size, TgdFormatter.mods.mag_size],
 
     // summary
-    TgdFormatter.mods.ads_move,
-    TgdFormatter.mods.move,
-    TgdFormatter.mods.hipfire_area,
-    TgdFormatter.mods.bullet_velocity,
-    TgdFormatter.mods.sstf,
-    TgdFormatter.mods.stf,
+    [TgdFormatter.mods.final_ads, TgdFormatter.mods.base_ads],
+    [TgdFormatter.mods.ads_move, TgdFormatter.mods.base_ads_move],
+    [TgdFormatter.mods.move, TgdFormatter.mods.base_move],
+    [TgdFormatter.mods.hipfire_area, TgdFormatter.mods.hipfire_base_area],
+    [TgdFormatter.mods.bullet_velocity, TgdFormatter.mods.bullet_velocity],
+    [TgdFormatter.mods.sstf, TgdFormatter.mods.sstf],
+    [TgdFormatter.mods.stf, TgdFormatter.mods.stf],
   ])
 
   // since tgd calls e.g. "Recoil Control" "Horizontal Bounce", it flips the logic
@@ -220,6 +230,12 @@ export class TgdFormatter {
     [TgdFormatter.mods.bullet_velocity, TgdFormatter.units.mps],
     [TgdFormatter.mods.sstf, TgdFormatter.units.ms],
     [TgdFormatter.mods.stf, TgdFormatter.units.ms],
+  ])
+
+  private static summaryValuesWithSign: Set<string> = new Set([ // TODO rename
+    TgdFormatter.mods.range_mod,
+    TgdFormatter.mods.vert_recoil_mod,
+    TgdFormatter.mods.horiz_bounce_mod,
   ])
 
   // might need for summary units ?

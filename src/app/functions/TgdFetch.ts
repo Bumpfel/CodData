@@ -54,8 +54,16 @@ export class TgdFetch {
    * @param weaponConfig 
    */
   static async getWeaponSummaryData(weaponConfig: WeaponConfig): Promise<AttachmentData> {
-    const result = await this.getTGDData(this.request.summary, Array.of(weaponConfig.weaponName))
-    return result[0]
+    const arr = Array.of(weaponConfig.weaponName)
+    Object.values(weaponConfig.attachments).forEach(attachment => { 
+      if(attachment) {
+        arr.push(attachment)
+      }
+    })
+    
+    const result = await this.getTGDData(this.request.summary, arr)
+    
+    return result[result.length - 1]
   }
 
   private static async getTGDData(request: any, formData: any): Promise<any> {

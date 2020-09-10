@@ -1,8 +1,8 @@
 @import "./vars.scss";
 
 * {
-  // font-family: 'Roboto'; // TODO not matching that great
   font-family: 'Roboto Light';
+  font-weight: 700; // TODO too bold?
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 

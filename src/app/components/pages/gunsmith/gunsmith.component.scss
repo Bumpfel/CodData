@@ -27,6 +27,13 @@ main {
       box-sizing: border-box;
       width: 16%;
 
+      // img {
+      //   border: 1px dotted orange;
+      //   display: inline-block;
+      //   width: 10px;
+      //   height: 10px;
+      // }
+
       .white {
         color: white;
         font-size: 14px;
@@ -216,14 +223,12 @@ main {
           padding: 5px;
         }
   
-        &:not(.summary) {
-          td {
-            color: $red;
-            
-            &.positive {
-              color: $green;
-            }
-          }
+        td.negative, &:not(.summary) td {
+          color: $red;
+        }
+
+        td.positive {
+          color: $green;
         }
       }   
     
