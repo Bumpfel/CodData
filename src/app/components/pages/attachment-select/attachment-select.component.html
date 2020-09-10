@@ -6,6 +6,7 @@
   <div class="scrollBox" id="attachments">
     <div>
       <a *ngFor="let attachment of attachments | keyvalue" (click)="selectAttachment(attachment.key); soundService.select()" (mouseenter)="setHoveredAttachment(attachment.key); soundService.hover()">
+        <!-- <img [src]="'/assets/images/attachments/muzzle/' + attachment.key + '.png'"> -->
         {{attachment.key}}
         <div *ngIf="isSelectedAttachment(attachment.key)" class="circle filled small right"></div>
       </a>
@@ -20,7 +21,7 @@
     <strong>Proclaimer: </strong>Attachments might have other non-quantifiable pros and cons like "Sound Suppression" or "Scope Glint".  They are not listed here, and neither is aiming stability
 
     <div class="equipped">
-      <ng-container *ngIf="isSelectedAttachment(hoveredAttachment)">
+      <ng-container *ngIf="isSelectedAttachment(hoveredAttachmentName)">
         <div class="circle filled"></div>
         <div id="title">Equipped</div>
       </ng-container>

@@ -24,7 +24,8 @@
   </div>
   
   <!-- Image -->
-  <img [src]="'../../../assets/images/weapons/' + weaponConfig.weaponName + '.png'">
+  <img [src]="'../../../assets/images/weapons/' + globalService.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'">
+  <!-- <img id="VLK" src="/assets/images/attachments/VLK.png"> -->
 
   <!-- Misc Info -->
   <!--------------->
@@ -164,6 +165,8 @@
         <div class="text">2.3 s</div>
       </div> -->
 
+
+  <!-- Deselect popup -->
   <div id="deselect" class="popup gone">
     <div>R</div>
     Deselect

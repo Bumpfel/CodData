@@ -17,7 +17,8 @@ export class GlobalService {
   private goBackCallback = (e: KeyboardEvent) => {
     if(e.key === 'Escape') {
       this.backAction()
-      document.removeEventListener('keydown', this.goBackCallback)
+      this.disableGoBackOnEscape()
+      // document.removeEventListener('keydown', this.goBackCallback)
     }
   }
 
@@ -25,12 +26,16 @@ export class GlobalService {
     document.addEventListener('keydown', this.goBackCallback)
   }
 
+  disableGoBackOnEscape(): void {
+    document.removeEventListener('keydown', this.goBackCallback)
+  }
+
   nameToLink(str: string): string {
-    return str.split(' ').join('_').split('.').join('')
+    return str != null ? str.split(' ').join('_').split('.').join('') : null
   }
 
   linkToName(str: string): string {
-    return str.split('_').join(' ').toLowerCase()
+    return str != null ? str.split('_').join(' ').toLowerCase() : null
   }
 
 }

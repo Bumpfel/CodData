@@ -28,6 +28,7 @@ export class SoundService {
   private playSound = (sound: string) => {
     let audioElement = document.createElement('audio')
     audioElement.setAttribute('src', './assets/sounds/' + sound + '.mp3')
+    // audioElement.setAttribute('muted', 'muted')
     audioElement.play();
   }
 }

@@ -10,12 +10,17 @@ import { WeaponConfig } from 'src/app/models/WeaponConfig';
 })
 export class WeaponCardComponent implements OnInit {
 
-  @Input() config: WeaponConfig
+  @Input() weaponConfig: WeaponConfig
   @Input() link: string
+  @Input() displayType: boolean = true
 
   constructor(public globalService: GlobalService, private configService: WeaponConfigService) { }
 
   ngOnInit(): void {
+  }
+
+  getFullWeaponType(weaponConfig: WeaponConfig): string {    
+    return this.displayType === true ? this.configService.getFullWeaponType(weaponConfig) : undefined
   }
   
   err(event): void {

@@ -15,3 +15,45 @@ a {
 .scrollBox {
   height: auto;
 }
+
+// .overlay {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   border: 3px dotted orange
+// }
+
+#contextMenu {
+  position: absolute;
+  z-index: 2;
+  width: 250px;
+  font-size: 14px;
+  opacity: 1;
+  background-color: $darkGrey;
+  
+
+  div {
+    border: 1px solid $darkBG;
+    background-color: $darkGrey;
+    color: $inactiveColour;
+    padding: 10px 20px;
+  }
+  
+  a {
+    display: block;
+    width: unset;
+    margin: 0;
+    padding-left: 20px;
+    
+    color: white;
+    font-size: unset;
+    // opacity: unset;
+
+    &:hover {
+      color: $highlightColour;
+    }
+  }
+
+}

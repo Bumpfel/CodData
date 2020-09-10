@@ -40,6 +40,8 @@
       max-height: 75px;
       -webkit-user-drag: none;
       -moz-user-drag: none; 
+
+      filter: grayscale(100%) brightness(130%) contrast(80%);
     }
   }
 

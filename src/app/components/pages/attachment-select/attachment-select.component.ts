@@ -19,10 +19,10 @@ export class AttachmentSelectComponent implements OnInit {
 
   weaponConfig: WeaponConfig
   attachmentSlot: string
-  attachments: Array<Map<string, Effect>>
-  selectedAttachmentName: string // tgd attachment
-  hoveredAttachment: any //Map<string, Effect> // tgd attachment
-  hoveredAttachmentName: any //Map<string, Effect> // tgd attachment
+  attachments: Array<Map<string, Effect>> // TODO not array. object
+  selectedAttachmentName: string
+  hoveredAttachment: Map<string, Effect>
+  hoveredAttachmentName: string
 
   constructor(private configService: WeaponConfigService, private dataService: DataService, public soundService: SoundService, private globalService: GlobalService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
@@ -35,16 +35,13 @@ export class AttachmentSelectComponent implements OnInit {
     this.selectedAttachmentName = this.configService.getSelectedAttachmentName(slot, this.attachmentSlot)
     this.weaponConfig = this.configService.getWeaponConfig(slot)
     
-    this.mapAttachments()
+    this.mapAttachmentEffects()
   }
   
-  async mapAttachments(): Promise<void> {
-    this.attachments = await this.dataService.getAttachmentsEffectsOfType(this.weaponConfig.weaponName, this.attachmentSlot) // TODO here!   
-    
-    // const attachmentData: Map<string, Effect> = this.attachments[this.selectedAttachmentName]
-    let firstInList = Object.keys(this.attachments).sort((a, b) => a.localeCompare(b))[0]
-
-    this.setHoveredAttachment(this.selectedAttachmentName ? this.selectedAttachmentName : firstInList) // TODO when nothings equipped, it doesn't select the first one in the list. it selects one you'd not expect 
+  async mapAttachmentEffects(): Promise<void> {
+    this.attachments = await this.dataService.getAttachmentsEffectsOfType(this.weaponConfig.weaponName, this.attachmentSlot)
+    let firstInList =  Object.keys(this.attachments).sort((a, b) => a.localeCompare(b))[0]
+    this.setHoveredAttachment(this.selectedAttachmentName ? this.selectedAttachmentName : firstInList)
   }
   
   selectAttachment(attachmentName: string): void {

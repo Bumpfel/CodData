@@ -34,13 +34,14 @@ export class TgdFormatter {
       const value = tgdData[mod]
 
       const status = this.getModEffectStatus(mod, value, baseWeaponData)
-
+          
       const effect: Effect = new Effect(
-        TgdFormatter.getEffectDisplayValue(mod, value, true),
+        TgdFormatter.getEffectDisplayValue(mod, value, true, baseWeaponData),
         status
         // status: status > 0 ? Effect.Positive : (status < 0 ? Effect.Negative : Effect.Neutral)
       )
-      effects.set(TgdFormatter.displayNames.get(mod), effect)
+      
+      effects.set(TgdFormatter.displayNames.get(mod), effect) 
     }
     
     return effects
@@ -53,9 +54,8 @@ export class TgdFormatter {
    * @param baseWeaponData tgd base weapon data. use TgdService.getWeaponData()[1]
    */
   private static getModEffectStatus(mod: string, value: number, baseWeaponData: WeaponData ): number {
-    
     const positiveModEffect: string = TgdFormatter.positiveModEffect.get(mod)
-    let status: number // positive effect = pro, negative effect = con, neutral effect = none  
+    let status: number // positive effect = pro, negative effect = con, neutral effect = none
 
     if(TgdFormatter.comparesToBase.has(mod)) {
       const baseValue: number = baseWeaponData[mod]
@@ -76,12 +76,18 @@ export class TgdFormatter {
     } else if(positiveModEffect === TgdFormatter.positiveEffects.negative) {
       status = value * -1
     }
-
+    
     return status
   }
 
-  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean): string {
+  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean, baseWeaponData: WeaponData): string {
     let unit = TgdFormatter.displayUnits.get(mod)
+
+    if(TgdFormatter.comparesToBase.has(mod)) {
+      // console.log(baseWeaponData[mod])
+      
+      // value = value - baseWeaponData[mod]
+    }
 
     if(unit === TgdFormatter.units.percent) {
       let calc = Math.round((value - 1) * 1000) / 10

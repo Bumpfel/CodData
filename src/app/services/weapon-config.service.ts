@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from '../models/WeaponConfig'
-import { TGDData, AttachmentData, WeaponData } from '../models/TGD/Data'
-import { TgdFetch } from '../functions/TgdFetch'
-import { TgdFormatter } from '../functions/TgdFormatter';
-import { Effect } from '../models/Effect';
-import { WeaponDamage } from '../models/TGD/WeaponDamage';
+
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +34,16 @@ export class WeaponConfigService {
     return JSON.parse(window.localStorage.getItem(weaponName))
   }
 
+  // obs_getComparisonConfigs(): Observable<WeaponConfig[]> {
+  //   let arr: WeaponConfig[] = []
+
+  //   for(let i = 0; i < window.sessionStorage.length; i ++) {
+  //     let key = window.sessionStorage.key(i)
+  //     arr.push(JSON.parse(window.sessionStorage.getItem(key)))
+  //   }
+  //   return of(arr)
+  // }
+
   getComparisonConfigs(): WeaponConfig[] {
     let arr: WeaponConfig[] = []
 
@@ -60,14 +66,34 @@ export class WeaponConfigService {
   getIterableNrOfEmptyAttachmentSlots(weaponConfig: WeaponConfig) { // for angular iterator (*ngFor)
     return new Array(this.maxAttachments - Object.keys(weaponConfig.attachments).length)
   }
+  
+  getFullWeaponType(weaponConfig: WeaponConfig): string {
+    if(weaponConfig.weaponType) {
+      const menuPathToWeaponType: Map<string, string> = new Map([
+        ['assault rifles', 'Assault Rifle'],
+        ['smgs', 'Sub Machine Gun'],
+        ['lmgs', 'Light Machine Gun'],
+        ['marksman rifles', 'Marksman Rifle'],
+        ['sniper rifles', 'Sniper Rifle']
+      ])
+      
+      return menuPathToWeaponType.get(weaponConfig.weaponType)
+    }
+    return null
+  }
 
   saveConfig(weaponConfig: WeaponConfig, isArmoryConfig: boolean = false): void {
+
     if(isArmoryConfig) {
       // TODO save as array with weaponName as key
       window.localStorage.setItem(weaponConfig.armouryName, JSON.stringify(weaponConfig))
     } else {
       window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
     }
+  }
+
+  deleteConfig(slot: number) {
+    window.sessionStorage.removeItem('' + slot)
   }
 
   setAttachment(saveSlot: number, attachmentSlot: string, attachmentName: string): number {

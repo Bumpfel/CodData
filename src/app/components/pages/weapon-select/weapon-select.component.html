@@ -9,7 +9,7 @@
   <div class="scrollBox">
     <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)">
       <a (click)="selectWeapon(weaponName); soundService.select()" (mouseenter)="soundService.hover(); showArmouryButton(weaponName)"><!-- routerLink="/configurations" -->
-        <app-weapon-card [config]="{ weaponName: weaponName }"></app-weapon-card>
+        <app-weapon-card [weaponConfig]="{ weaponName: weaponName, weaponType: weaponType }" displayType="false"></app-weapon-card>
       </a>
       <a *ngIf="armourySaves.get(weaponName) > 0" class="small" id="armoury-slot-small" (mouseenter)="soundService.hover(); showArmouryButton(weaponName)">
         <!-- [routerLink]="'/' + comparisonSlot + '/gunsmith'" -->

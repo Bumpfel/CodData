@@ -17,22 +17,24 @@ export class WeaponSelectComponent implements OnInit {
   weaponNames: string[]
   hoveredSlot: HTMLElement
   armourySaves: Map<string, number> = new Map()
+
+  weaponType: string
   
   constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    // this.globalService.navigateOnEscape('/configurations', this.router)
     this.globalService.goBackOnEscape()
     
     this.weaponTypes = this.dataService.getWeaponTypes()
     
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe(async params => {
       if(!params.weaponType) {
         // route to first weapon type in list
         this.router.navigate([this.globalService.nameToLink(this.weaponTypes[0])], { relativeTo: this.route, replaceUrl: true })
       } else {
+        this.weaponType = this.globalService.linkToName(params.weaponType)
         // get weapons and map nr of armouryConfigs
-        this.weaponNames = this.dataService.getWeapons(this.globalService.linkToName(params.weaponType))
+        this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType))
         for(let weaponName of this.weaponNames) {          
           let saves = this.configService.getArmouryConfigs(this.globalService.nameToLink(weaponName))
           this.armourySaves.set(weaponName, saves ? saves.length : 0)
@@ -40,12 +42,29 @@ export class WeaponSelectComponent implements OnInit {
       }
     })
   }
+
+  ngOnDestroy(): void {
+    this.globalService.disableGoBackOnEscape()
+  }
   
   selectWeapon(weaponName: string): void {
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
-    this.configService.saveConfig(new WeaponConfig(slot, weaponName))
+
+    this.configService.saveConfig(new WeaponConfig(slot, weaponName, this.weaponType))
+    // this.setWeaponType(slot)
     window.history.back()
   }
+
+  // async setWeaponType(slot: number) {
+  //   console.log('fetching weapon type...')
+    
+  //   const config = this.configService.getWeaponConfig(slot)
+  //   const type = await this.dataService.getWeaponType(config.weaponName)
+  //   config.weaponType = type
+  //   console.log('done. found ' + type)
+    
+  //   this.configService.saveConfig(config)
+  // }
 
   showArmouryButton(weaponName: string): void { // TODO slight duplicate or similar as the one in configurations
     if(this.hoveredSlot) {

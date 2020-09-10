@@ -77,6 +77,15 @@ main {
     width: $width;
     margin: 0 calc((100% - #{$width}) / 2);
     // z-index: -1;
+    
+    // test
+    &#VLK {
+      width: 10%;
+      min-height: 15px;
+      position: relative;
+      top: -465px;
+      left: 595px;
+    }
   }
 
   // ###  Misc Info  ###

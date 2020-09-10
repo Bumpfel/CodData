@@ -17,9 +17,10 @@ export class WeaponConfig {
       perk: string,
     }
 
-    constructor(slot: number, name: string) {
+    constructor(slot: number, name: string, type?: string) {
       this.comparisonSlot = slot
       this.weaponName = name
+      this.weaponType = type
       this.attachments = {
           muzzle: undefined,
           barrel: undefined,

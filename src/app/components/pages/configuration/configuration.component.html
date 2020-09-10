@@ -1,18 +1,18 @@
-<title>Configs</title>
+<title>Configuration</title>
 
 <app-top-menu title="configurations"></app-top-menu>
 
-<main>
+<main (mousedown)="closeContextMenu()">
   <div class="scrollBox">
     <div>
-      <div *ngFor="let config of configurations">
-        <a (mouseenter)="showGunsmithButton(config.comparisonSlot); soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + config.comparisonSlot + '/weapon-select'">
-          <app-weapon-card [config]="config"></app-weapon-card>
+      <div *ngFor="let weaponConfig of configurations">
+        <a [id]="'card-' + weaponConfig.comparisonSlot" (mouseleave)="closeContextMenu(1000)" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover(); keepContextMenu(weaponConfig.comparisonSlot)" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
+          <app-weapon-card [weaponConfig]="weaponConfig"></app-weapon-card>
         </a>
-        <a class="small hidden" (mouseenter)="soundService.hover()" (click)="soundService.select()" [id]="'gunsmith-slot' + config.comparisonSlot" [routerLink]="'/' + config.comparisonSlot + '/gunsmith'">
+        <a class="small hidden" (mouseenter)="soundService.hover()" (click)="soundService.select()" [id]="'gunsmith-slot' + weaponConfig.comparisonSlot" [routerLink]="'/' + weaponConfig.comparisonSlot + '/gunsmith'">
           Gunsmith
           <br>
-          <img src="/assets/images/gunsmith.png">
+          <img src="/assets/images/gunsmith.png" alt="gunsmith">
         </a>
       </div>
       <a (mouseenter)="showGunsmithButton(); soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + nextSlot + '/weapon-select'" class="add">
@@ -20,4 +20,14 @@
       </a>
     </div>
   </div>
+
+  <!-- <template id="contextMenu"> -->
+    <!-- Right click ContextMenu -->
+    <div id="contextMenu" class="small">
+      <!-- [id]="'dropdown' + weaponConfig.comparisonSlot"> -->
+      <div>{{getActiveConfigName()}}</div>
+      <a (click)="deleteConfig()">Delete</a>
+      <a>Rename</a>
+    </div>
+  <!-- </template> -->
 </main>
