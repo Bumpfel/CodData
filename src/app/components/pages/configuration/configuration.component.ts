@@ -42,6 +42,7 @@ export class ConfigurationComponent implements OnInit {
     this.configService.deleteConfig(this.activeConfig.comparisonSlot)
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
     this.hoveredSlot = undefined
+    this.activeConfig = undefined
   }
  
   showGunsmithButton(slot?: number): void {
@@ -67,7 +68,9 @@ export class ConfigurationComponent implements OnInit {
   
   closeContextMenu(): void {
     this.contextOverlay.classList.add('hidden')
-    document.querySelector('#weapon-slot' + this.activeConfig.comparisonSlot).classList.remove('hovered')
+    if(this.activeConfig) {
+      document.querySelector('#weapon-slot' + this.activeConfig.comparisonSlot).classList.remove('hovered')
+    }
   }
 
   getActiveConfigName(): string {   
