@@ -5,6 +5,5 @@
   
   <div id="menu">
     <a *ngFor="let menuItem of menuItems" (mousedown)="navigate(menuItem)" [routerLink]="'../' + globalService.nameToLink(menuItem)" routerLinkActive="selected">{{menuItem}}</a>
-    <!--   -->
   </div>
 </nav>

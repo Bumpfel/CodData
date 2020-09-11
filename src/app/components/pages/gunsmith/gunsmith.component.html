@@ -23,7 +23,7 @@
   </div>
   
   <!-- Image -->
-  <img [src]="getImageLink(weaponConfig)" [alt]="weaponConfig.weaponName">
+  <img [src]="getImageLink()" [alt]="weaponConfig.weaponName">
 
   <!-- Misc Info -->
   <!--------------->
@@ -89,8 +89,31 @@
         </tr>
       </table>
 
+      <!-- Base Weapon Stats -->
+      <table aria-describedby="base weapon stats">
+        <tr class="summary">
+          <th scope="summary title">
+            Base weapon stats
+          </th>
+        </tr>
+        <ng-container *ngIf="baseWeaponStats else loadingBaseWeaponStat">
+          <tr class="summary" *ngFor="let stat of statOrder">
+            <td>
+              <ng-container *ngIf="baseWeaponStats.get(stat)">
+                {{baseWeaponStats.get(stat).value}}
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #loadingBaseWeaponStat>
+          <div>
+            Loading...
+          </div>
+        </ng-template>
+      </table>
+
       <!-- Weapon Stat Summary -->
-      <table aria-describedby="weapon stat summary">
+      <table aria-describedby="weapon stat summary" class="summary" *ngIf="attachmentSummary">
         <tr class="summary">
           <th scope="summary title">
             Summary
@@ -169,6 +192,19 @@
     <div>R</div>
     Deselect
   </div>
+
+
+  <!-- Armoury name form -->
+  <div id="nameFormOverlay" class="overlay tinted gone">
+    <form id="nameForm" (ngSubmit)="saveConfig(name.value)">
+      <div id="title">enter name</div>
+      <input type="text" id="nameInput" [value]="weaponConfig.armouryName || ''" autocomplete="off" spellcheck="false" #name>
+      <a (click)="saveConfig(name.value)" class="grey">OK</a>
+      <!-- <button class="button grey" type="submit">OK</button> -->
+      <a (click)="hideOverlay()" class="grey">Cancel</a>
+    </form>
+  </div>
+
 </main>
 
 <app-footer></app-footer>

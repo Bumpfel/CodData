@@ -7,8 +7,6 @@ import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { Effect } from 'src/app/models/Effect';
-import { variable } from '@angular/compiler/src/output/output_ast';
-import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-attachment-select',

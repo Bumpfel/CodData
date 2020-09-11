@@ -1,5 +1,4 @@
-@import "../../../../vars.scss";
-// @import "/src/vars.scss";
+@import "./src/vars.scss";
 
 #attachments {
   display: inline-block;
@@ -68,7 +67,7 @@
 
       background-image:
         linear-gradient(darken($activeBG, 25), darken($activeBG, 25)),
-        url('../../../../assets/images/square-pattern.png'),
+        url('/assets/images/square-pattern.png'),
       ;
       font-size: 18px;
       color: #fffc;

@@ -53,20 +53,8 @@ export class WeaponSelectComponent implements OnInit {
 
     this.configService.saveConfig(new WeaponConfig(weaponName, slot, this.weaponType))
     this.dataService.getAvailableAttachmentSlots(weaponName) // for caching
-    // this.setWeaponType(slot)
     window.history.back()
   }
-
-  // async setWeaponType(slot: number) {
-  //   console.log('fetching weapon type...')
-    
-  //   const config = this.configService.getWeaponConfig(slot)
-  //   const type = await this.dataService.getWeaponType(config.weaponName)
-  //   config.weaponType = type
-  //   console.log('done. found ' + type)
-    
-  //   this.configService.saveConfig(config)
-  // }
 
   showArmouryButton(weaponName: string): void {    
     if(this.hoveredSlot) {

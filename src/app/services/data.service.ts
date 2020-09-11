@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { WeaponDamage } from '../models/TGD/WeaponDamage';
-import { AttachmentData, TGDData, WeaponData } from '../models/TGD/Data';
+import { WeaponDamage } from 'src/app/models/TGD/WeaponDamage';
+import { AttachmentData, TGDData, WeaponData } from 'src/app/models/TGD/Data';
 import { TgdFormatter } from '../functions/TgdFormatter';
-import { Effect } from '../models/Effect';
-import { TgdFetch } from '../functions/TgdFetch';
-import { WeaponConfig } from '../models/WeaponConfig';
+import { Effect } from 'src/app/models/Effect';
+import { TgdFetch } from 'src/app/functions/TgdFetch';
+import { WeaponConfig } from 'src/app/models/WeaponConfig';
 
 @Injectable({
   providedIn: 'root'
@@ -178,6 +178,7 @@ export class DataService {
     let result: (WeaponDamage[] | AttachmentData)[]
     
     if(!this.weaponData[weaponName]) {
+      console.log('fetching base weapon data')
       result = await TgdFetch.getBaseWeaponData(weaponName)
       this.weaponData[weaponName] = result
     } else {

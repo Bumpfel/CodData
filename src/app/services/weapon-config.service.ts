@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WeaponConfig } from '../models/WeaponConfig'
-
+import { WeaponConfig } from 'src/app/models/WeaponConfig'
 
 @Injectable({
   providedIn: 'root'

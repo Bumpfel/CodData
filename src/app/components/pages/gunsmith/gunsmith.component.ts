@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { SoundService } from 'src/app/services/sound.service';
-import { Stats } from '../../../models/Stats'
-import { Effect } from '../../../models/Effect'
+import { Stats } from 'src/app/models/Stats'
+import { Effect } from 'src/app/models/Effect'
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
@@ -45,53 +45,67 @@ export class GunsmithComponent implements OnInit {
   deselectPopup: HTMLElement 
 
   // TODO type vars when done with re-structure
-  baseSummary: any
+  baseWeaponStats: any
   attachmentSummary: Array<Map<string, Effect>> = []
   weaponStatSummary: Map<string, Effect>
 
   statOrder: string[]
 
-  private quickAttachmentRemoveCallback: (e: KeyboardEvent) => void
-  private saveConfigCallback: (e: KeyboardEvent) => void
+  private nameFormOverlay: HTMLElement
+
+  private quickAttachmentRemoveCb: (e: KeyboardEvent) => void
+  private saveConfigCb: (e: KeyboardEvent) => void
+  private cancelConfigCb: (e: KeyboardEvent) => void
 
   constructor(private route: ActivatedRoute, private dataService: DataService, public globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
 
   ngOnInit(): void {   
     this.globalService.goBackOnEscape()
     this.deselectPopup = document.querySelector('#deselect')
+    this.nameFormOverlay = document.querySelector('#nameFormOverlay')
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
    
     this.statOrder = Stats.getAllOrderedStats()
     
-    this.saveConfigCallback = e => {     
-      if(e.key === '1') { // TODO save once
-        // TODO save form
-        console.log('saved')
-        this.weaponConfig.armouryName = 'temp' // TODO temp
-        this.configService.saveConfig(this.weaponConfig, true)
+    this.saveConfigCb = e => {     
+      if(e.key === '1') {
+        this.nameFormOverlay.classList.remove('gone');
+        (this.nameFormOverlay.querySelector('#nameInput') as HTMLElement).focus()
+        this.globalService.disableGoBackOnEscape()
+        document.addEventListener('keydown', this.cancelConfigCb)
       }
     }
-    document.addEventListener('keydown', this.saveConfigCallback)
-    
+    document.addEventListener('keydown', this.saveConfigCb)
+
+    this.cancelConfigCb = e => {
+      if(e.key === 'Escape') {
+        this.hideOverlay()
+        document.removeEventListener('keydown', this.cancelConfigCb)
+        this.globalService.goBackOnEscape()
+      }
+    }
+
     this.fetchAvailableAttachmentSlots()
+    this.fetchBaseWeaponStats()
     this.fetchWeaponStatSummary()
     this.fetchAttachmentSummary()
   }
   
   ngOnDestroy(): void {
     this.disableQuickAttachmentRemoval()
-    document.removeEventListener('keydown', this.saveConfigCallback)
+    document.removeEventListener('keydown', this.saveConfigCb)
+    document.removeEventListener('keydown', this.cancelConfigCb)
+  }
+
+  async fetchBaseWeaponStats(): Promise<void> {
+    this.baseWeaponStats = await this.dataService.getWeaponSummary(new WeaponConfig(this.weaponConfig.weaponName))
   }
 
   async fetchWeaponStatSummary(): Promise<void> {
     this.weaponStatSummary = null // clears obsolete data
     this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
-    // console.log(this.weaponStatSummary)
-    
-   
-    // this.baseSummary = await this.dataService.getWeaponSummary(new WeaponConfig(this.weaponConfig.weaponName)) // TODO not implemented
   }
 
   async fetchAttachmentSummary(): Promise<void> {    
@@ -117,7 +131,7 @@ export class GunsmithComponent implements OnInit {
   }
   
   enableQuickAttachmentRemoval(attachmentSlot: string, event: MouseEvent): void {
-    this.quickAttachmentRemoveCallback = (e: KeyboardEvent) => {
+    this.quickAttachmentRemoveCb = (e: KeyboardEvent) => {
       if(e.key === 'r') {
         const removedAttachment = this.weaponConfig.attachments[attachmentSlot]
         this.configService.removeAttachment(this.weaponConfig, attachmentSlot)
@@ -136,14 +150,14 @@ export class GunsmithComponent implements OnInit {
       this.deselectPopup.style.left = event.clientX + 'px'
       this.deselectPopup.style.top = event.clientY + 'px'
       
-      document.addEventListener('keydown', this.quickAttachmentRemoveCallback)
+      document.addEventListener('keydown', this.quickAttachmentRemoveCb)
     }
   }
   
   disableQuickAttachmentRemoval(): void {
     this.deselectPopup.classList.add('gone')
     this.deselectPopup.classList.remove('fade-in')
-    document.removeEventListener('keydown', this.quickAttachmentRemoveCallback)
+    document.removeEventListener('keydown', this.quickAttachmentRemoveCb)
   }
 
   getNrOfAttachments(): number {
@@ -161,12 +175,19 @@ export class GunsmithComponent implements OnInit {
     return 0
   }
 
-  log(...what: any[]) { // TODO debug
-    console.log(what)
-  }
-
-  getImageLink(weaponConfig: WeaponConfig): string {
-    return '/assets/images/weapons/' + this.globalService.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'
+  getImageLink(): string {
+    return '/assets/images/weapons/' + this.globalService.nameToLink(this.weaponConfig.weaponType) + '/' + this.weaponConfig.weaponName + '.png'
   }
   
+  saveConfig(name: string) {
+    console.log('saving ', name)
+    this.hideOverlay()
+    this.weaponConfig.armouryName = name
+    this.configService.saveConfig(this.weaponConfig, true)
+  }
+
+  hideOverlay() {
+    this.nameFormOverlay.classList.add('gone')
+  }
+
 }

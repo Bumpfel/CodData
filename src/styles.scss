@@ -2,7 +2,7 @@
 
 * {
   font-family: 'Roboto Light';
-  font-weight: 700; // TODO too bold?
+  font-weight: 700;
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 
@@ -12,7 +12,7 @@ body {
   user-select: none;
   overflow-x: hidden;
 
-  // background-image: url('./assets/images/tempBG.png'); // TODO temp
+  // background-image: url('/assets/images/tempBG.png'); // TODO temp
   // background-size: cover;
 }
 
@@ -27,7 +27,7 @@ body {
 }
 ::-webkit-scrollbar-thumb {
   $colour: #f1f1f1bc;
-  background-image: linear-gradient($colour, $colour), url('./assets/images/square-pattern.png');
+  background-image: linear-gradient($colour, $colour), url('/assets/images/square-pattern.png');
 }
 ::-webkit-scrollbar-thumb:hover {
   $trimSize: 1px;
@@ -38,7 +38,7 @@ body {
       $darkBG $trimSize, $darkBG calc(100% - #{$trimSize}),
       $highlightColour calc(100% - #{$trimSize}), $highlightColour 100%
     ),
-    url('./assets/images/square-pattern.png');
+    url('/assets/images/square-pattern.png');
   border: $trimSize solid $highlightColour;
   border-left: 0;
   border-right: 0;
@@ -46,7 +46,7 @@ body {
 
 a, a * {
   text-decoration: none;
-  cursor: url('./assets/images/pointer-link.png'), pointer;
+  cursor: url('/assets/images/pointer-link.png'), pointer;
   
   -webkit-user-drag: none;
   -moz-user-drag: none; 
@@ -55,15 +55,15 @@ a, a * {
 
 main, footer {
   // Buttons 
-  a, .disabledButton {
+  a, .disabledButton, .button {
     opacity: .4;
     
     text-transform: capitalize;
     color: $highlightColour;
     font-size: 18px;
     background-image:
-      linear-gradient($darkColour, $darkColour),
-      url('./assets/images/square-pattern.png'),
+    linear-gradient($darkColour, $darkColour),
+    url('/assets/images/square-pattern.png'),
     ;
     position: relative;
     display: inline-block;
@@ -71,19 +71,23 @@ main, footer {
     margin: 0;
     padding: 10px;
     
+    &.grey {
+      color: #eee;
+    }
+    
     &:hover, &.hovered {
-      $trimColour: rgb(60, 146, 202); // TODO see if it can be merged
+      color: $highlightColour;
       $trimHeight: 2px;
       opacity: 1;
       background-image: 
       linear-gradient(to right, $darkBG, transparent 50%, $darkBG 100%),
-      linear-gradient(to bottom,
-      $trimColour, $trimColour $trimHeight,
-      $darkBG $trimHeight, $darkBG calc(100% - 2px),
-      $trimColour calc(100% - 2px), $trimColour 100%),
+        linear-gradient(to bottom,
+        $buttonTrimColour, $buttonTrimColour $trimHeight,
+        $darkBG $trimHeight, $darkBG calc(100% - 2px),
+        $buttonTrimColour calc(100% - 2px), $buttonTrimColour 100%),
       // linear-gradient(to right, $weaponCardBG, $trimColour 50%, weaponCardBG 100%),
-      radial-gradient(ellipse at bottom, $trimColour -25%, $darkBG 120%),
-      url('./assets/images/square-pattern.png'),
+      radial-gradient(ellipse at bottom, $buttonTrimColour -25%, $darkBG 120%),
+      url('/assets/images/square-pattern.png'),
       ;
     }
 
@@ -250,10 +254,14 @@ main {
   top: -7px;
 }
 
-.overlay { // used to prevent right clicks
+.overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.tinted {
+  background-color: #0005;
 }
