@@ -3,10 +3,10 @@
 <main>
   <div class="scrollBox">
     <div>
-      <div *ngFor="let weaponConfig of configurations">
+      <div class="card" *ngFor="let weaponConfig of configurations">
         <!-- Weapon Button -->
         <a [id]="'weapon-slot' + weaponConfig.comparisonSlot" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover()" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
-          <app-weapon-card [weaponConfig]="weaponConfig"></app-weapon-card>
+          <app-weapon-card [weaponConfig]="weaponConfig" [displayExtras]="true"></app-weapon-card>
         </a>
         <!-- Gusmith Button -->
         <a [id]="'gunsmith-slot' + weaponConfig.comparisonSlot" class="small hidden" (mouseenter)="soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/gunsmith'">
@@ -15,18 +15,20 @@
           <img src="/assets/images/gunsmith.png" alt="gunsmith">
         </a>
       </div>
-      <a (mouseenter)="showGunsmithButton(); soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + nextSlot + '/weapon-select'" class="add">
+      <!-- New Config -->
+      <a class="card new" (mouseenter)="showGunsmithButton(); soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + nextSlot + '/weapon-select'">
         +
       </a>
     </div>
   </div>
-
+  
+  <!-- Context Menu Overlay -->
+  <div id="contextMenuOverlay" class="overlay hidden" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault(); closeContextMenu()"></div>
+  
   <!-- Right click ContextMenu -->
-  <div id="contextMenuOverlay" class="overlay hidden" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault(); closeContextMenu()">
-    <div id="contextMenu" class="small">
-      <div>{{getActiveConfigName()}}</div>
-      <a (click)="deleteConfig()">Delete</a>
-      <!-- <a>Rename</a> -->
-    </div>
+  <div id="contextMenu" class="small hidden">
+    <div>{{getActiveConfigName()}}</div>
+    <a (click)="deleteConfig()">Delete</a>
   </div>
 </main>
+ 

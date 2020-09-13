@@ -1,0 +1,23 @@
+@import './src/vars.scss';
+
+main {
+  
+  #weapon {
+    color: $mediumGrey;
+    font-size: 18px;
+  }
+  
+  #title {
+    color: grey;
+    font-family: 'Roboto Bold';
+    font-size: 54px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  a {
+    // margin: 5px;
+    transform: scale(.9);
+  }
+
+}

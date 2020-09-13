@@ -1,0 +1,14 @@
+<app-top-menu title="armoury"></app-top-menu>
+
+<main>  
+  <div id="weapon">Marksman Rifle Alpha</div>
+  <div id="title">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
+
+  <div id="stats"></div>
+  
+  <ng-container *ngFor="let weaponConfig of allConfigs | keyvalue">
+    <a (click)="selectConfig(weaponConfig)" (mouseenter)="setActiveConfig(weaponConfig)">
+      <app-weapon-card [weaponConfig]="weaponConfig.value"></app-weapon-card>
+    </a>
+  </ng-container>
+</main>

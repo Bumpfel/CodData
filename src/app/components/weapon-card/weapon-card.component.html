@@ -1,12 +1,12 @@
 <div id="card">
-  {{weaponConfig.weaponName}}
+  {{this.weaponConfig.armouryName || this.weaponConfig.weaponName}}
   <div class="right" *ngIf="weaponConfig.attachments">
     <div *ngFor="let key of weaponConfig.attachments | keyvalue" class="small circle filled"></div>
     <div *ngFor="let i of configService.getIterableNrOfEmptyAttachmentSlots(weaponConfig)" class="small circle"></div>
   </div>
-  <div class="info">{{getConfigName()}}</div>
+  <div class="info" *ngIf="displayExtras">{{getConfigName()}}</div>
   <div class="img">
     <img [src]="'/assets/images/weapons/' + globalService.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'" (error)="err($event)" [alt]="weaponConfig.weaponName">
   </div>
-  <div class="info small">{{getFullWeaponType()}}</div>
+  <div class="info small" *ngIf="displayExtras">{{getFullWeaponType()}}</div>
 </div>

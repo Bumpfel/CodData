@@ -12,6 +12,7 @@ import { MessagesComponent } from './components/messages/messages.component';
 import { WeaponCardComponent } from './components/weapon-card/weapon-card.component';
 import { TopMenuComponent } from './components/navigation/top-menu/top-menu.component';
 import { FooterComponent } from './components/navigation/footer/footer.component';
+import { ArmouryComponent } from './components/pages/armoury/armoury.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { FooterComponent } from './components/navigation/footer/footer.component
     MessagesComponent,
     WeaponCardComponent,
     TopMenuComponent,
-    FooterComponent
+    FooterComponent,
+    ArmouryComponent,
   ],
   imports: [
     BrowserModule,

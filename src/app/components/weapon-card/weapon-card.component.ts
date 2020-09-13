@@ -11,8 +11,7 @@ import { WeaponConfig } from 'src/app/models/WeaponConfig';
 export class WeaponCardComponent implements OnInit {
 
   @Input() weaponConfig: WeaponConfig
-  @Input() link: string
-  @Input() displayExtras: boolean = true
+  @Input() displayExtras: boolean = false
 
   constructor(public globalService: GlobalService, private configService: WeaponConfigService) { }
 
@@ -20,15 +19,13 @@ export class WeaponCardComponent implements OnInit {
   }
 
   getFullWeaponType(): string {
-    return this.displayExtras === true ? this.configService.getFullWeaponType(this.weaponConfig) : undefined
+    return this.configService.getFullWeaponType(this.weaponConfig)
   }
 
   getConfigName(): string {
-    return this.displayExtras === true
-      ? (this.weaponConfig.armouryName
-        ? this.weaponConfig.armouryName
-        : 'slot #' + this.weaponConfig.comparisonSlot)
-      : undefined
+    return this.weaponConfig.armouryName
+      ? this.weaponConfig.armouryName
+      : 'slot #' + this.weaponConfig.comparisonSlot
   }
   
   err(event): void {

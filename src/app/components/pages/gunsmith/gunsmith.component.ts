@@ -71,10 +71,10 @@ export class GunsmithComponent implements OnInit {
     
     this.saveConfigCb = e => {     
       if(e.key === '1') {
-        this.nameFormOverlay.classList.remove('gone');
-        (this.nameFormOverlay.querySelector('#nameInput') as HTMLElement).focus()
+        this.nameFormOverlay.classList.remove('gone')
         this.globalService.disableGoBackOnEscape()
-        document.addEventListener('keydown', this.cancelConfigCb)
+        document.addEventListener('keydown', this.cancelConfigCb);
+        setTimeout(() => (this.nameFormOverlay.querySelector('#nameInput') as HTMLElement).focus(), 0) // sending to event loop ensure its run last
       }
     }
     document.addEventListener('keydown', this.saveConfigCb)
@@ -88,9 +88,7 @@ export class GunsmithComponent implements OnInit {
     }
 
     this.fetchAvailableAttachmentSlots()
-    this.fetchBaseWeaponStats()
-    this.fetchWeaponStatSummary()
-    this.fetchAttachmentSummary()
+    this.fetchTableData()
   }
   
   ngOnDestroy(): void {
@@ -99,17 +97,13 @@ export class GunsmithComponent implements OnInit {
     document.removeEventListener('keydown', this.cancelConfigCb)
   }
 
-  async fetchBaseWeaponStats(): Promise<void> {
-    this.baseWeaponStats = await this.dataService.getWeaponSummary(new WeaponConfig(this.weaponConfig.weaponName))
-  }
-
-  async fetchWeaponStatSummary(): Promise<void> {
+  fetchTableData(): void {
+    this.dataService.getWeaponSummary(new WeaponConfig(this.weaponConfig.weaponName)).then(result => this.baseWeaponStats = result)
+    
     this.weaponStatSummary = null // clears obsolete data
-    this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
-  }
+    this.dataService.getWeaponSummary(this.weaponConfig).then(result => this.weaponStatSummary = result)
 
-  async fetchAttachmentSummary(): Promise<void> {    
-    this.attachmentSummary = await this.dataService.getAllAttachmentEffects(this.weaponConfig)
+    this.dataService.getAllAttachmentEffects(this.weaponConfig).then(result => this.attachmentSummary = result)
   }
 
   async fetchAvailableAttachmentSlots(): Promise<void> {
@@ -137,8 +131,7 @@ export class GunsmithComponent implements OnInit {
         this.configService.removeAttachment(this.weaponConfig, attachmentSlot)
         delete this.attachmentSummary[removedAttachment]
 
-        this.fetchAttachmentSummary()
-        this.fetchWeaponStatSummary()
+        this.fetchTableData()
         this.disableQuickAttachmentRemoval()
       }
     }

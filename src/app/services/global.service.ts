@@ -34,7 +34,7 @@ export class GlobalService {
   }
 
   linkToName(str: string): string {
-    return str != null ? str.split('_').join(' ').toLowerCase() : null
+    return str != null ? str.split('_').join(' ') : null // .toLowerCase()
   }
 
 }

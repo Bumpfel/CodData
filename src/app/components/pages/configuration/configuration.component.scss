@@ -1,19 +1,25 @@
 @import "./src/vars.scss";
 
-a {
-  box-sizing: border-box;
-  width: 400px; // duplicated value (weapon-select). can do commmon css class in styles
-  margin-bottom: 10px;
-
-  &.add {
-    text-align: center;
-    color: white;
-    font-size: 70px;
-  }
+main {
+  // border: 1px solid orange;
 }
 
 .scrollBox {
   height: auto;
+  
+  .card {
+    margin-bottom: 10px;
+    // border: 1px solid red;
+    
+    &.new {
+      display: block;
+      width: $weaponCardWidth;
+      
+      text-align: center;
+      color: white;
+      font-size: 70px;
+    }
+  }
 }
 
 #contextMenu {
@@ -24,7 +30,6 @@ a {
   opacity: 1;
   background-color: $darkGrey;
   
-
   div {
     border: 1px solid $darkBG;
     background-color: $darkGrey;
@@ -34,7 +39,6 @@ a {
   
   a {
     display: block;
-    width: unset;
     margin: 0;
     padding-left: 20px;
     
@@ -46,5 +50,4 @@ a {
       color: $highlightColour;
     }
   }
-
 }

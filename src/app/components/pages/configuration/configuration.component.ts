@@ -26,6 +26,8 @@ export class ConfigurationComponent implements OnInit {
 
   configurations: WeaponConfig[]
 
+  callBack
+
   ngOnInit(): void {
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
     // this.configService.obs_getComparisonConfigs().subscribe(configs => {
@@ -36,9 +38,17 @@ export class ConfigurationComponent implements OnInit {
     
     this.contextOverlay = document.querySelector('#contextMenuOverlay')
     this.contextMenu = document.querySelector('#contextMenu')
+
+    this.callBack = e => {
+      this.closeContextMenu();
+      console.log('esc')
+      document.removeEventListener('keydown', this.callBack)
+    }
   }
   
   deleteConfig(): void {
+    this.closeContextMenu()
+
     this.configService.deleteConfig(this.activeConfig.comparisonSlot)
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
     this.hoveredSlot = undefined
@@ -59,15 +69,21 @@ export class ConfigurationComponent implements OnInit {
     event.preventDefault()
     this.activeConfig = weaponConfig
 
+    document.addEventListener('keydown', this.callBack)
+
+    this.contextOverlay.style.position = 'fixed'
     this.contextOverlay.classList.remove('hidden')
+    this.contextMenu.classList.remove('hidden')
     document.querySelector('#weapon-slot' + weaponConfig.comparisonSlot).classList.add('hovered')
     
-    this.contextMenu.style.left = event.clientX + 'px'
-    this.contextMenu.style.top = event.clientY + 'px'
+    this.contextMenu.style.left = (event.pageX) + 'px'
+    this.contextMenu.style.top = (event.pageY) + 'px'    
   }
   
   closeContextMenu(): void {
+    this.contextOverlay.style.position = 'absolute'
     this.contextOverlay.classList.add('hidden')
+    this.contextMenu.classList.add('hidden')
     if(this.activeConfig) {
       document.querySelector('#weapon-slot' + this.activeConfig.comparisonSlot).classList.remove('hovered')
     }

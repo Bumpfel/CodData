@@ -4,21 +4,21 @@
 <!-- Weapon Select -->
 <main>
   <div class="scrollBox">
-    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)">
-      <a (click)="selectWeapon(weaponName); soundService.select()" (mouseenter)="soundService.hover(); showArmouryButton(weaponName)">
-        <app-weapon-card [weaponConfig]="{ weaponName: weaponName, weaponType: weaponType }" displayExtras="false"></app-weapon-card>
+    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName)">        
+      <!-- Weapon Card -->
+      <a (click)="selectWeapon(weaponName); soundService.select()" (mouseenter)="soundService.hover()" (focus)="soundService.hover(); showArmouryButton(weaponName)" tabindex="0">
+        <app-weapon-card [weaponConfig]="{ weaponName: weaponName, weaponType: weaponType }"></app-weapon-card>
       </a>
-      <a *ngIf="armourySaves.get(weaponName) > 0" class="small" id="armoury-slot-small" (mouseenter)="soundService.hover(); showArmouryButton(weaponName)">
-        <!-- [routerLink]="'/' + comparisonSlot + '/gunsmith'" -->
+      <!-- Collapsed armoury button -->
+      <a *ngIf="armourySaves.get(weaponName) > 0" class="armoury" id="armoury-slot-small">
         {{armourySaves.get(weaponName)}}
         <div class="triangle"></div>
         <!-- <div>&#9654;</div> -->
       </a>
-      <a class="small gone" id="armoury-slot-expanded" (click)="soundService.select()" (mouseenter)="soundService.hover()">
-        <!-- [routerLink]="'/' + comparisonSlot + '/gunsmith'" -->
+      <!-- Expanded armoury button -->
+      <a class="armoury gone" id="armoury-slot-expanded" (click)="soundService.select()"(focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
         <div class="title">Armoury</div>
-        <br>
-        <img src="/assets/images/armoury.png">
+        <img src="/assets/images/armoury.png" alt="Armoury button">
         <br>
         {{armourySaves.get(weaponName)}}
       </a>

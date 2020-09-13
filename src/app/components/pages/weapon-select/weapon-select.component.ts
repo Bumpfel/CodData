@@ -37,8 +37,7 @@ export class WeaponSelectComponent implements OnInit {
         this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType))
         for(let weaponName of this.weaponNames) {
           let saves = this.configService.getArmouryConfigs(weaponName)
-          
-          this.armourySaves.set(weaponName, saves ? saves.length : 0)
+          this.armourySaves.set(weaponName, saves ? Object.keys(saves).length : 0)
         }
       }
     })
@@ -49,7 +48,7 @@ export class WeaponSelectComponent implements OnInit {
   }
   
   selectWeapon(weaponName: string): void {
-    let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
+    let slot: number = this.getComparisonSlot()
 
     this.configService.saveConfig(new WeaponConfig(weaponName, slot, this.weaponType))
     this.dataService.getAvailableAttachmentSlots(weaponName) // for caching
@@ -66,5 +65,9 @@ export class WeaponSelectComponent implements OnInit {
       this.hoveredSlot.querySelector('#armoury-slot-small').classList.add('gone')
       this.hoveredSlot.querySelector('#armoury-slot-expanded').classList.remove('gone')
     }
+  }
+
+  getComparisonSlot(): number {
+    return parseInt(this.route.snapshot.paramMap.get('slot'))
   }
 }
