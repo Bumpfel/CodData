@@ -3,6 +3,7 @@ import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { SoundService } from 'src/app/services/sound.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-configuration',
@@ -11,7 +12,7 @@ import { SoundService } from 'src/app/services/sound.service';
 })
 export class ConfigurationComponent implements OnInit {
 
-  constructor(public globalService: GlobalService, private configService: WeaponConfigService, public soundService: SoundService) { }
+  constructor(public globalService: GlobalService, private configService: WeaponConfigService, public soundService: SoundService, private messageService: MessageService) { }
   
   // configurations: any[] = [ // TODO temp
   //   { name: 'Kilo 141', type: 'Assault Rifle', configName: 'Kilo Ranged', attachments: { muzzle: 'Monolithic Suppressor' } },
@@ -26,7 +27,7 @@ export class ConfigurationComponent implements OnInit {
 
   configurations: WeaponConfig[]
 
-  callBack
+  callBack: (e: KeyboardEvent) => void
 
   ngOnInit(): void {
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
@@ -48,8 +49,9 @@ export class ConfigurationComponent implements OnInit {
   
   deleteConfig(): void {
     this.closeContextMenu()
+    this.messageService.addMessage('Configuration deleted', '#' + this.activeConfig.comparisonSlot + ' ' + (this.activeConfig.armouryName || this.activeConfig.weaponName))
 
-    this.configService.deleteConfig(this.activeConfig.comparisonSlot)
+    this.configService.deleteComparisonConfig(this.activeConfig.comparisonSlot)
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
     this.hoveredSlot = undefined
     this.activeConfig = undefined

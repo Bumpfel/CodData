@@ -18,14 +18,18 @@ export class WeaponCardComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getDisplayName() {
+    return this.weaponConfig.armouryName && !this.displayExtras ? this.weaponConfig.armouryName : this.weaponConfig.weaponName
+  }
+
   getFullWeaponType(): string {
     return this.configService.getFullWeaponType(this.weaponConfig)
   }
 
-  getConfigName(): string {
+  getCustomConfigName(): string {
     return this.weaponConfig.armouryName
       ? this.weaponConfig.armouryName
-      : 'slot #' + this.weaponConfig.comparisonSlot
+      : null //'slot #' + this.weaponConfig.comparisonSlot
   }
   
   err(event): void {

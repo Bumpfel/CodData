@@ -38,6 +38,7 @@ export class TgdFormatter {
     base_move: 'base_move',
     base_ads_move: 'base_ads_move',
     hipfire_base_area: 'hipfire_base_area',
+    type: 'type,'
   }
 
   
@@ -273,23 +274,4 @@ export class TgdFormatter {
     ['', 'Wider Pellet Spread'],
     ['', 'Melee Damage'],
   ])
-
-
-
-
-    // TODO test
-    private static positiveModEffect2: Map<string, string> = new Map([
-      [Stats.names.ads_speed, TgdFormatter.positiveEffects.negative],
-      [Stats.names.ads_move_speed, TgdFormatter.positiveEffects.greaterThan1],
-      [Stats.names.bullet_velocity, TgdFormatter.positiveEffects.greaterThan1],
-      [Stats.names.hipfire_accuracy, TgdFormatter.positiveEffects.lessThan1],
-      [Stats.names.recoil_stability, TgdFormatter.positiveEffects.lessThan1],
-      [Stats.names.move_speed, TgdFormatter.positiveEffects.greaterThan1],
-      [Stats.names.dmg_range, TgdFormatter.positiveEffects.greaterThan1],
-      [Stats.names.tstf, TgdFormatter.positiveEffects.negative],
-      [Stats.names.stf, TgdFormatter.positiveEffects.negative],
-      [Stats.names.recoil_control, TgdFormatter.positiveEffects.lessThan1],
-      [Stats.names.reload_time, TgdFormatter.positiveEffects.negative],
-      [Stats.names.mag_size, TgdFormatter.positiveEffects.positive],
-    ])
 }

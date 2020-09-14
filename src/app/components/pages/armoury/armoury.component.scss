@@ -5,6 +5,7 @@ main {
   #weapon {
     color: $mediumGrey;
     font-size: 18px;
+    text-transform: capitalize;
   }
   
   #title {
@@ -16,7 +17,6 @@ main {
   }
 
   a {
-    // margin: 5px;
     transform: scale(.9);
   }
 

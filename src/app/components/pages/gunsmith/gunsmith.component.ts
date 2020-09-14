@@ -51,6 +51,8 @@ export class GunsmithComponent implements OnInit {
 
   statOrder: string[]
 
+  maxNameLength: number = 20
+
   private nameFormOverlay: HTMLElement
 
   private quickAttachmentRemoveCb: (e: KeyboardEvent) => void
@@ -173,7 +175,10 @@ export class GunsmithComponent implements OnInit {
   }
   
   saveConfig(name: string) {
-    console.log('saving ', name)
+
+    if(name.length > this.maxNameLength) {
+      name = name.substr(0, this.maxNameLength)
+    }
     this.hideOverlay()
     this.weaponConfig.armouryName = name
     this.configService.saveConfig(this.weaponConfig, true)

@@ -5,6 +5,7 @@ import { GlobalService } from 'src/app/services/global.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { SoundService } from 'src/app/services/sound.service';
 import { DataService } from 'src/app/services/data.service';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-weapon-select',
@@ -20,7 +21,7 @@ export class WeaponSelectComponent implements OnInit {
 
   weaponType: string
   
-  constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router) { }
+  constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.globalService.goBackOnEscape()
@@ -52,6 +53,7 @@ export class WeaponSelectComponent implements OnInit {
 
     this.configService.saveConfig(new WeaponConfig(weaponName, slot, this.weaponType))
     this.dataService.getAvailableAttachmentSlots(weaponName) // for caching
+    this.messageService.addMessage('Weapon Equipped', weaponName)
     window.history.back()
   }
 

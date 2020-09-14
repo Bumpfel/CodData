@@ -20,13 +20,21 @@
 
   .info {
     $sz: 15px;
-    color: white;
-    font-size: $sz;
     height: $sz + 10px;
     text-transform: none;
+    font-size: $sz;
+    color: white;
 
     &.small {
       font-size: 12px;
+    }
+
+    img {
+      position: relative;
+      top: 2px;
+      $size: 15px;
+      width: $size;
+      height: $size;
     }
   }
   

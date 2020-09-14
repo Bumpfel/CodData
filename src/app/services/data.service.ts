@@ -18,6 +18,13 @@ export class DataService {
     ['marksman rifles', 'MR'],
     ['sniper rifles', 'SR']
   ])
+  private tgdToDisplayWeaponTypes: Map<string, string> = new Map([
+    ['AR', 'assault rifles'],
+    ['SMG', 'smgs'],
+    ['LMG', 'lmgs'],
+    ['MR', 'marksman rifles'],
+    ['SR', 'sniper rifles']
+  ])
 
   private weapons = {
     assaultrifles: ['Kilo 141', 'FAL', 'M4A1', 'FR 5.56', 'Oden', 'M13', 'FN Scar 17', 'AK-47' ,'RAM-7', 'Grau 5.56', 'CR-56 AMAX', 'AN-94'],
@@ -32,7 +39,12 @@ export class DataService {
     // melee: ['Riot Shield', 'Combat Knife', 'Kali Sticks', 'Dual Kodachis']
   }
 
-  // Cache VARS
+  private weaponIdentifiers: string[] = [ // will only work for my weapon list. not for tgd weapons (since my weapon list is already sorted)
+    'alpha', 'bravo', 'charlie', 'delta', 'echo', 'foxtrot', 'golf', 'hotel', 'india', 'juliet', 'kilo', 'lima', 'mike', 
+    'november', 'oscar', 'papa', 'quebec', 'romeo', 'sierra', 'tango', 'uniform', 'victor', 'whiskey', 'x-ray', 'yankee', 'zulu'
+  ]
+
+    // Cache VARS
   private weaponTypesData: Array<Array<string>> = [] // Object<Array<string>>
   private weaponData: Array<(Array<(Array<WeaponDamage> | AttachmentData)>)> = [] // P.I.T.A. typing. not actually Arrays. objects
   private attachmentData: Array<Array<AttachmentData>> = []
@@ -43,6 +55,19 @@ export class DataService {
 
   getWeaponTypes(): string[] {
     return Array.from(this.menuToTGDWeaponTypes.keys())
+  }
+
+  async getWeaponType(weaponName: string): Promise<string> {
+    const weaponData =  await this.getBaseWeaponData(weaponName) as WeaponData
+    const type = weaponData[1].type
+    
+    return this.tgdToDisplayWeaponTypes.get(type)
+  }
+
+  getWeaponSortIdentifier(weaponConfig: WeaponConfig): string {
+    // return 'Alpha'
+    const index = this.weapons[weaponConfig.weaponType.split(' ').join('')].indexOf(weaponConfig.weaponName)
+    return this.weaponIdentifiers[index]
   }
 
   /**
@@ -178,7 +203,6 @@ export class DataService {
     let result: (WeaponDamage[] | AttachmentData)[]
     
     if(!this.weaponData[weaponName]) {
-      console.log('fetching base weapon data')
       result = await TgdFetch.getBaseWeaponData(weaponName)
       this.weaponData[weaponName] = result
     } else {

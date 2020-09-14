@@ -1,14 +1,19 @@
 <app-top-menu title="armoury"></app-top-menu>
 
-<main>  
-  <div id="weapon">Marksman Rifle Alpha</div>
+<main *ngIf="loaded">
+  <div id="weapon">{{ getFullWeaponType()}} {{ getWeaponSortIdentifier() }}</div>
   <div id="title">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
 
   <div id="stats"></div>
   
-  <ng-container *ngFor="let weaponConfig of allConfigs | keyvalue">
-    <a (click)="selectConfig(weaponConfig)" (mouseenter)="setActiveConfig(weaponConfig)">
+  <a (click)="selectConfig(newConfig)" (mouseenter)="setActiveConfig(newConfig)">
+    <app-weapon-card [weaponConfig]="newConfig"></app-weapon-card>
+  </a>
+  <ng-container *ngFor="let weaponConfig of armouryConfigs | keyvalue">
+    <a (click)="selectConfig(weaponConfig.value)" (mouseenter)="setActiveConfig(weaponConfig.value)" (contextmenu)="showContextMenu($event)">
       <app-weapon-card [weaponConfig]="weaponConfig.value"></app-weapon-card>
     </a>
   </ng-container>
+
+  <app-contextmenu (optionSelected)="contextMenuAction($event)"></app-contextmenu>
 </main>

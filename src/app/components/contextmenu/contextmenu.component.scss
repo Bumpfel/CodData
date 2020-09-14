@@ -1,28 +1,6 @@
-@import "./src/vars.scss";
+@import './src/vars.scss';
 
-main {
-  // border: 1px solid orange;
-}
-
-.scrollBox {
-  height: auto;
-  
-  .card {
-    margin-bottom: 10px;
-    // border: 1px solid red;
-    
-    &.new {
-      display: block;
-      width: $weaponCardWidth;
-      
-      text-align: center;
-      color: white;
-      font-size: 70px;
-    }
-  }
-}
-
-#contextMenu { // TODO delete when/if replaced by popup component 
+#contextMenu {
   position: absolute;
   z-index: 2;
   width: 250px;
@@ -44,7 +22,6 @@ main {
     
     color: white;
     font-size: unset;
-    // opacity: unset;
 
     &:hover {
       color: $highlightColour;

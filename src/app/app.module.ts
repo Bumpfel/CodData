@@ -13,6 +13,7 @@ import { WeaponCardComponent } from './components/weapon-card/weapon-card.compon
 import { TopMenuComponent } from './components/navigation/top-menu/top-menu.component';
 import { FooterComponent } from './components/navigation/footer/footer.component';
 import { ArmouryComponent } from './components/pages/armoury/armoury.component';
+import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { ArmouryComponent } from './components/pages/armoury/armoury.component';
     TopMenuComponent,
     FooterComponent,
     ArmouryComponent,
+    ContextmenuComponent,
   ],
   imports: [
     BrowserModule,

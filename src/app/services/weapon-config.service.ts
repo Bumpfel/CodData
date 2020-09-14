@@ -58,13 +58,18 @@ export class WeaponConfigService {
       const weaponConfigs = this.getArmouryConfigs(weaponConfig.weaponName) || {}
       weaponConfigs[weaponConfig.armouryName] = weaponConfig
       window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(weaponConfigs))
-    } else {
-      window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
     }
+    window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
   }
 
-  deleteConfig(slot: number) {
+  deleteComparisonConfig(slot: number) {
     window.sessionStorage.removeItem('' + slot)
+  }
+
+  deleteArmouryConfig(weaponConfig: WeaponConfig) {
+    let armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName)
+    delete armouryConfigs[weaponConfig.armouryName]
+    window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(armouryConfigs))
   }
 
   getNextFreeComparisonSlot(): number {

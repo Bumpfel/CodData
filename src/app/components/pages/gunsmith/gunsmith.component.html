@@ -198,7 +198,7 @@
   <div id="nameFormOverlay" class="overlay tinted gone">
     <form id="nameForm" (ngSubmit)="saveConfig(name.value)">
       <div id="title">enter name</div>
-      <input type="text" id="nameInput" [value]="weaponConfig.armouryName || ''" autocomplete="off" spellcheck="false" #name>
+      <input type="text" [attr.maxlength]="maxNameLength" id="nameInput" [value]="weaponConfig.armouryName || ''" autocomplete="off" spellcheck="false" #name>
       <a (click)="saveConfig(name.value)" class="grey">OK</a>
       <!-- <button class="button grey" type="submit">OK</button> -->
       <a (click)="hideOverlay()" class="grey">Cancel</a>
