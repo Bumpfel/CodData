@@ -30,13 +30,13 @@ nav {
 
   #menu {
     margin-left: $leftPageMargin + 50px;
-    
+
     a {
       box-sizing: border-box;
       width: 140px;
       padding: 20px 10px;
       margin-right: 5px;
-
+      
       display: inline-block;
       color: $inactiveColour;
       font-weight: bold;

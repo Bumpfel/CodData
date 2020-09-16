@@ -9,9 +9,13 @@ import { SoundService } from 'src/app/services/sound.service';
 })
 export class FooterComponent implements OnInit {
 
-  constructor(public globalService: GlobalService, public soundService: SoundService) { }
+  constructor(private globalService: GlobalService, public soundService: SoundService) { }
 
   ngOnInit(): void {
+  }
+
+  goBack() {
+    this.globalService.goBack()
   }
 
 }

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
+import { ContextMenu } from 'src/app/models/ContextMenu';
 import { DataService } from 'src/app/services/data.service';
 import { GlobalService } from 'src/app/services/global.service';
 import { MessageService } from 'src/app/services/message.service';
-import { ContextMenuService } from 'src/app/services/contextmenu.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 
 @Component({
@@ -17,31 +17,27 @@ export class ArmouryComponent implements OnInit {
   activeConfig: WeaponConfig
   armouryConfigs: WeaponConfig[]
   newConfig: WeaponConfig
-  contextMenuOptions = { delete: 'delete' }
+  contextMenuOptions: ContextMenu
+  nameFormConfig: WeaponConfig
   loaded: boolean = false
 
-  closeContextMenuCallback: (e: KeyboardEvent) => void
-
-  constructor(private route: ActivatedRoute, private configService: WeaponConfigService, private globalService: GlobalService, private dataService: DataService, private contextMenuService: ContextMenuService, private messageService: MessageService) { }
-
+  private contextMenuAlternatives = { delete: 'Delete', rename: 'Rename' }
+  
+  constructor(
+    private route: ActivatedRoute,
+    private configService: WeaponConfigService,
+    private globalService: GlobalService,
+    private dataService: DataService,
+    private messageService: MessageService
+  ) { }
+  
   ngOnInit(): void {
     // this.dataService.getWeaponType(this.globalService.linkToName(this.route.snapshot.paramMap.get('weaponName')))
     this.initiate()
-    this.closeContextMenuCallback = e => {
-      if(e.key === 'Escape') {
-        this.contextMenuService.closeMenu()
-        this.globalService.goBackOnEscape()
-        document.removeEventListener('keydown', this.closeContextMenuCallback)
-      }
-    }
   }
   
-  ngOnDestroy(): void {   
-    this.contextMenuService.closeMenu()
-  }
-  
-  initiate(): void {
-    this.globalService.goBackOnEscape()
+  initiate(): void {  
+    this.globalService.enableGoBackOnEscape()
     const weaponName = this.globalService.linkToName(this.route.snapshot.paramMap.get('weaponName'))
     this.armouryConfigs = this.configService.getArmouryConfigs(weaponName)
     // const weaponType = await this.dataService.getWeaponType(weaponName)
@@ -75,19 +71,42 @@ export class ArmouryComponent implements OnInit {
     window.history.go(-2)
   }
 
+  /**
+   * Triggering a change in this.contextMenuOptions variable causes the contextmenu component to react to it
+   * @param event 
+   */
   showContextMenu(event: MouseEvent): void {
-    this.contextMenuService.openMenu(this.activeConfig.armouryName || this.activeConfig.weaponName, this.contextMenuOptions, event.pageX, event.pageY)
-    this.globalService.disableGoBackOnEscape()
-    document.addEventListener('keydown', this.closeContextMenuCallback)
+    event.preventDefault()
+
+    this.contextMenuOptions = { 
+      title: this.activeConfig.armouryName || this.activeConfig.weaponName,
+      alternatives: this.contextMenuAlternatives,
+      x: event.pageX + 'px',
+      y: event.pageY + 'px'
+    }
   }
 
-  contextMenuAction(option: string) {
-    if(option === this.contextMenuOptions.delete) {
+  /**
+   * ContextMenu component emits optionSelected
+   * armoury.component.html uses that event to trigger this method -- <app-contextmenu (optionSelected)="contextMenuAction($event)">
+   * @param option
+   */
+  contextMenuAction(option: string): void {
+    if(option === this.contextMenuAlternatives.delete) {
       this.configService.deleteArmouryConfig(this.activeConfig)
-      
       this.messageService.addMessage('Armoury Configuration Deleted', this.activeConfig.armouryName)
       this.initiate()
+    } else if(option === this.contextMenuAlternatives.rename) {
+      this.nameFormConfig = this.activeConfig
     }
+  }
+
+  renameConfig(newName: string): void {
+    if(newName) {
+      this.configService.renameArmouryConfig(this.nameFormConfig, newName)
+      this.messageService.addMessage('Armoury Configuration renamed', newName)
+    }
+    this.nameFormConfig = undefined
   }
 
   getFullWeaponType(): string {

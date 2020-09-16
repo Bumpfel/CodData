@@ -72,6 +72,12 @@ export class WeaponConfigService {
     window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(armouryConfigs))
   }
 
+  renameArmouryConfig(oldConfig: WeaponConfig, newName: string): void {
+    this.deleteArmouryConfig(oldConfig)
+    oldConfig.armouryName = newName
+    this.saveConfig(oldConfig, true)
+  }
+
   getNextFreeComparisonSlot(): number {
     let temp = this.getComparisonConfigs()   
     if(temp.length) {

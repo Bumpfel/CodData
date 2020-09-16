@@ -13,11 +13,6 @@ import { MessageService } from 'src/app/services/message.service';
 export class ConfigurationComponent implements OnInit {
 
   constructor(public globalService: GlobalService, private configService: WeaponConfigService, public soundService: SoundService, private messageService: MessageService) { }
-  
-  // configurations: any[] = [ // TODO temp
-  //   { name: 'Kilo 141', type: 'Assault Rifle', configName: 'Kilo Ranged', attachments: { muzzle: 'Monolithic Suppressor' } },
-  //   { name: 'MP7',  type: 'Submachine Gun', configName: 'MP7 Hybrid', attachments: { muzzle: 'Monolithic Suppressor' } },
-  // ]
 
   nextSlot: number
   hoveredSlot: number
@@ -42,9 +37,12 @@ export class ConfigurationComponent implements OnInit {
 
     this.callBack = e => {
       this.closeContextMenu();
-      console.log('esc')
-      document.removeEventListener('keydown', this.callBack)
+      // document.removeEventListener('keydown', this.callBack)
     }
+  }
+  
+  ngOnDestroy(): void {
+    document.removeEventListener('keydown', this.callBack)
   }
   
   deleteConfig(): void {
@@ -71,7 +69,7 @@ export class ConfigurationComponent implements OnInit {
     event.preventDefault()
     this.activeConfig = weaponConfig
 
-    document.addEventListener('keydown', this.callBack)
+    document.addEventListener('keydown', this.callBack, { once: true })
 
     this.contextOverlay.style.position = 'fixed'
     this.contextOverlay.classList.remove('hidden')

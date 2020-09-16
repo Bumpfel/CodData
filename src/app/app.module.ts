@@ -14,6 +14,7 @@ import { TopMenuComponent } from './components/navigation/top-menu/top-menu.comp
 import { FooterComponent } from './components/navigation/footer/footer.component';
 import { ArmouryComponent } from './components/pages/armoury/armoury.component';
 import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
+import { NameformComponent } from './components/nameform/nameform.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ContextmenuComponent } from './components/contextmenu/contextmenu.compo
     FooterComponent,
     ArmouryComponent,
     ContextmenuComponent,
+    NameformComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,6 @@
-<div class="overlay background" (contextmenu)="$event.preventDefault()">
-  <router-outlet></router-outlet>
-</div>
+<!-- Used to prevent right click. Blocking the menu unfortunately -->
+<!-- <div class="overlay background" (contextmenu)="$event.preventDefault()"></div> -->
+
+<router-outlet></router-outlet>
 
 <app-messages></app-messages>

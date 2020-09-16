@@ -4,6 +4,7 @@
   padding: 5px 15px;
   box-sizing: border-box;
   width: $weaponCardWidth;
+  text-transform: none;
 
   .circle {
     $sz: 6px;
@@ -38,6 +39,17 @@
     }
   }
   
+  .custom {
+    position: absolute;
+    $indent: 15px;
+    bottom: $indent;
+    left: $indent;
+    
+    $sz: 27px;
+    width: $sz;
+    height: $sz;
+  }
+
   .img {
     // border: 1px solid red;
     height: 75px;

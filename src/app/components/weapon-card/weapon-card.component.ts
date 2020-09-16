@@ -11,7 +11,10 @@ import { WeaponConfig } from 'src/app/models/WeaponConfig';
 export class WeaponCardComponent implements OnInit {
 
   @Input() weaponConfig: WeaponConfig
-  @Input() displayExtras: boolean = false
+  // @Input() displayExtras: boolean = false
+  @Input() page: string
+
+  static page = { configurations: 1 }
 
   constructor(public globalService: GlobalService, private configService: WeaponConfigService) { }
 
@@ -19,21 +22,38 @@ export class WeaponCardComponent implements OnInit {
   }
 
   getDisplayName() {
-    return this.weaponConfig.armouryName && !this.displayExtras ? this.weaponConfig.armouryName : this.weaponConfig.weaponName
+    // return this.displayExtras
+    return this.page === 'configurations'
+      ? 'Configuration #' + this.weaponConfig.comparisonSlot
+      : this.weaponConfig.armouryName || this.weaponConfig.weaponName
   }
 
   getFullWeaponType(): string {
     return this.configService.getFullWeaponType(this.weaponConfig)
   }
 
-  getCustomConfigName(): string {
+  getConfigName(): string {
     return this.weaponConfig.armouryName
       ? this.weaponConfig.armouryName
-      : null //'slot #' + this.weaponConfig.comparisonSlot
+      : this.weaponConfig.weaponName
+  }
+
+  isCustomConfig() {
+    return this.weaponConfig.armouryName
   }
   
   err(event): void {
     event.target.src = '/assets/images/no_image.png'
+  }
+
+  pageIsWeaponSelect(): boolean {
+    return this.page === 'weapon-select'
+  }
+  pageIsConfigurations(): boolean {
+    return this.page === 'configurations'
+  }
+  pageIsArmoury(): boolean {
+    return this.page === 'armoury'
   }
 
 }

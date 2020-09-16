@@ -16,7 +16,7 @@ export class WeaponSelectComponent implements OnInit {
 
   weaponTypes: string[]
   weaponNames: string[]
-  hoveredSlot: HTMLElement
+  hoveredWeapon: HTMLElement
   armourySaves: Map<string, number> = new Map()
 
   weaponType: string
@@ -24,7 +24,7 @@ export class WeaponSelectComponent implements OnInit {
   constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
   ngOnInit(): void {
-    this.globalService.goBackOnEscape()
+    this.globalService.enableGoBackOnEscape()
     
     this.weaponTypes = this.dataService.getWeaponTypes()
     
@@ -35,7 +35,7 @@ export class WeaponSelectComponent implements OnInit {
       } else {
         this.weaponType = this.globalService.linkToName(params.weaponType)
         // get weapons and map nr of armouryConfigs
-        this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType))
+        this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType)) // ta inte bort async. kan hända att jag byter metod som hämtar tgd-data
         for(let weaponName of this.weaponNames) {
           let saves = this.configService.getArmouryConfigs(weaponName)
           this.armourySaves.set(weaponName, saves ? Object.keys(saves).length : 0)
@@ -48,6 +48,10 @@ export class WeaponSelectComponent implements OnInit {
     this.globalService.disableGoBackOnEscape()
   }
   
+  getTempConfig(weaponName: string): WeaponConfig {
+    return new WeaponConfig(weaponName, this.getComparisonSlot(), this.weaponType)
+  }
+
   selectWeapon(weaponName: string): void {
     let slot: number = this.getComparisonSlot()
 
@@ -58,14 +62,14 @@ export class WeaponSelectComponent implements OnInit {
   }
 
   showArmouryButton(weaponName: string): void {    
-    if(this.hoveredSlot) {
-      this.hoveredSlot.querySelector('#armoury-slot-small').classList.remove('gone')
-      this.hoveredSlot.querySelector('#armoury-slot-expanded').classList.add('gone')
+    if(this.hoveredWeapon) {
+      this.hoveredWeapon.querySelector('#armoury-button-collapsed').classList.remove('gone')
+      this.hoveredWeapon.querySelector('#armoury-button-expanded').classList.add('gone')
     }
     if(this.armourySaves.get(weaponName) > 0) {
-      this.hoveredSlot = document.querySelector('#' + this.globalService.nameToLink(weaponName))
-      this.hoveredSlot.querySelector('#armoury-slot-small').classList.add('gone')
-      this.hoveredSlot.querySelector('#armoury-slot-expanded').classList.remove('gone')
+      this.hoveredWeapon = document.querySelector('#' + this.globalService.nameToLink(weaponName))
+      this.hoveredWeapon.querySelector('#armoury-button-collapsed').classList.add('gone')
+      this.hoveredWeapon.querySelector('#armoury-button-expanded').classList.remove('gone')
     }
   }
 

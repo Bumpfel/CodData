@@ -6,14 +6,18 @@
 
   <div id="stats"></div>
   
-  <a (click)="selectConfig(newConfig)" (mouseenter)="setActiveConfig(newConfig)">
-    <app-weapon-card [weaponConfig]="newConfig"></app-weapon-card>
+  <a (click)="selectConfig(newConfig)" (mouseenter)="setActiveConfig(newConfig)" (contextmenu)="$event.preventDefault()">
+    <app-weapon-card [weaponConfig]="newConfig" page="armoury"></app-weapon-card>
   </a>
   <ng-container *ngFor="let weaponConfig of armouryConfigs | keyvalue">
     <a (click)="selectConfig(weaponConfig.value)" (mouseenter)="setActiveConfig(weaponConfig.value)" (contextmenu)="showContextMenu($event)">
-      <app-weapon-card [weaponConfig]="weaponConfig.value"></app-weapon-card>
+      <app-weapon-card [weaponConfig]="weaponConfig.value" page="armoury"></app-weapon-card>
     </a>
   </ng-container>
 
-  <app-contextmenu (optionSelected)="contextMenuAction($event)"></app-contextmenu>
+  <app-contextmenu [options]="contextMenuOptions" (optionSelected)="contextMenuAction($event)"></app-contextmenu>
+
+  <app-nameform [weaponConfig]="nameFormConfig" [active]="nameFormActive" (submitForm)="renameConfig($event)"></app-nameform>
 </main>
+
+<app-footer></app-footer>

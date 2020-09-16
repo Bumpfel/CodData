@@ -9,23 +9,25 @@ export class GlobalService {
   constructor(private soundService: SoundService) { 
   }
 
-  backAction(): void {
+  goBack(): void {   
     this.soundService.goBack()
     window.history.back()
   }
 
   private goBackCallback = (e: KeyboardEvent) => {
     if(e.key === 'Escape') {
-      this.backAction()
+      this.goBack()
       this.disableGoBackOnEscape()
     }
   }
 
-  goBackOnEscape(): void {
-    document.addEventListener('keydown', this.goBackCallback)
+  enableGoBackOnEscape(): void {    
+    // console.log('enableGoBackOnEscape')
+    document.addEventListener('keydown', this.goBackCallback, { once: true })
   }
-
+  
   disableGoBackOnEscape(): void {
+    // console.log('disableGoBackOnEscape')
     document.removeEventListener('keydown', this.goBackCallback)
   }
 

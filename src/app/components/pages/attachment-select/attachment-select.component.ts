@@ -28,7 +28,7 @@ export class AttachmentSelectComponent implements OnInit {
     this.attachmentSlot = this.route.snapshot.paramMap.get('attachmentSlot')
     let slot = parseInt(this.route.snapshot.paramMap.get('slot'))
     
-    this.globalService.goBackOnEscape()
+    this.globalService.enableGoBackOnEscape()
     
     this.selectedAttachmentName = this.configService.getSelectedAttachmentName(slot, this.attachmentSlot)
     this.weaponConfig = this.configService.getWeaponConfig(slot)

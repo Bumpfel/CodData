@@ -7,16 +7,16 @@
     <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName)">        
       <!-- Weapon Card -->
       <a (click)="selectWeapon(weaponName); soundService.select()" (mouseenter)="soundService.hover()" (focus)="soundService.hover(); showArmouryButton(weaponName)" tabindex="0">
-        <app-weapon-card [weaponConfig]="{ weaponName: weaponName, weaponType: weaponType }"></app-weapon-card>
+        <app-weapon-card [weaponConfig]="getTempConfig(weaponName)" page="weapon-select"></app-weapon-card>
       </a>
       <!-- Collapsed armoury button -->
-      <a *ngIf="armourySaves.get(weaponName) > 0" class="armoury" id="armoury-slot-small">
+      <a *ngIf="armourySaves.get(weaponName) > 0" class="armoury" id="armoury-button-collapsed">
         {{armourySaves.get(weaponName)}}
         <div class="triangle"></div>
         <!-- <div>&#9654;</div> -->
       </a>
       <!-- Expanded armoury button -->
-      <a class="armoury gone" id="armoury-slot-expanded" (click)="soundService.select()"(focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
+      <a class="armoury gone" id="armoury-button-expanded" (click)="soundService.select()"(focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
         <div class="title">Armoury</div>
         <img src="/assets/images/armoury.png" alt="Armoury button">
         <br>

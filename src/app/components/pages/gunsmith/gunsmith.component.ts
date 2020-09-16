@@ -62,32 +62,35 @@ export class GunsmithComponent implements OnInit {
   constructor(private route: ActivatedRoute, private dataService: DataService, public globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
 
   ngOnInit(): void {   
-    this.globalService.goBackOnEscape()
+    this.globalService.enableGoBackOnEscape()
     this.deselectPopup = document.querySelector('#deselect')
     this.nameFormOverlay = document.querySelector('#nameFormOverlay')
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
    
-    this.statOrder = Stats.getAllOrderedStats()
-    
-    this.saveConfigCb = e => {     
-      if(e.key === '1') {
-        this.nameFormOverlay.classList.remove('gone')
+    this.statOrder = Stats.getAllOrderedStats()    
+
+    this.saveConfigCb = e => {
+      if(e.key === '1') {        
+        this.nameFormOverlay.classList.remove('hidden')
         this.globalService.disableGoBackOnEscape()
-        document.addEventListener('keydown', this.cancelConfigCb);
+        document.removeEventListener('keydown', this.saveConfigCb)
+        document.addEventListener('keydown', this.cancelConfigCb)
         setTimeout(() => (this.nameFormOverlay.querySelector('#nameInput') as HTMLElement).focus(), 0) // sending to event loop ensure its run last
       }
     }
-    document.addEventListener('keydown', this.saveConfigCb)
-
+    
     this.cancelConfigCb = e => {
       if(e.key === 'Escape') {
         this.hideOverlay()
         document.removeEventListener('keydown', this.cancelConfigCb)
-        this.globalService.goBackOnEscape()
+        document.addEventListener('keydown', this.saveConfigCb);
+        this.globalService.enableGoBackOnEscape()
       }
     }
+
+    document.addEventListener('keydown', this.saveConfigCb)
 
     this.fetchAvailableAttachmentSlots()
     this.fetchTableData()
@@ -139,7 +142,7 @@ export class GunsmithComponent implements OnInit {
     }
     
     if(this.weaponConfig.attachments[attachmentSlot]) {     
-      this.deselectPopup.classList.remove('gone')
+      this.deselectPopup.classList.remove('hidden')
       this.deselectPopup.classList.add('fade-in')
       
       this.deselectPopup.style.left = event.clientX + 'px'
@@ -150,7 +153,7 @@ export class GunsmithComponent implements OnInit {
   }
   
   disableQuickAttachmentRemoval(): void {
-    this.deselectPopup.classList.add('gone')
+    this.deselectPopup.classList.add('hidden')
     this.deselectPopup.classList.remove('fade-in')
     document.removeEventListener('keydown', this.quickAttachmentRemoveCb)
   }
@@ -174,8 +177,11 @@ export class GunsmithComponent implements OnInit {
     return '/assets/images/weapons/' + this.globalService.nameToLink(this.weaponConfig.weaponType) + '/' + this.weaponConfig.weaponName + '.png'
   }
   
-  saveConfig(name: string) {
-
+  saveConfig(name: string): void {
+    name = name.trim()
+    if(name.length === 0) {
+      return
+    }
     if(name.length > this.maxNameLength) {
       name = name.substr(0, this.maxNameLength)
     }
@@ -184,8 +190,8 @@ export class GunsmithComponent implements OnInit {
     this.configService.saveConfig(this.weaponConfig, true)
   }
 
-  hideOverlay() {
-    this.nameFormOverlay.classList.add('gone')
+  hideOverlay = (): void => {
+    this.nameFormOverlay.classList.add('hidden')
   }
 
 }

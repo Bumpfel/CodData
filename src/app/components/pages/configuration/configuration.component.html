@@ -6,7 +6,7 @@
       <div class="card" *ngFor="let weaponConfig of configurations">
         <!-- Weapon Button -->
         <a [id]="'weapon-slot' + weaponConfig.comparisonSlot" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover()" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
-          <app-weapon-card [weaponConfig]="weaponConfig" [displayExtras]="true"></app-weapon-card>
+          <app-weapon-card [weaponConfig]="weaponConfig" page="configurations"></app-weapon-card>
         </a>
         <!-- Gusmith Button -->
         <a [id]="'gunsmith-slot' + weaponConfig.comparisonSlot" class="small hidden" (mouseenter)="soundService.hover()" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/gunsmith'">
