@@ -1,0 +1,73 @@
+@import './src/vars.scss';
+
+.dialogue { // TODO will probably use dialogue component instead. delete this if dialogue is implemented fully
+  position: absolute;
+  top: 400px;
+  max-width: 1000px;
+  min-width: 300px;
+  $sideMargin: 15%;
+  left: $sideMargin;
+  right: $sideMargin;
+
+  padding: 20px 10px;
+  // background-color: $darkColour;
+  background-image:
+  // linear-gradient(to right, $darkColour, $highlightColourTransparent, $darkColour) 1px,
+  linear-gradient(
+    $darkColour 2px, $darkColour 15%, darken($highlightColourTransparent, 60%)),
+    url('/assets/images/square-pattern.png'),
+  ;
+  border: 1px solid $highlightColourTransparent;
+  $cut: 20px;
+  // clip-path: inset(0 50px);
+  clip-path: inset(50px, 0);
+  // clip-path: 
+  //   polygon(0 0, 100% 0, 100% $cut, 0 $cut),
+  //   polygon(0 calc(100% - #{$cut}), 100% calc(100% - #{$cut}), 100% 100%, 0 100%);
+    
+  #title {
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-size: 50px;
+    color: $highlightColourTransparent;
+    font-weight: 100;
+  }
+
+  input {
+    // TODO
+    // text marking colour (grey)
+    width: 99%;
+    padding: 1px;
+    padding-bottom: 5px;
+    border: 0;
+    outline: 0;
+
+    font-size: 16px;
+    background-color: #50504a8a;
+    color: #7a7a7a;
+    cursor: text;
+    
+    &:hover {
+      background-color: #60605a70;
+    }
+
+    &::selection {
+      background-color: #9985;
+    }
+  }
+
+  a:not(.back) {
+    // TODO text opacity
+    display: block;
+    text-align: center;
+    margin: 10px auto;
+    margin-bottom: 0;
+  }
+  
+  a.back {
+    position: absolute;
+    margin-top: 25px;
+  }
+
+}

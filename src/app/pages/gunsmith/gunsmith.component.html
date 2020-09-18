@@ -191,16 +191,10 @@
     Deselect
   </div>
 
+  <app-dialogue [options]="initialDialogueOptions" (optionSelected)="initialDialogueAction($event)"></app-dialogue>
+  <app-dialogue [options]="secondDialogueOptions" (optionSelected)="secondDialogueAction($event)"></app-dialogue>
 
-  <!-- Armoury name form CODE DUPLICATION (used also in armoury rename). EXTRACT TO SEPARATE COMPONENT -->
-  <div id="nameFormOverlay" class="overlay tinted hidden">
-    <form id="nameForm" (ngSubmit)="saveConfig(name.value)">
-      <div id="title">enter name</div>
-      <input type="text" [attr.maxlength]="maxNameLength" id="nameInput" [value]="weaponConfig.armouryName || ''" autocomplete="off" spellcheck="false" #name>
-      <a (click)="saveConfig(name.value)" class="grey">OK</a>
-      <a (click)="hideOverlay()" class="grey">Cancel</a>
-    </form>
-  </div>
+  <!-- <app-nameform [weaponConfig]="nameFormConfig" (submitForm)="saveConfig($event)"></app-nameform> -->
 
 </main>
 

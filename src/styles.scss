@@ -102,6 +102,27 @@ main, footer {
         -moz-user-drag: none; 
       }
     }
+
+    &.back {
+      opacity: 1;
+      padding: 0 15px;
+      $bgColor: #333d;
+      background-image:
+        linear-gradient($bgColor, $bgColor),
+        url('/assets/images/square-pattern.png'),
+      ;
+      
+      color: #ddd;
+      font-size: 95%;
+      
+      &::before {
+        content: '\2039';
+        color: $inactiveColour;
+        font-size: 200%;
+        vertical-align: sub;
+        margin-right: 10px;
+      }
+    }
   }
 }
 

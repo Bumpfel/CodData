@@ -4,17 +4,20 @@ import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { WeaponSelectComponent } from './components/pages/weapon-select/weapon-select.component';
-import { GunsmithComponent } from './components/pages/gunsmith/gunsmith.component';
-import { AttachmentSelectComponent } from './components/pages/attachment-select/attachment-select.component';
-import { ConfigurationComponent } from './components/pages/configuration/configuration.component';
+
+import { ConfigurationComponent } from './pages/configuration/configuration.component';
+import { WeaponSelectComponent } from './pages/weapon-select/weapon-select.component';
+import { GunsmithComponent } from './pages/gunsmith/gunsmith.component';
+import { AttachmentSelectComponent } from './pages/attachment-select/attachment-select.component';
+import { ArmouryComponent } from './pages/armoury/armoury.component';
+
 import { MessagesComponent } from './components/messages/messages.component';
 import { WeaponCardComponent } from './components/weapon-card/weapon-card.component';
 import { TopMenuComponent } from './components/navigation/top-menu/top-menu.component';
 import { FooterComponent } from './components/navigation/footer/footer.component';
-import { ArmouryComponent } from './components/pages/armoury/armoury.component';
 import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
 import { NameformComponent } from './components/nameform/nameform.component';
+import { DialogueComponent } from './components/dialogue/dialogue.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import { NameformComponent } from './components/nameform/nameform.component';
     ArmouryComponent,
     ContextmenuComponent,
     NameformComponent,
+    DialogueComponent
   ],
   imports: [
     BrowserModule,

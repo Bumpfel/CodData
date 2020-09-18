@@ -1,0 +1,20 @@
+<ng-container *ngIf="isActive === true">
+  <div id="nameFormOverlay" class="overlay tinted"></div>
+
+  <div class="dialogue">
+    
+    <form *ngIf="options.form" (ngSubmit)="emit(textInput.value)">
+      <div id="title">{{options.form.inputLabel}}</div>
+      <input id="textInput" type="text" [attr.maxlength]="maxNameLength" [value]="options.form.inputValue" autocomplete="off" spellcheck="false" #textInput>
+      <a (click)="emit(textInput.value)" class="grey">OK</a>
+      <a (click)="emit()" class="grey">Cancel</a>
+    </form>
+    
+    <ng-container *ngFor="let button of options.buttons">
+      <a (click)="emit(button)" class="grey">{{button}}</a>
+    </ng-container>
+    
+    <a (mouseenter)="soundService.hover()" (click)="emit()" class="back">Back</a>
+  </div>
+
+</ng-container>

@@ -7,6 +7,9 @@ import { SoundService } from 'src/app/services/sound.service';
 import { Stats } from 'src/app/models/Stats'
 import { Effect } from 'src/app/models/Effect'
 import { DataService } from 'src/app/services/data.service';
+import { MessageService } from 'src/app/services/message.service';
+import { Dialogue } from 'src/app/models/Dialogue';
+import { trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-gunsmith',
@@ -39,6 +42,7 @@ export class GunsmithComponent implements OnInit {
   ])
 
   weaponConfig: WeaponConfig
+  newName: string
   upperAttachments: string[]
   lowerAttachments: string[]
 
@@ -51,46 +55,54 @@ export class GunsmithComponent implements OnInit {
 
   statOrder: string[]
 
-  maxNameLength: number = 20
-
-  private nameFormOverlay: HTMLElement
-
+  initialDialogueOptions: Dialogue
+  secondDialogueOptions: Dialogue
+  
   private quickAttachmentRemoveCb: (e: KeyboardEvent) => void
-  private saveConfigCb: (e: KeyboardEvent) => void
-  private cancelConfigCb: (e: KeyboardEvent) => void
+  private showCustomModDialogueCB: (e: KeyboardEvent) => void
+  // private cancelConfigCb: (e: KeyboardEvent) => void
 
-  constructor(private route: ActivatedRoute, private dataService: DataService, public globalService: GlobalService, public configService: WeaponConfigService, private soundService: SoundService) { }
+  initialDialogueButtons = {
+    enterName: 'Enter name',
+    updateConfig: 'Update Config',
+    createNewConfig: 'Create new Config'
+  }
+
+  secondDialogueButton = { 
+     ok: 'OK',
+     cancel: 'Cancel'
+  }
+
+  constructor(private route: ActivatedRoute,
+    private dataService: DataService,
+    public globalService: GlobalService,
+    public configService: WeaponConfigService,
+    public soundService: SoundService,
+    private messageService: MessageService) { }
 
   ngOnInit(): void {   
     this.globalService.enableGoBackOnEscape()
     this.deselectPopup = document.querySelector('#deselect')
-    this.nameFormOverlay = document.querySelector('#nameFormOverlay')
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
    
     this.statOrder = Stats.getAllOrderedStats()    
 
-    this.saveConfigCb = e => {
-      if(e.key === '1') {        
-        this.nameFormOverlay.classList.remove('hidden')
-        this.globalService.disableGoBackOnEscape()
-        document.removeEventListener('keydown', this.saveConfigCb)
-        document.addEventListener('keydown', this.cancelConfigCb)
-        setTimeout(() => (this.nameFormOverlay.querySelector('#nameInput') as HTMLElement).focus(), 0) // sending to event loop ensure its run last
+    this.showCustomModDialogueCB = e => {
+      if(e.key === '1') {       
+        this.initialDialogueOptions = {
+          buttons: [ 
+            this.initialDialogueButtons.enterName,
+            this.initialDialogueButtons.createNewConfig,
+            this.initialDialogueButtons.updateConfig,
+          ],
+          // triggerKey: '1'
+        }
+        document.removeEventListener('keydown', this.showCustomModDialogueCB)
       }
     }
-    
-    this.cancelConfigCb = e => {
-      if(e.key === 'Escape') {
-        this.hideOverlay()
-        document.removeEventListener('keydown', this.cancelConfigCb)
-        document.addEventListener('keydown', this.saveConfigCb);
-        this.globalService.enableGoBackOnEscape()
-      }
-    }
-
-    document.addEventListener('keydown', this.saveConfigCb)
+    document.addEventListener('keydown', this.showCustomModDialogueCB)
 
     this.fetchAvailableAttachmentSlots()
     this.fetchTableData()
@@ -98,8 +110,8 @@ export class GunsmithComponent implements OnInit {
   
   ngOnDestroy(): void {
     this.disableQuickAttachmentRemoval()
-    document.removeEventListener('keydown', this.saveConfigCb)
-    document.removeEventListener('keydown', this.cancelConfigCb)
+    document.removeEventListener('keydown', this.showCustomModDialogueCB)
+    // document.removeEventListener('keydown', this.cancelConfigCb)
   }
 
   fetchTableData(): void {
@@ -177,21 +189,50 @@ export class GunsmithComponent implements OnInit {
     return '/assets/images/weapons/' + this.globalService.nameToLink(this.weaponConfig.weaponType) + '/' + this.weaponConfig.weaponName + '.png'
   }
   
-  saveConfig(name: string): void {
-    name = name.trim()
-    if(name.length === 0) {
-      return
+  initialDialogueAction(action: string): void {
+    console.log('received emit from first dialogue ', action)
+    
+    if(action === this.initialDialogueButtons.enterName) {
+      this.secondDialogueOptions = {
+        form: {
+          inputLabel: 'enter name',
+          inputValue: this.weaponConfig.armouryName,
+        }
+      }
+      console.log('opening second dialogue', this.secondDialogueOptions)
+      
+    } else if(action === this.initialDialogueButtons.createNewConfig) {
+      console.log('creating new config: ' + this.newName)
+      // TODO save new config
+      // this.messageService.addMessage('Created new armoury config', name)
+    } else if(action === this.initialDialogueButtons.updateConfig) {
+      console.log('renaming config: ' + this.newName)
+      // TODO rename config
+      // this.messageService.addMessage('Armoury Config updated', name)
+    } else {
+      this.initialDialogueOptions = undefined
+      document.addEventListener('keydown', this.showCustomModDialogueCB)
     }
-    if(name.length > this.maxNameLength) {
-      name = name.substr(0, this.maxNameLength)
-    }
-    this.hideOverlay()
-    this.weaponConfig.armouryName = name
-    this.configService.saveConfig(this.weaponConfig, true)
   }
 
-  hideOverlay = (): void => {
-    this.nameFormOverlay.classList.add('hidden')
+  secondDialogueAction(name: string): void {
+    console.log('received emit from second dialogue ', name)
+    if(name) {
+      this.newName = name
+    }
+    this.secondDialogueOptions = undefined
+    
   }
 
+  // saveConfig(name: string): void {
+  //   if(name) {
+  //     this.nameFormConfig.armouryName = name
+  //     if(this.configService.saveConfig(this.nameFormConfig, true)) {
+  //       // TODO ny config eller uppdatera gammal?
+  //       this.messageService.addMessage('Armoury Config saved', name)
+  //     }
+  //   }
+  //   // this.nameFormConfig = undefined
+  //   document.addEventListener('keydown', this.saveConfigCb)
+  // }
 }

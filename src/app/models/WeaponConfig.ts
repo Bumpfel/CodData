@@ -16,6 +16,8 @@ export class WeaponConfig {
       perk?: string,
     }
 
+    static maxNameLength = 20
+    
     constructor(name: string, slot?: number, type?: string) {
       this.comparisonSlot = slot
       this.weaponName = name
