@@ -1,12 +1,12 @@
+import { WeaponConfig } from './WeaponConfig';
+
 export type Dialogue = {
+  title?: string
   buttons?: string[]
-  // triggerKey: string
-  // input?: string
-  // buttonSize: 
   maxNameLength?: number 
   form?: {
-    inputLabel: string
     inputValue: string
     // buttons: string[]
   }
+  // weaponConfig?: WeaponConfig
 }

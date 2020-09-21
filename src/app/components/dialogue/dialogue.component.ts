@@ -3,6 +3,8 @@ import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { Dialogue } from 'src/app/models/Dialogue';
 import { GlobalService } from 'src/app/services/global.service';
 import { SoundService } from 'src/app/services/sound.service';
+import { DialogueService } from 'src/app/services/dialogue.service';
+import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 
 @Component({
   selector: 'app-dialogue',
@@ -11,10 +13,9 @@ import { SoundService } from 'src/app/services/sound.service';
 })
 export class DialogueComponent implements OnInit {
 
-  @Input() options: Dialogue 
+  @Input() options: Dialogue
+  @Input() tempName: string
   @Input() weaponConfig: WeaponConfig
-  @Input() isFocused: boolean = false
-
   @Output() optionSelected: EventEmitter<string> = new EventEmitter<string>()
 
   isActive: boolean = false
@@ -26,13 +27,16 @@ export class DialogueComponent implements OnInit {
   /**
    * Menu is opened by setting @Input weaponConfig. This component reacts to the changes
    */  
-  constructor(private globalService: GlobalService, public soundService: SoundService) { }
+  constructor(private globalService: GlobalService,
+    public soundService: SoundService,
+    public dialogueService: DialogueService,
+    public configService: WeaponConfigService
+    ) { }
 
   ngOnInit(): void {
     this.closeDialogueCB = (e: KeyboardEvent) => {
       if(e.key === 'Escape') {
-        this.isActive = false
-        this.optionSelected.emit(undefined)
+        this.emit(null)
       }
     }
   }
@@ -41,15 +45,13 @@ export class DialogueComponent implements OnInit {
     this.contentLoaded = true
   }
   
-  ngOnChanges(): void {
-    // console.log(this.options ? 'options set' : 'no options')
-    
+  ngOnChanges(): void {   
     if(this.contentLoaded === true && this.options) {
-      this.isActive = true
       this.globalService.disableGoBackOnEscape()
-      document.addEventListener('keydown', this.closeDialogueCB, { once: true })
+      document.addEventListener('keydown', this.closeDialogueCB)
+      this.isActive = true
       setTimeout(() => {
-        if(this.options.form) {
+        if(this.options && this.options.form) {
           (document.querySelector('#textInput') as HTMLElement).focus(), 0 // make sure its run last by sending function to event loop
         }
       })
@@ -58,9 +60,25 @@ export class DialogueComponent implements OnInit {
     }
   }
   
-  emit(name: string): void {
-    this.optionSelected.emit(name)
+  emit(value: string): void {
+    if(!value) {
+      this.soundService.goBack()
+    }
+    
+    this.optionSelected.emit(value)
     document.removeEventListener('keydown', this.closeDialogueCB)
-    this.globalService.enableGoBackOnEscape()
+  }
+
+  getImageLink(): string {
+    return this.globalService.getImageLink(this.weaponConfig)
+  }
+
+
+  hasCustomName(): boolean {
+    return this.weaponConfig.armouryName || this.tempName ? true : false
+  }
+
+  getConfigName(): string {
+    return this.tempName || this.weaponConfig.armouryName || 'WEAPON NAME'
   }
 }

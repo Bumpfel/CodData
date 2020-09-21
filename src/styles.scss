@@ -56,24 +56,47 @@ a, a * {
 main, footer {
   // Buttons 
   a, .disabledButton, .button {
-    opacity: .4;
-    
-    color: $highlightColour;
-    font-size: 18px;
-    background-image:
-    linear-gradient($darkColour, $darkColour),
-    url('/assets/images/square-pattern.png'),
-    ;
     position: relative;
     display: inline-block;
     min-width: fit-content;
     margin: 0;
     padding: 10px;
 
+    opacity: .4;
+    background-image:
+    linear-gradient($darkColour, $darkColour),
+    url('/assets/images/square-pattern.png'),
+    ;
+    
+    text-transform: capitalize;
+    color: $highlightColour;
+    font-size: 18px;
+
     &.grey {
       color: #eee;
     }
     
+    &.back {
+      opacity: 1;
+      padding: 0 15px;
+      $bgColor: #333d;
+      background-image:
+        linear-gradient($bgColor, $bgColor),
+        url('/assets/images/square-pattern.png'),
+      ;
+      
+      color: #ddd;
+      font-size: 95%;
+      
+      &::before {
+        content: '\2039';
+        color: $inactiveColour;
+        font-size: 200%;
+        vertical-align: sub;
+        margin-right: 10px;
+      }
+    }
+
     &:hover, &.hovered {
       color: $highlightColour;
       $trimHeight: 2px;
@@ -100,27 +123,6 @@ main, footer {
         width: 75px;
         -webkit-user-drag: none;
         -moz-user-drag: none; 
-      }
-    }
-
-    &.back {
-      opacity: 1;
-      padding: 0 15px;
-      $bgColor: #333d;
-      background-image:
-        linear-gradient($bgColor, $bgColor),
-        url('/assets/images/square-pattern.png'),
-      ;
-      
-      color: #ddd;
-      font-size: 95%;
-      
-      &::before {
-        content: '\2039';
-        color: $inactiveColour;
-        font-size: 200%;
-        vertical-align: sub;
-        margin-right: 10px;
       }
     }
   }
@@ -156,7 +158,7 @@ main {
 
   // ###  Stats  ###
   // ###############
-  .stats {
+  .stats, .cutoutBox {
     display: inline-block;
     white-space: nowrap;
     min-height: 50px;
@@ -168,7 +170,9 @@ main {
 
     color: $inactiveColour;
     font-size: 14px;
+  }
     
+  .stats {
     .title {
       width: 200px;
       // text-align: right;

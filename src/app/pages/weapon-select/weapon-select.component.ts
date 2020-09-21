@@ -52,7 +52,9 @@ export class WeaponSelectComponent implements OnInit {
     return new WeaponConfig(weaponName, this.getComparisonSlot(), this.weaponType)
   }
 
-  selectWeapon(weaponName: string): void {
+  selectWeapon(weaponName: string): void {  
+    this.soundService.goBack()
+    this.soundService.select()
     let slot: number = this.getComparisonSlot()
 
     this.configService.saveConfig(new WeaponConfig(weaponName, slot, this.weaponType))

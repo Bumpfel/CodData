@@ -6,6 +6,7 @@ import { DataService } from 'src/app/services/data.service';
 import { GlobalService } from 'src/app/services/global.service';
 import { MessageService } from 'src/app/services/message.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
+import { SoundService } from 'src/app/services/sound.service';
 
 @Component({
   selector: 'app-armoury',
@@ -28,7 +29,8 @@ export class ArmouryComponent implements OnInit {
     private configService: WeaponConfigService,
     private globalService: GlobalService,
     private dataService: DataService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private soundService: SoundService
   ) { }
   
   ngOnInit(): void {
@@ -55,6 +57,7 @@ export class ArmouryComponent implements OnInit {
   }
 
   setActiveConfig(weaponConfig: WeaponConfig) {
+    this.soundService.hover()
     this.activeConfig = weaponConfig    
   }
 
@@ -63,6 +66,9 @@ export class ArmouryComponent implements OnInit {
   }
 
   selectConfig(weaponConfig: WeaponConfig): void {
+    this.soundService.goBack()
+    this.soundService.highPitched()
+    
     weaponConfig.comparisonSlot = this.getCurrentSlot()
     
     this.configService.saveConfig(weaponConfig)

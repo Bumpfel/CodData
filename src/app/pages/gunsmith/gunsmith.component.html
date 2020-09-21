@@ -5,7 +5,7 @@
   <!----------------------->
   <div class="attachments" id="upperAttachments">
     <ng-container *ngFor="let attachmentSlot of upperAttachments">
-      <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+      <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="chooseAttachment()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
         {{attachmentSlot}}
         <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
         <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
@@ -43,7 +43,7 @@
     <!-- code duplication here. make template? -->
     <div class="attachments" id="lowerAttachments">
       <ng-container *ngFor="let attachmentSlot of lowerAttachments">
-        <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="soundService.hover(); enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="soundService.select()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+        <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="chooseAttachment()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
           {{attachmentSlot}}
           <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
           <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
@@ -111,7 +111,7 @@
       </table>
 
       <!-- Weapon Stat Summary -->
-      <table aria-describedby="weapon stat summary" class="summary" *ngIf="attachmentSummary">
+      <table aria-describedby="weapon stat summary" class="summary" *ngIf="getNrOfAttachments() > 0">
         <tr class="summary">
           <th scope="summary title">
             Summary
@@ -191,7 +191,7 @@
     Deselect
   </div>
 
-  <app-dialogue [options]="initialDialogueOptions" (optionSelected)="initialDialogueAction($event)"></app-dialogue>
+  <app-dialogue [options]="initialDialogueOptions" [weaponConfig]="weaponConfig" [tempName]="this.newName" (optionSelected)="initialDialogueAction($event)"></app-dialogue>
   <app-dialogue [options]="secondDialogueOptions" (optionSelected)="secondDialogueAction($event)"></app-dialogue>
 
   <!-- <app-nameform [weaponConfig]="nameFormConfig" (submitForm)="saveConfig($event)"></app-nameform> -->

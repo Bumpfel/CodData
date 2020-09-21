@@ -1,20 +1,36 @@
 @import './src/vars.scss';
+$inputBG: #50504a8a;
+$inputBG2: #40403aba;
+$textColor: #7a7a7a;
+$selectedText: #9985;
+$modifiedColour: #4448;
+$sepia: rgb(165, 157, 149);
 
-.dialogue { // TODO will probably use dialogue component instead. delete this if dialogue is implemented fully
-  position: absolute;
-  top: 400px;
-  max-width: 1000px;
-  min-width: 300px;
-  $sideMargin: 15%;
-  left: $sideMargin;
-  right: $sideMargin;
+.dialogue {
+  position: fixed;
+  padding: 10px;
 
-  padding: 20px 10px;
+  top: 50%;
+  // -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  margin: 0 auto;
+  left: 50px;
+  right: 50px;
+  min-width: 400px;
+  max-width: 700px;
+  
+  &.big {
+    padding: 50px 20px;
+    max-width: 1500px;
+    min-width: 475px;
+    $sideMargin: 7%;
+    // box-sizing: border-box;    
+  }
+  
   // background-color: $darkColour;
   background-image:
   // linear-gradient(to right, $darkColour, $highlightColourTransparent, $darkColour) 1px,
-  linear-gradient(
-    $darkColour 2px, $darkColour 15%, darken($highlightColourTransparent, 60%)),
+    linear-gradient($darkColour 2px, $darkColour 15%, darken($highlightColourTransparent, 60%)),
     url('/assets/images/square-pattern.png'),
   ;
   border: 1px solid $highlightColourTransparent;
@@ -24,7 +40,7 @@
   // clip-path: 
   //   polygon(0 0, 100% 0, 100% $cut, 0 $cut),
   //   polygon(0 calc(100% - #{$cut}), 100% calc(100% - #{$cut}), 100% 100%, 0 100%);
-    
+
   #title {
     text-align: center;
     text-transform: uppercase;
@@ -32,6 +48,103 @@
     font-size: 50px;
     color: $highlightColourTransparent;
     font-weight: 100;
+  }
+
+  .cutoutBox {
+    display: block;
+    margin: 0 auto;
+    min-width: 250px;
+    max-width: 800px;
+    // height: auto;
+
+    * {
+      vertical-align: top;
+    }
+    
+    $headerWidth: 60%;
+    #header {
+      // border: 1px dotted red;
+      display: inline-block;
+      width: $headerWidth;
+      height: 100%;
+      
+      font-family: 'Roboto Bold';
+      font-size: 40px;
+      font-weight: bold;
+
+      color: $sepia;
+
+      &.inactive {
+        color: #444;
+      }
+      
+      #modified {
+        display: inline-block;
+        background-image:
+          linear-gradient($inputBG2, $inputBG2),
+          url('/assets/images/square-pattern.png'),
+        ;
+
+        padding: 4px 6px;
+        color: $sepia;
+        font-size: 18px;
+        text-transform: capitalize;
+        
+        img { // cogwheel
+          width: 22px;
+          margin-right: 5px;
+          filter: brightness(55%) sepia(25%);
+        }
+      }
+    }
+
+    img.weapon {
+      // border: 1px dotted green;
+      display: block;
+      width: 220px;
+      margin: 10% auto;
+      filter: grayscale(100%) contrast(80%) brightness(175%);
+    }
+    
+    #attachments {
+      display: inline-block;
+      // border: 1px dotted orange;
+      font-size: 16px;
+      color: $sepia;
+      width: 100%-$headerWidth;
+      // font-family:
+
+      .circle {
+        vertical-align: middle;
+        $size: 40px;
+        width: $size;
+        height: $size;
+        margin-right: 10px;
+        padding: 3px;
+
+        &.marked {
+          border-color: $active;
+        }
+
+        img {
+          // border: 1px dotted orange;
+          position: relative;
+          display: block;
+          max-width: 80%;
+          max-height: 80%;
+          margin: auto;
+          top: 50%;
+          // -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
+      }
+
+      div {
+        margin-bottom: 7px;
+      }
+    } 
+    
+
   }
 
   input {
@@ -44,16 +157,16 @@
     outline: 0;
 
     font-size: 16px;
-    background-color: #50504a8a;
-    color: #7a7a7a;
+    background-color: $inputBG;
+    color: $textColor;
     cursor: text;
     
     &:hover {
-      background-color: #60605a70;
+      background-color: lighten($inputBG, 8%);
     }
 
     &::selection {
-      background-color: #9985;
+      background-color: $selectedText;
     }
   }
 
@@ -63,11 +176,18 @@
     text-align: center;
     margin: 10px auto;
     margin-bottom: 0;
+
+    text-transform: none;
+
+    &.narrow {
+      width: 400px;
+    }
   }
   
   a.back {
     position: absolute;
-    margin-top: 25px;
+    margin-left: 7%;
+    margin-top: 60px;
   }
 
 }

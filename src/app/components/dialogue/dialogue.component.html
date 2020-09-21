@@ -1,20 +1,58 @@
 <ng-container *ngIf="isActive === true">
-  <div id="nameFormOverlay" class="overlay tinted"></div>
+  <div class="overlay tinted"></div>
 
-  <div class="dialogue">
+  <div class="dialogue" [class.big]="weaponConfig">
     
+    <!-- Title -->
+    <div id="title">{{options.title}}</div>
+
+    <!-- Cutout Box -->
+    <div *ngIf="weaponConfig" class="cutoutBox">
+      
+      <!-- Header -->
+      <div id="header" [class.inactive]="!hasCustomName()">
+        {{getConfigName()}}
+        <br>
+        <div id="modified">
+          <img src="/assets/images/cogwheel.png" alt="cogwheel">
+          modified weapon
+        </div>
+        
+        <br>
+        <!-- Image -->
+        <img [src]="getImageLink()" class="weapon" [alt]="weaponConfig.weaponName">
+      </div>
+
+      <!-- Attachments -->
+      <div id="attachments">
+        <div *ngFor="let attachment of weaponConfig.attachments | keyvalue">
+          <div class="circle big marked">
+            <img [src]="'/assets/images/attachments/' + attachment.key + '.png'" alt=""> <!-- temp images -->
+          </div>
+          {{attachment.value}}
+        </div>
+        <div *ngFor="let i of configService.getIterableNrOfEmptyAttachmentSlots(weaponConfig)">  
+          <div class="circle big"></div>
+          No Attachment
+        </div>
+      </div>
+        
+    </div>
+
+    <!-- Formular -->
     <form *ngIf="options.form" (ngSubmit)="emit(textInput.value)">
-      <div id="title">{{options.form.inputLabel}}</div>
-      <input id="textInput" type="text" [attr.maxlength]="maxNameLength" [value]="options.form.inputValue" autocomplete="off" spellcheck="false" #textInput>
-      <a (click)="emit(textInput.value)" class="grey">OK</a>
-      <a (click)="emit()" class="grey">Cancel</a>
+      <input (click)="soundService.select()" (mouseenter)="soundService.hover()" id="textInput" type="text" [attr.maxlength]="maxNameLength" [value]="options.form.inputValue" autocomplete="off" spellcheck="false" #textInput>
+      <a (click)="emit(textInput.value); soundService.select()" (mouseenter)="soundService.hover()" class="grey">OK</a>
+      <a (click)="emit(); soundService.select()" (mouseenter)="soundService.hover()" class="grey">Cancel</a>
     </form>
-    
+
+    <!-- Non-formular Buttons -->
     <ng-container *ngFor="let button of options.buttons">
-      <a (click)="emit(button)" class="grey">{{button}}</a>
+      <a (click)="emit(button); soundService.select()" (mouseenter)="soundService.hover()" class="narrow">{{button}}</a>
     </ng-container>
     
-    <a (mouseenter)="soundService.hover()" (click)="emit()" class="back">Back</a>
+    <!-- Back button -->
+    <a (click)="emit(); soundService.select()" (mouseenter)="soundService.hover()" class="back">Back</a>
+    
   </div>
-
 </ng-container>

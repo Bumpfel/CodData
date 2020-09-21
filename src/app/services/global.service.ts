@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { WeaponConfig } from '../models/WeaponConfig';
 import { SoundService } from './sound.service'
 
 @Injectable({
@@ -23,7 +24,7 @@ export class GlobalService {
 
   enableGoBackOnEscape(): void {    
     // console.log('enableGoBackOnEscape')
-    document.addEventListener('keydown', this.goBackCallback, { once: true })
+    document.addEventListener('keydown', this.goBackCallback)
   }
   
   disableGoBackOnEscape(): void {
@@ -37,6 +38,10 @@ export class GlobalService {
 
   linkToName(str: string): string {
     return str != null ? str.split('_').join(' ') : null // .toLowerCase()
+  }
+
+  getImageLink(weaponConfig: WeaponConfig): string {
+    return '/assets/images/weapons/' + this.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'
   }
 
 }

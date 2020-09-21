@@ -6,7 +6,7 @@
   <div class="scrollBox">
     <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName)">        
       <!-- Weapon Card -->
-      <a (click)="selectWeapon(weaponName); soundService.select()" (mouseenter)="soundService.hover()" (focus)="soundService.hover(); showArmouryButton(weaponName)" tabindex="0">
+      <a (click)="selectWeapon(weaponName)" (mouseenter)="soundService.hover()">
         <app-weapon-card [weaponConfig]="getTempConfig(weaponName)" page="weapon-select"></app-weapon-card>
       </a>
       <!-- Collapsed armoury button -->
@@ -16,7 +16,7 @@
         <!-- <div>&#9654;</div> -->
       </a>
       <!-- Expanded armoury button -->
-      <a class="armoury gone" id="armoury-button-expanded" (click)="soundService.select()"(focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
+      <a class="armoury gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
         <div class="title">Armoury</div>
         <img src="/assets/images/armoury.png" alt="Armoury button">
         <br>

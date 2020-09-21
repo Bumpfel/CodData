@@ -43,12 +43,15 @@ export class AttachmentSelectComponent implements OnInit {
   }
   
   selectAttachment(attachmentName: string): void {
+    this.soundService.select()
+
     let slot = parseInt(this.route.snapshot.paramMap.get('slot'))
 
     let status = this.configService.setAttachment(slot, this.attachmentSlot, attachmentName)
     if(status === this.configService.editStatus.EQUIPPED) {
       this.messageService.addMessage('Attachment Equipped', attachmentName)
       window.history.back()
+      this.soundService.goBack()
     } else if(status === this.configService.editStatus.UNEQUIPPED) {
       this.selectedAttachmentName = undefined
     } else if(status === this.configService.editStatus.BLOCKED) {
@@ -67,6 +70,7 @@ export class AttachmentSelectComponent implements OnInit {
   }
 
   private async setHoveredAttachment(attachmentName: string): Promise<void> {
+    this.soundService.hover()
     this.hoveredAttachment = this.attachments[attachmentName]
     this.hoveredAttachmentName = attachmentName
   }

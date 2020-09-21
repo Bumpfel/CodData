@@ -4,6 +4,8 @@
   </div>
   
   <div id="menu">
-    <a *ngFor="let menuItem of menuItems" (mousedown)="navigate(menuItem)" [routerLink]="'../' + globalService.nameToLink(menuItem)" routerLinkActive="selected">{{menuItem}}</a>
+    <a *ngFor="let menuItem of menuItems" (mouseenter)="soundService.hover()" (click)="navigate(menuItem); soundService.selectCategory()" [class.selected]="isActive(menuItem)">{{menuItem}}</a>
+    <!-- [routerLink]="'../' + globalService.nameToLink(menuItem)"  -->
+    <!-- routerLinkActive="selected" -->
   </div>
 </nav>

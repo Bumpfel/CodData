@@ -3,7 +3,7 @@
 <main>
   <div class="scrollBox" id="attachments">
     <div>
-      <a *ngFor="let attachment of attachments | keyvalue" (click)="selectAttachment(attachment.key); soundService.select()" (mouseenter)="setHoveredAttachment(attachment.key); soundService.hover()">
+      <a *ngFor="let attachment of attachments | keyvalue" (click)="selectAttachment(attachment.key)" (mouseenter)="setHoveredAttachment(attachment.key)">
         <!-- <img [src]="'/assets/images/attachments/muzzle/' + attachment.key + '.png'"> -->
         {{attachment.key}}
         <div *ngIf="isSelectedAttachment(attachment.key)" class="circle filled small right"></div>

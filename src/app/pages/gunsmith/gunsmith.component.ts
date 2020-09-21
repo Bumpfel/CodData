@@ -9,7 +9,6 @@ import { Effect } from 'src/app/models/Effect'
 import { DataService } from 'src/app/services/data.service';
 import { MessageService } from 'src/app/services/message.service';
 import { Dialogue } from 'src/app/models/Dialogue';
-import { trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-gunsmith',
@@ -50,7 +49,7 @@ export class GunsmithComponent implements OnInit {
 
   // TODO type vars when done with re-structure
   baseWeaponStats: any
-  attachmentSummary: Array<Map<string, Effect>> = []
+  attachmentSummary: Array<Map<string, Effect>> = [] // TODO not array
   weaponStatSummary: Map<string, Effect>
 
   statOrder: string[]
@@ -58,29 +57,29 @@ export class GunsmithComponent implements OnInit {
   initialDialogueOptions: Dialogue
   secondDialogueOptions: Dialogue
   
-  private quickAttachmentRemoveCb: (e: KeyboardEvent) => void
-  private showCustomModDialogueCB: (e: KeyboardEvent) => void
-  // private cancelConfigCb: (e: KeyboardEvent) => void
-
   initialDialogueButtons = {
     enterName: 'Enter name',
-    updateConfig: 'Update Config',
-    createNewConfig: 'Create new Config'
+    saveConfig: 'Save modification',
+    createNewConfig: 'Create new modification',
+    updateConfig: 'Update modification',
   }
-
-  secondDialogueButton = { 
+  secondDialogueButton = {
      ok: 'OK',
      cancel: 'Cancel'
   }
+
+  private quickAttachmentRemoveCb: (e: KeyboardEvent) => void
+  private showConfigDialogueCB: (e: KeyboardEvent) => void
 
   constructor(private route: ActivatedRoute,
     private dataService: DataService,
     public globalService: GlobalService,
     public configService: WeaponConfigService,
     public soundService: SoundService,
-    private messageService: MessageService) { }
+    public messageService: MessageService,
+    ) { }
 
-  ngOnInit(): void {   
+  ngOnInit(): void {
     this.globalService.enableGoBackOnEscape()
     this.deselectPopup = document.querySelector('#deselect')
 
@@ -89,29 +88,27 @@ export class GunsmithComponent implements OnInit {
    
     this.statOrder = Stats.getAllOrderedStats()    
 
-    this.showCustomModDialogueCB = e => {
-      if(e.key === '1') {       
+    this.showConfigDialogueCB = e => {
+      if(e.key === '1') {
+        this.soundService.highPitched()
         this.initialDialogueOptions = {
-          buttons: [ 
-            this.initialDialogueButtons.enterName,
-            this.initialDialogueButtons.createNewConfig,
-            this.initialDialogueButtons.updateConfig,
-          ],
-          // triggerKey: '1'
-        }
-        document.removeEventListener('keydown', this.showCustomModDialogueCB)
+          title: 'save custom mod',
+          buttons: this.weaponConfig.armouryName
+          ? [ this.initialDialogueButtons.enterName, this.initialDialogueButtons.updateConfig,  this.initialDialogueButtons.createNewConfig ]
+          : [ this.initialDialogueButtons.enterName, this.initialDialogueButtons.saveConfig ] }
+          document.removeEventListener('keydown', this.showConfigDialogueCB)
       }
     }
-    document.addEventListener('keydown', this.showCustomModDialogueCB)
+      
+    document.addEventListener('keydown', this.showConfigDialogueCB)
 
     this.fetchAvailableAttachmentSlots()
     this.fetchTableData()
   }
   
   ngOnDestroy(): void {
-    this.disableQuickAttachmentRemoval()
-    document.removeEventListener('keydown', this.showCustomModDialogueCB)
-    // document.removeEventListener('keydown', this.cancelConfigCb)
+    this.disableQuickAttachmentRemoval()   
+    document.removeEventListener('keydown', this.showConfigDialogueCB)
   }
 
   fetchTableData(): void {
@@ -142,6 +139,8 @@ export class GunsmithComponent implements OnInit {
   }
   
   enableQuickAttachmentRemoval(attachmentSlot: string, event: MouseEvent): void {
+    this.soundService.hover()
+
     this.quickAttachmentRemoveCb = (e: KeyboardEvent) => {
       if(e.key === 'r') {
         const removedAttachment = this.weaponConfig.attachments[attachmentSlot]
@@ -170,6 +169,11 @@ export class GunsmithComponent implements OnInit {
     document.removeEventListener('keydown', this.quickAttachmentRemoveCb)
   }
 
+  chooseAttachment(): void {
+    this.soundService.goBack()
+    this.soundService.highPitched()
+  }
+
   getNrOfAttachments(): number {
     return Object.keys(this.weaponConfig.attachments).length
   }
@@ -186,53 +190,62 @@ export class GunsmithComponent implements OnInit {
   }
 
   getImageLink(): string {
-    return '/assets/images/weapons/' + this.globalService.nameToLink(this.weaponConfig.weaponType) + '/' + this.weaponConfig.weaponName + '.png'
+    return this.globalService.getImageLink(this.weaponConfig)
   }
   
   initialDialogueAction(action: string): void {
-    console.log('received emit from first dialogue ', action)
-    
     if(action === this.initialDialogueButtons.enterName) {
+      // Enter Name
       this.secondDialogueOptions = {
+        title: 'enter name',
         form: {
-          inputLabel: 'enter name',
-          inputValue: this.weaponConfig.armouryName,
+          inputValue: this.newName || this.weaponConfig.armouryName || '',
+        }
+      }      
+    } else {
+      if(action === this.initialDialogueButtons.createNewConfig || action === this.initialDialogueButtons.saveConfig) {
+        this.weaponConfig.armouryName = this.newName || this.weaponConfig.armouryName
+        // Save/Create new modification
+
+        if(this.configService.configDuplicateExists(this.weaponConfig)) {
+          this.messageService.addMessage('Notice', 'A modification with that name already exists') // TODO change to overwrite dialogue
+          this.refreshInitialDialogue()
+          return
+        }
+        else if(this.configService.saveConfig(this.weaponConfig, true)) {
+          this.messageService.addMessage('Modification added to the weapon armoury', this.weaponConfig.armouryName)
+          this.initialDialogueOptions = undefined
+        } else {
+          this.messageService.addMessage('Notice', 'Enter a name to save a custom modification')
+          this.refreshInitialDialogue()
+          return
+        }
+      } else if(action === this.initialDialogueButtons.updateConfig) {
+        // Update modification
+        this.globalService.enableGoBackOnEscape()
+        if(this.configService.renameArmouryConfig(this.weaponConfig, this.newName || this.weaponConfig.armouryName)) {
+          // this.messageService.addMessage('Modification added to the weapon armoury', this.newName)
+          this.messageService.addMessage('Modification updated', this.newName || this.weaponConfig.armouryName)
+          this.initialDialogueOptions = undefined
         }
       }
-      console.log('opening second dialogue', this.secondDialogueOptions)
-      
-    } else if(action === this.initialDialogueButtons.createNewConfig) {
-      console.log('creating new config: ' + this.newName)
-      // TODO save new config
-      // this.messageService.addMessage('Created new armoury config', name)
-    } else if(action === this.initialDialogueButtons.updateConfig) {
-      console.log('renaming config: ' + this.newName)
-      // TODO rename config
-      // this.messageService.addMessage('Armoury Config updated', name)
-    } else {
       this.initialDialogueOptions = undefined
-      document.addEventListener('keydown', this.showCustomModDialogueCB)
+      document.addEventListener('keydown', this.showConfigDialogueCB)
+      this.globalService.enableGoBackOnEscape()
     }
   }
 
   secondDialogueAction(name: string): void {
-    console.log('received emit from second dialogue ', name)
     if(name) {
       this.newName = name
+      // console.log('update name: ', name)
     }
     this.secondDialogueOptions = undefined
-    
+    // trigger change to register event listener on the first dialogue
+    this.refreshInitialDialogue()
   }
-
-  // saveConfig(name: string): void {
-  //   if(name) {
-  //     this.nameFormConfig.armouryName = name
-  //     if(this.configService.saveConfig(this.nameFormConfig, true)) {
-  //       // TODO ny config eller uppdatera gammal?
-  //       this.messageService.addMessage('Armoury Config saved', name)
-  //     }
-  //   }
-  //   // this.nameFormConfig = undefined
-  //   document.addEventListener('keydown', this.saveConfigCb)
-  // }
+  
+  refreshInitialDialogue() {
+    this.initialDialogueOptions = this.initialDialogueOptions ? JSON.parse(JSON.stringify(this.initialDialogueOptions)) : undefined
+  }
 }

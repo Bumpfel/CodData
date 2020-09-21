@@ -53,13 +53,38 @@ export class WeaponConfigService {
     return arr
   }
 
-  saveConfig(weaponConfig: WeaponConfig, isArmoryConfig: boolean = false): void {
+  /**
+   * If isArmouryconfig, name is checked before it's saved. Returns true if name is ok
+   * @param weaponConfig
+   * @param isArmoryConfig Saves config to sessionStorage, and also to localStorage if isAmouryConfig === true
+
+   */
+  saveConfig(weaponConfig: WeaponConfig, isArmoryConfig: boolean = false): boolean {
     if(isArmoryConfig) {
+      let name = weaponConfig.armouryName
+      if(!name || name.trim().length === 0) {
+        return false
+      }
+      if(name.length > WeaponConfig.maxNameLength) {
+        name = name.substr(0, WeaponConfig.maxNameLength)
+      }
+      weaponConfig.armouryName = name
+      
       const weaponConfigs = this.getArmouryConfigs(weaponConfig.weaponName) || {}
       weaponConfigs[weaponConfig.armouryName] = weaponConfig
       window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(weaponConfigs))
     }
     window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
+    return true
+  }
+
+  /**
+   * Checks if this weapon has a config with the armouryName in the arugument
+   * @param weaponConfig 
+   */
+  configDuplicateExists(weaponConfig: WeaponConfig): boolean {
+    const armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName)
+    return armouryConfigs && armouryConfigs[weaponConfig.armouryName]
   }
 
   deleteComparisonConfig(slot: number) {
@@ -72,10 +97,10 @@ export class WeaponConfigService {
     window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(armouryConfigs))
   }
 
-  renameArmouryConfig(oldConfig: WeaponConfig, newName: string): void {
+  renameArmouryConfig(oldConfig: WeaponConfig, newName: string): boolean {
     this.deleteArmouryConfig(oldConfig)
     oldConfig.armouryName = newName
-    this.saveConfig(oldConfig, true)
+    return this.saveConfig(oldConfig, true)
   }
 
   getNextFreeComparisonSlot(): number {
