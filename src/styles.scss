@@ -11,6 +11,8 @@ body {
   background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
   user-select: none;
   overflow-x: hidden;
+  scrollbar-color: #f1f1f1bc $meterBG; // for firefox
+  scrollbar-width: 10px;
 
   // background-image: url('/assets/images/tempBG.png'); // TODO temp
   // background-size: cover;
@@ -25,11 +27,11 @@ body {
   background: $meterBG;
   opacity: .5;
 }
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb, ::-webkit-slider-thumb {
   $colour: #f1f1f1bc;
   background-image: linear-gradient($colour, $colour), url('/assets/images/square-pattern.png');
 }
-::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover, ::-webkit-slider-thumb:hover {
   $trimSize: 1px;
   background-image:
     linear-gradient(to bottom, $darkBG, $highlightColourTransparent 50%, $darkBG 100%),
@@ -42,6 +44,7 @@ body {
   border: $trimSize solid $highlightColour;
   border-left: 0;
   border-right: 0;
+  cursor: url('/assets/images/pointer-link.png'), pointer;
 }
 
 a, a * {
@@ -290,6 +293,9 @@ main {
   }
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
 
 .background {
   background-color: #00f2;

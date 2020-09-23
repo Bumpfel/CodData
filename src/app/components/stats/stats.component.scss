@@ -1,0 +1,117 @@
+@import "./src/vars.scss";
+
+.stats {
+  margin-right: 20px;
+  vertical-align: top;
+
+  .title {
+    margin: 10px 0 5px;
+    // font-size: 16px;
+    color: white;
+  }
+
+  .stacking {
+    display: inline-block;
+  }
+
+  .testRange {
+    // border: 1px dotted orange;
+    border-right: 1px solid grey;
+    height: 10px;
+    padding-right: 5px;
+    text-align: end;
+
+    &::before {
+      content: ' '
+    }
+  }
+
+  .space {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+  }
+  
+  .column {
+    vertical-align: top;
+    // border: 1px dotted orange;
+    
+    &.summary {
+      color: white;
+    }
+    
+    &.attachment {
+      //       width: 100px;
+      //       max-width: 150px;
+      //       text-overflow: ellipsis;
+      //       overflow: hidden;
+    }
+    
+    &.range {
+      margin-top: 20px;
+    }
+      
+    .cell, > div {
+      padding: 8px 10px;
+      box-sizing: border-box;
+      height: 33px;
+
+      &:nth-child(2n) {
+        background-color: lighten($darkBG, 20%);
+      }
+
+      &.loading {
+        animation: flash 2s infinite;
+      }
+
+      &.negative {//}, &:not(.summary) {
+        color: $red;
+      }
+      
+      &.positive {
+        color: $green;
+      }
+    }
+  }
+}
+
+
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  background: transparent;
+  // background-image: linear-gradient(to right, $meterBG, $meterBG 30%, grey 30%, grey 54%, lightgrey 54%, lightgrey);
+  outline: none;
+  opacity: 0.7;
+  // margin: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+  }
+  
+  &::-moz-range-thumb {
+    width: 15px; 
+    height: 15px;
+  }
+}
+
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+canvas {
+  border: 1px solid white;
+  background-color: black;
+  color: white;
+}

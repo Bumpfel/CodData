@@ -1,0 +1,75 @@
+<div class="stats">
+  <div class="stacking column summary">
+    <div class="cell" *ngFor="let stat of statOrder">{{stat}}</div>
+  </div>
+
+  <div class="stacking column">
+    <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
+      <ng-container *ngFor="let stat of statOrder">
+        <div class="cell" *ngIf="weaponStatSummary.get(stat)" [class.positive]="weaponStatSummary.get(stat).isPositive()" [class.negative]="weaponStatSummary.get(stat).isNegative()">
+          {{weaponStatSummary.get(stat).value}}
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #loadingWeaponStatSummary>
+      <div class="cell" class="loading">
+        Loading...
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+
+<div class="stats" *ngIf="activeDamageInterval" [style]="'width:' + (baseStatsWidth + 50) + 'px'">
+  <div class="title">
+    Damage Range: {{getRangeDisplay(slider.value)}}
+    <!-- : {{getDamageRangeInterval(activeDamageInterval)}} -->
+  </div>
+  <div class="space">
+    <input type="range" id="rangeSlider" (input)="setDamageInterval(slider.value)" min="0" [max]="getSliderRange()" value="0" #slider>
+    <!-- <datalist id="intervalList">
+      <option>30</option>
+      <option>54</option>
+      <option *ngFor="let interval of getDamageIntervals() | keyvalue">{{interval.key}}</option>
+    </datalist> -->
+  </div>
+  <div>
+    <!-- <div class="stacking testRange" [style]="'width:' + interval.value + 'px'" *ngFor="let interval of getDamageRangeIntervals() | keyvalue"> -->
+      <!-- {{interval.key}} -->
+    <!-- </div> -->
+    <!-- <div class="stacking" *ngFor="let interval of baseDamage; let i = index">
+      <input type="radio" [(ngModel)]="activeDamageInterval" [value]="interval">
+      {{getDamageRangeInterval(interval)}}
+    </div> -->
+  </div>
+  <div class="stacking column capitalize">
+    <div *ngFor="let hitBox of hitBoxes | keyvalue">{{hitBox.key}}</div>
+  </div>
+  <div class="stacking column">
+    <div *ngFor="let hitBox of hitBoxes | keyvalue">{{getDamage(hitBox.value)}}</div>
+  </div>
+  <div class="stacking column">
+    <div *ngFor="let hitBox of hitBoxes | keyvalue">{{getDPS(hitBox.value)}} DPS</div>
+  </div>
+  <!-- <div class="stacking column">
+    <div  *ngFor="let hitBox of hitBoxes | keyvalue">{{getDamagePerMag(hitBox.value)}} damage</div>
+  </div> -->
+
+  <br><br>
+  
+  <div class="title">
+    Additional Info
+  </div>
+  <div class="stacking column">
+    <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">Lock time</div>
+    <div>Rate of Fire</div>
+  </div>
+  <div class="stacking column" title="Also known as 'Open bolt delay'">
+    <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">{{getLockTime()}} ms *</div>
+    <div>{{getRateOfFire()}} rpm</div>
+  </div>
+</div>
+   
+<canvas>
+  Weapon Damage Graph
+</canvas>

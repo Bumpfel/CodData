@@ -4,7 +4,7 @@
 <!-- Weapon Select -->
 <main>
   <div class="scrollBox">
-    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName)">        
+    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName); showTempRanges(weaponName)">        
       <!-- Weapon Card -->
       <a (click)="selectWeapon(weaponName)" (mouseenter)="soundService.hover()">
         <app-weapon-card [weaponConfig]="getTempConfig(weaponName)" page="weapon-select"></app-weapon-card>
@@ -24,6 +24,12 @@
       </a>
     </div>
     <!-- <img src="/assets/images/grau.png"> -->
+  </div>
+
+  <div style="border: 1px dotted grey; position: fixed; top: 200px; right: 100px; color: white; padding: 20px">
+    <div *ngFor="let interval of tempIntervals">
+      {{interval.distances}} m
+    </div>
   </div>
 </main>
 

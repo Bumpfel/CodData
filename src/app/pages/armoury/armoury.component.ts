@@ -58,7 +58,7 @@ export class ArmouryComponent implements OnInit {
 
   setActiveConfig(weaponConfig: WeaponConfig) {
     this.soundService.hover()
-    this.activeConfig = weaponConfig    
+    this.activeConfig = weaponConfig
   }
 
   getCurrentSlot(): number {

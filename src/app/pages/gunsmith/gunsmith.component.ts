@@ -86,7 +86,7 @@ export class GunsmithComponent implements OnInit {
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
    
-    this.statOrder = Stats.getAllOrderedStats()    
+    this.statOrder = Stats.getAllOrderedStats()
 
     this.showConfigDialogueCB = e => {
       if(e.key === '1') {
@@ -107,7 +107,7 @@ export class GunsmithComponent implements OnInit {
   }
   
   ngOnDestroy(): void {
-    this.disableQuickAttachmentRemoval()   
+    this.disableQuickAttachmentRemoval()
     document.removeEventListener('keydown', this.showConfigDialogueCB)
   }
 

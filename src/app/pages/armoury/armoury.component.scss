@@ -18,6 +18,9 @@ main {
 
   a {
     transform: scale(.85);
+    margin-right: -35px;
+    margin-bottom: -5px;
+    transform-origin: left;
   }
 
 }

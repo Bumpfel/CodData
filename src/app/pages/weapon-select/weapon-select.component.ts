@@ -23,6 +23,16 @@ export class WeaponSelectComponent implements OnInit {
   
   constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
+  // TODO TEMP
+  tempIntervals = []
+  showTempRanges(weaponName) {
+    this.tempIntervals = undefined //[{ distances: 'Loading...' }]
+    this.dataService.getBaseDamage(weaponName).then(result => {
+      this.tempIntervals = result
+    })
+  } 
+
+
   ngOnInit(): void {
     this.globalService.enableGoBackOnEscape()
     

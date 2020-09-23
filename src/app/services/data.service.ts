@@ -28,7 +28,7 @@ export class DataService {
 
   private weapons = {
     assaultrifles: ['Kilo 141', 'FAL', 'M4A1', 'FR 5.56', 'Oden', 'M13', 'FN Scar 17', 'AK-47' ,'RAM-7', 'Grau 5.56', 'CR-56 AMAX', 'AN-94'],
-    smgs: ['AUG', 'P90', 'MP5', 'Uzi', 'PP19 Bizon', 'MP7', 'Striker 45', 'Fennec', 'ISO'],
+    smgs: ['AUG', 'P90', 'MP5', 'Uzi', 'PP19 Bizon', 'MP7', 'Striker-45', 'Fennec', 'ISO'],
     shotguns: ['R9-0 Shotgun', '725', 'Origin 12 Shotgun', 'VLK Rogue'],
     lmgs: ['PKM', 'SA87', 'M91', 'MG34', 'Holger-26', 'Bruen Mk9', 'FiNN LMG'], // 'FiNN LMG Factory Adverse'],
     marksmanrifles: ['EBR', 'Mk2 Carbine', 'Kar98k', 'Crossbow', 'SKS'], // EBR-14
@@ -141,6 +141,16 @@ export class DataService {
     const attachmentsData = rawData.filter(attachment => attachmentNames.has(attachment.attachment))
     
     return this.extractAttachmentEffects(weaponConfig.weaponName, attachmentsData)
+  }
+
+  // async getBaseStats(weaponName: string): Promise<WeaponData> { // TODO returnerar TGD DATA, vilket skapar beroenden. borde formatera gär
+  //   const result = await this.getBaseWeaponData(weaponName)
+  //   return result[1] as WeaponData
+  // }
+
+  async getBaseDamage(weaponName: string): Promise<WeaponDamage[]> { // TODO returnerar TGD DATA, vilket skapar beroenden. borde formatera gär
+   const result = await this.getBaseWeaponData(weaponName)
+   return result[0] as WeaponDamage[]
   }
 
   /**

@@ -3,9 +3,10 @@
 <main *ngIf="loaded">
   <div id="weapon">{{ getFullWeaponType()}} {{ getWeaponSortIdentifier() }}</div>
   <div id="title">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
-
-  <div id="stats"></div>
   
+  <app-stats [weaponConfig]="activeConfig"></app-stats>
+  <br>
+
   <a (click)="selectConfig(newConfig)" (mouseenter)="setActiveConfig(newConfig)" (contextmenu)="$event.preventDefault()">
     <app-weapon-card [weaponConfig]="newConfig" page="armoury"></app-weapon-card>
   </a>
@@ -14,6 +15,7 @@
       <app-weapon-card [weaponConfig]="weaponConfig.value" page="armoury"></app-weapon-card>
     </a>
   </ng-container>
+
 
   <app-contextmenu [options]="contextMenuOptions" (optionSelected)="contextMenuAction($event)"></app-contextmenu>
 

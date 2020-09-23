@@ -44,4 +44,11 @@ export class GlobalService {
     return '/assets/images/weapons/' + this.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'
   }
 
+  round(nr: number, decimals: number): number {
+    const smt = Math.pow(10, decimals)
+    const calc = Math.round(nr * smt)
+
+    return calc / smt
+  }
+
 }

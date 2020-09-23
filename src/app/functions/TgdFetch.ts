@@ -11,7 +11,16 @@ export class TgdFetch {
     weapon: { path: 'base_stats.php', key: 'gun' },
     attachments: { path: 'grab_attachment_data.php', key: 'selectedGun' },
     summary: { path: 'grab_attachments_summary.php', key: 'attachmentSummary' },
+    // plot: { path: 'generate_plot_data.php', key: 'gunList' },
   }
+
+
+  // static plotData = [
+  //   "Kilo 141",
+  //   [ads, bullet_velocity, range_mod],
+  //   "DPS",
+  //   hitbox,
+  // ]
 
   static async getWeaponsData(weaponType: string): Promise<Array<Array<string>>> { // dno why there is a second array here, but it is what it is
     return this.getTGDData(this.request.weapons, weaponType)
