@@ -27,7 +27,7 @@ export class WeaponSelectComponent implements OnInit {
   tempIntervals = []
   showTempRanges(weaponName) {
     this.tempIntervals = undefined
-    this.dataService.getBaseDamage(weaponName).then(result => {
+    this.dataService.getBaseDamageIntervals(weaponName).then(result => {
       this.tempIntervals = result
     })
   } 

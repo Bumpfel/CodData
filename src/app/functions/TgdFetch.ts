@@ -1,6 +1,6 @@
 import { WeaponConfig } from '../models/WeaponConfig'
 import { AttachmentData, WeaponData } from '../models/TGD/Data'
-import { WeaponDamage } from '../models/TGD/WeaponDamage'
+import { DamageIntervals } from '../models/TGD/WeaponDamage'
 
 export class TgdFetch {
 
@@ -32,7 +32,7 @@ export class TgdFetch {
    * [1] = base weapon data
    * @param weaponName
    */
-  static getBaseWeaponData(weaponName: string): Promise<(WeaponDamage[] | WeaponData)[]> {
+  static getBaseWeaponData(weaponName: string): Promise<(DamageIntervals[] | WeaponData)[]> {
     return this.getTGDData(this.request.weapon, weaponName)
   }
 

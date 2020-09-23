@@ -4,7 +4,9 @@
   <div id="weapon">{{ getFullWeaponType()}} {{ getWeaponSortIdentifier() }}</div>
   <div id="title">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
   
-  <app-stats [weaponConfig]="activeConfig"></app-stats>
+  <app-summary [weaponConfig]="activeConfig"></app-summary>
+  <app-base-data [weaponConfig]="activeConfig"></app-base-data>
+  <app-damage-graph [weaponConfig]="activeConfig"></app-damage-graph>
   <br>
 
   <a (click)="selectConfig(newConfig)" (mouseenter)="setActiveConfig(newConfig)" (contextmenu)="$event.preventDefault()">

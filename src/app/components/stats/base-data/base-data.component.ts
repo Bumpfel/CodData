@@ -1,59 +1,46 @@
-import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { range } from 'rxjs';
 import { Effect } from 'src/app/models/Effect';
 import { Stats } from 'src/app/models/Stats';
-import { WeaponData } from 'src/app/models/TGD/Data';
-import { WeaponDamage } from 'src/app/models/TGD/WeaponDamage';
+import { DamageIntervals } from 'src/app/models/TGD/WeaponDamage';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { DataService } from 'src/app/services/data.service';
-import { GlobalService } from 'src/app/services/global.service';
 
 @Component({
-  selector: 'app-stats',
-  templateUrl: './stats.component.html',
-  styleUrls: ['./stats.component.scss']
+  selector: 'app-base-data',
+  templateUrl: './base-data.component.html',
+  styleUrls: ['./base-data.component.scss']
 })
-export class StatsComponent implements OnInit {
+export class BaseDataComponent implements OnInit {
   
   @Input() weaponConfig: WeaponConfig
 
   weaponStatSummary: Map<string, Effect>
-  statOrder: string[]
-  private baseDamageIntervals: WeaponDamage[] // TODO direkt beroende till TGD DATA
-  activeDamageInterval: WeaponDamage
-
-  baseData: Promise<any>
-
+  private baseDamageIntervals: DamageIntervals[] // TODO direkt beroende till TGD DATA
+  activeDamageInterval: DamageIntervals
+  baseData: Promise<DamageIntervals[]>
+  
   sliderValue: number = 0
   maxRange: number
   intervalsLoaded: boolean = false
-  
+
   hitBoxes = { // TODO move to data service
     head: 'head',
     torso: 'chest',
     stomach: 'stomach',
     limbs: 'legs',
   }
+  
+  constructor(private dataService: DataService) { }
 
-  // sortHitBoxes(a: KeyValue<string, string>, b: KeyValue<string, string>) {
-  //   return a.key.localeCompare(b.key)
-  // }
-
-  constructor(private dataService: DataService, private globalService: GlobalService) { }
-
-   ngOnInit(): void {
-    this.statOrder = Stats.getAllOrderedStats()
-    this.baseData = this.dataService.getBaseDamage(this.weaponConfig.weaponName).then(result => {
+  ngOnInit(): void {
+    this.baseData = this.dataService.getBaseDamageIntervals(this.weaponConfig.weaponName)
+    this.baseData.then(result => {
       this.baseDamageIntervals = result
       this.activeDamageInterval = result[0]
     })
-      
-    this.drawCanvas()
   }
-    
+
   async ngOnChanges() {
-    console.log('changes detected')
     this.intervalsLoaded = false
     
     this.weaponStatSummary = undefined // clear obsolete data
@@ -61,41 +48,28 @@ export class StatsComponent implements OnInit {
     
     await this.baseData
     this.styleRangeSlider()
-    console.log('loaded')
-    
     this.intervalsLoaded = true
   }
 
   getDamage(hitBox: string) {
     return this.activeDamageInterval[hitBox]
   }
-  
   getDPS(hitBox: string) {
     return Math.round(this.activeDamageInterval[hitBox] * this.activeDamageInterval.fire_rate / 60)
   }
-
   getRateOfFire(): number {
     return this.activeDamageInterval.fire_rate
   }
-
-  // getDamagePerMag(hitBox: string) {
-  //   if(this.weaponStatSummary) {
-  //     console.log(this.weaponStatSummary.get(Stats.names.mag_size))
-  //     return this.weaponStatSummary.get(Stats.names.mag_size).status
-  //     // this.activeDamageInterval[hitBox] *
-  //   }
-  // }
-  
   getLockTime(): number {
-      return this.activeDamageInterval.open_bolt_delay
+    return this.activeDamageInterval.open_bolt_delay
   }
   
-  /**
+ /**
    * Finds the appropriate interval that covers the range given by the value
    * @param value
    */
   setDamageInterval(value: number): void {
-    let prevInterval: WeaponDamage
+    let prevInterval: DamageIntervals
     const rangeMod = this.weaponStatSummary.get(Stats.names.dmg_range).status + 1
 
     for(const interval of this.baseDamageIntervals) {
@@ -151,38 +125,12 @@ export class StatsComponent implements OnInit {
     }, 0)
   }
 
-  
 
-
-
-  drawCanvas(): void {
-    const xMult = 1.5
-
-    const canvas = document.querySelector('canvas')
-    canvas.setAttribute('width', '500')
-    canvas.setAttribute('height', '400')
-    const context = canvas.getContext('2d')
-    
-    context.strokeStyle = 'orange'
-    this.plotWeaponDamage(context)
-
-  }
-
-  plotWeaponDamage(canvasContext: CanvasRenderingContext2D, ...lines) {
-    const xMult = 1.5
-
-    canvasContext.beginPath()
-    canvasContext.moveTo(0, 350)
-    canvasContext.lineTo(30.5 * xMult, 350)
-      canvasContext.lineTo(30.5 * xMult, 288) // vertical
-    canvasContext.lineTo(54.5 * xMult, 288)
-      canvasContext.lineTo(54.5 * xMult, 225) // vertical
-    canvasContext.lineTo(200 * xMult, 225)
-    canvasContext.stroke()
-    canvasContext.closePath()
-
-  }
-
-  
-
+  // getDamagePerMag(hitBox: string) {
+  //   if(this.weaponStatSummary) {
+  //     console.log(this.weaponStatSummary.get(Stats.names.mag_size))
+  //     return this.weaponStatSummary.get(Stats.names.mag_size).status
+  //     // this.activeDamageInterval[hitBox] *
+  //   }
+  // }
 }

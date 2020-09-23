@@ -1,4 +1,4 @@
-export interface WeaponDamage {
+export interface DamageIntervals {
   gun: string
 
   head: number
@@ -9,5 +9,4 @@ export interface WeaponDamage {
   distances: number
   fire_rate: number
   open_bolt_delay: number
-  // row_id: 53
 }

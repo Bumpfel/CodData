@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WeaponDamage } from 'src/app/models/TGD/WeaponDamage';
+import { DamageIntervals } from 'src/app/models/TGD/WeaponDamage';
 import { AttachmentData, TGDData, WeaponData } from 'src/app/models/TGD/Data';
 import { TgdFormatter } from '../functions/TgdFormatter';
 import { Effect } from 'src/app/models/Effect';
@@ -46,7 +46,7 @@ export class DataService {
 
     // Cache VARS
   private weaponTypesData: { [key: string]: string[] } = {} // TODO improved caching not done
-  private weaponData: { [key: string]: Promise<(WeaponData | WeaponDamage[])[]> } = {} // P.I.T.A. typing
+  private weaponData: { [key: string]: Promise<(WeaponData | DamageIntervals[])[]> } = {} // P.I.T.A. typing
   private summaryData: Map<string, Promise<TGDData>> = new Map() // uses stringifed WeaponConfig as key
   private attachmentData: { [key: string]: Promise<AttachmentData[]> } = {}
 
@@ -142,9 +142,10 @@ export class DataService {
     return this.extractAttachmentEffects(weaponConfig.weaponName, attachmentsData)
   }
 
-  async getBaseDamage(weaponName: string): Promise<WeaponDamage[]> { // TODO returnerar TGD DATA, vilket skapar beroenden. borde formatera här
+
+  async getBaseDamageIntervals(weaponName: string): Promise<DamageIntervals[]> { // TODO returnerar TGD DATA, vilket skapar beroenden. borde formatera här
    const result = await this.getBaseWeaponData(weaponName)
-   return result[0] as WeaponDamage[]
+   return result[0] as DamageIntervals[]
   }
 
   /**
@@ -197,7 +198,7 @@ export class DataService {
    * Internal method that fetches and caches raw weapon damage data w. ranges drop-offs, and base weapon data
    * @param weaponName
    */
-  private async getBaseWeaponData(weaponName: string): Promise<(WeaponDamage[] | WeaponData)[]> {
+  private async getBaseWeaponData(weaponName: string): Promise<(DamageIntervals[] | WeaponData)[]> {
     if(!this.weaponData[weaponName]) {
       this.weaponData[weaponName] = TgdFetch.getBaseWeaponData(weaponName)
     }

@@ -18,7 +18,9 @@ import { FooterComponent } from './components/navigation/footer/footer.component
 import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
 import { NameformComponent } from './components/nameform/nameform.component';
 import { DialogueComponent } from './components/dialogue/dialogue.component';
-import { StatsComponent } from './components/stats/stats.component';
+import { BaseDataComponent } from './components/stats/base-data/base-data.component';
+import { SummaryComponent } from './components/stats/summary/summary.component';
+import { DamageGraphComponent } from './components/stats/damage-graph/damage-graph.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { StatsComponent } from './components/stats/stats.component';
     ContextmenuComponent,
     NameformComponent,
     DialogueComponent,
-    StatsComponent
+    BaseDataComponent,
+    SummaryComponent,
+    DamageGraphComponent
   ],
   imports: [
     BrowserModule,
