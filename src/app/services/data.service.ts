@@ -45,10 +45,10 @@ export class DataService {
   ]
 
     // Cache VARS
-  private weaponTypesData: Array<Array<string>> = [] // Object<Array<string>>
-  private weaponData: Array<(Array<(Array<WeaponDamage> | AttachmentData)>)> = [] // P.I.T.A. typing. not actually Arrays. objects
-  private attachmentData: Array<Array<AttachmentData>> = []
-  private summaryData: Map<string, any> = new Map() // uses stringifed WeaponConfig as key
+  private weaponTypesData: { [key: string]: string[] } = {} // TODO improved caching not done
+  private weaponData: { [key: string]: Promise<(WeaponData | WeaponDamage[])[]> } = {} // P.I.T.A. typing
+  private summaryData: Map<string, Promise<TGDData>> = new Map() // uses stringifed WeaponConfig as key
+  private attachmentData: { [key: string]: Promise<AttachmentData[]> } = {}
 
   constructor() {
   }
@@ -65,7 +65,6 @@ export class DataService {
   }
 
   getWeaponSortIdentifier(weaponConfig: WeaponConfig): string {
-    // return 'Alpha'
     const index = this.weapons[weaponConfig.weaponType.split(' ').join('')].indexOf(weaponConfig.weaponName)
     return this.weaponIdentifiers[index]
   }
@@ -77,7 +76,7 @@ export class DataService {
   async tgd_getWeapons(type: string): Promise<string[]> { // TODO should use this one, but I don't like how he's displaying different versions of the same weapons sometimes
     const tgdType = this.menuToTGDWeaponTypes.get(type)
     
-    if(type) {
+    // if(type) {
       if(!this.weaponTypesData[tgdType]) {
         this.weaponTypesData[tgdType] = []
         const weapons = await TgdFetch.getWeaponsData(tgdType)
@@ -87,8 +86,8 @@ export class DataService {
       }
 
       return this.weaponTypesData[tgdType]
-    }
-    return null
+    // }
+    // return null
   }
   
   /**
@@ -96,10 +95,10 @@ export class DataService {
    * @param type
    */
   getWeapons(type: string): string[] {
-    if(type) {
+    // if(type) {
       return this.weapons[type.split(' ').join('')]
-    }
-    return null
+    // }
+    // return null
   }
 
   /**
@@ -143,12 +142,7 @@ export class DataService {
     return this.extractAttachmentEffects(weaponConfig.weaponName, attachmentsData)
   }
 
-  // async getBaseStats(weaponName: string): Promise<WeaponData> { // TODO returnerar TGD DATA, vilket skapar beroenden. borde formatera gär
-  //   const result = await this.getBaseWeaponData(weaponName)
-  //   return result[1] as WeaponData
-  // }
-
-  async getBaseDamage(weaponName: string): Promise<WeaponDamage[]> { // TODO returnerar TGD DATA, vilket skapar beroenden. borde formatera gär
+  async getBaseDamage(weaponName: string): Promise<WeaponDamage[]> { // TODO returnerar TGD DATA, vilket skapar beroenden. borde formatera här
    const result = await this.getBaseWeaponData(weaponName)
    return result[0] as WeaponDamage[]
   }
@@ -163,9 +157,9 @@ export class DataService {
    
     const baseWeaponData = await this.getBaseWeaponData(weaponConfig.weaponName)
     if(!this.summaryData.has(cacheKey)) {
-      this.summaryData.set(cacheKey, await TgdFetch.getWeaponSummaryData(weaponConfig)) // cache data
+      this.summaryData.set(cacheKey, TgdFetch.getWeaponSummaryData(weaponConfig)) // cache data
     }
-    const result: AttachmentData = this.summaryData.get(cacheKey) || {} // get cached data
+    const result: AttachmentData = await this.summaryData.get(cacheKey) || {} // get cached data
 
     return TgdFormatter.getAttachmentEffects(result, baseWeaponData[baseWeaponData.length - 1] as WeaponData, true)
   }
@@ -175,7 +169,7 @@ export class DataService {
    * @param weaponName
    * @param attachmentsData 
    */
-  private async extractAttachmentEffects(weaponName: string, attachmentsData: AttachmentData[]): Promise<Array<Map<string, Effect>>> {
+  private async extractAttachmentEffects(weaponName: string, attachmentsData: AttachmentData[]): Promise<Map<string, Effect>[]> {
     const attachmentSummary: Array<Map<string, Effect>> = []
         
     const weaponData = await this.getBaseWeaponData(weaponName)
@@ -192,34 +186,22 @@ export class DataService {
    * Used internally. Fetches raw attachment data for all the attachments equipped in the config and caches retrieved data in a variable
    * @param weaponName
    */
-  private async getAllAttachmentData(weaponName: string): Promise<AttachmentData[]> {
-    let result: AttachmentData[]
-    
+  private async getAllAttachmentData(weaponName: string): Promise<AttachmentData[]> {   
     if(!this.attachmentData[weaponName]) {
-      result = await TgdFetch.getAttachmentData(weaponName)
-      this.attachmentData[weaponName] = result
-    } else {
-      result = this.attachmentData[weaponName]
+      this.attachmentData[weaponName] = TgdFetch.getAttachmentData(weaponName)
     }
-    
-    return result
+    return this.attachmentData[weaponName]
   }
   
   /**
    * Internal method that fetches and caches raw weapon damage data w. ranges drop-offs, and base weapon data
    * @param weaponName
    */
-    private async getBaseWeaponData(weaponName: string): Promise<Array<(Array<WeaponDamage> | WeaponData)>> {
-    let result: (WeaponDamage[] | AttachmentData)[]
-    
+  private async getBaseWeaponData(weaponName: string): Promise<(WeaponDamage[] | WeaponData)[]> {
     if(!this.weaponData[weaponName]) {
-      result = await TgdFetch.getBaseWeaponData(weaponName)
-      this.weaponData[weaponName] = result
-    } else {
-      result = this.weaponData[weaponName]
+      this.weaponData[weaponName] = TgdFetch.getBaseWeaponData(weaponName)
     }
-    
-    return result
+    return this.weaponData[weaponName]
   }
 
 }

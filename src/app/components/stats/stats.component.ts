@@ -1,4 +1,6 @@
+import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { range } from 'rxjs';
 import { Effect } from 'src/app/models/Effect';
 import { Stats } from 'src/app/models/Stats';
 import { WeaponData } from 'src/app/models/TGD/Data';
@@ -21,49 +23,138 @@ export class StatsComponent implements OnInit {
   private baseDamageIntervals: WeaponDamage[] // TODO direkt beroende till TGD DATA
   activeDamageInterval: WeaponDamage
 
-  baseStatsWidth: number = 300
-  private lastIntervalPercentagePosition = 75
+  baseData: Promise<any>
 
-  hitBoxes: Map<string, string> = new Map([ // move to data service...?
-    ['head', 'head'],
-    ['torso', 'chest'],
-    ['stomach', 'stomach'],
-    ['limbs', 'legs'],
-  ])
+  sliderValue: number = 0
+  maxRange: number
+  intervalsLoaded: boolean = false
+  
+  hitBoxes = { // TODO move to data service
+    head: 'head',
+    torso: 'chest',
+    stomach: 'stomach',
+    limbs: 'legs',
+  }
+
+  // sortHitBoxes(a: KeyValue<string, string>, b: KeyValue<string, string>) {
+  //   return a.key.localeCompare(b.key)
+  // }
 
   constructor(private dataService: DataService, private globalService: GlobalService) { }
 
-  ngOnInit(): void {
-    this.weaponStatSummary = null // clears obsolete data
+   ngOnInit(): void {
     this.statOrder = Stats.getAllOrderedStats()
-    this.dataService.getBaseDamage(this.weaponConfig.weaponName).then(result => { 
+    this.baseData = this.dataService.getBaseDamage(this.weaponConfig.weaponName).then(result => {
       this.baseDamageIntervals = result
       this.activeDamageInterval = result[0]
-      console.log(this.baseDamageIntervals)
-
-      const colours = ['$meterBG', 'grey', 'lightgrey', 'white']      
-      const arr = this.getDamageRangeIntervals()
-
-
-      let style = 'to right'
-      for(let i = 0; i < this.baseDamageIntervals.length; i ++) {
-        style += ', ' + colours[i] + ' ' + arr[i] 
-      }    
-    
-      console.log(style)
-      
-
-      setTimeout(() => (document.querySelector('#rangeSlider') as HTMLElement).style.backgroundImage = 
-      'linear-gradient(' + style + ')', 0)
     })
-
-    // this.dataService.getBaseStats(this.weaponConfig.weaponName).then(result => {
-    //   this.baseStats = result
-    // })
-
+      
     this.drawCanvas()
   }
+    
+  async ngOnChanges() {
+    console.log('changes detected')
+    this.intervalsLoaded = false
+    
+    this.weaponStatSummary = undefined // clear obsolete data
+    this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
+    
+    await this.baseData
+    this.styleRangeSlider()
+    console.log('loaded')
+    
+    this.intervalsLoaded = true
+  }
+
+  getDamage(hitBox: string) {
+    return this.activeDamageInterval[hitBox]
+  }
+  
+  getDPS(hitBox: string) {
+    return Math.round(this.activeDamageInterval[hitBox] * this.activeDamageInterval.fire_rate / 60)
+  }
+
+  getRateOfFire(): number {
+    return this.activeDamageInterval.fire_rate
+  }
+
+  // getDamagePerMag(hitBox: string) {
+  //   if(this.weaponStatSummary) {
+  //     console.log(this.weaponStatSummary.get(Stats.names.mag_size))
+  //     return this.weaponStatSummary.get(Stats.names.mag_size).status
+  //     // this.activeDamageInterval[hitBox] *
+  //   }
+  // }
+  
+  getLockTime(): number {
+      return this.activeDamageInterval.open_bolt_delay
+  }
+  
+  /**
+   * Finds the appropriate interval that covers the range given by the value
+   * @param value
+   */
+  setDamageInterval(value: number): void {
+    let prevInterval: WeaponDamage
+    const rangeMod = this.weaponStatSummary.get(Stats.names.dmg_range).status + 1
+
+    for(const interval of this.baseDamageIntervals) {
+      if(value <= interval.distances * rangeMod) {
+        this.activeDamageInterval = prevInterval || interval
+        return
+      }
+      prevInterval = interval
+    }
+    this.activeDamageInterval = this.baseDamageIntervals[this.baseDamageIntervals.length - 1]
+  }
  
+  getRangeDisplay(value: number): string {
+    let ret: string = value + ''
+    
+    if(value == this.maxRange) {
+      ret += '+'
+    }
+    return ret + ' meters'
+  }
+
+  styleRangeSlider() {
+    // calculate max range
+    const smallestTick = 50
+    const rangeMod = this.weaponStatSummary.get(Stats.names.dmg_range).status + 1
+    const calc = Math.floor(this.baseDamageIntervals[this.baseDamageIntervals.length - 1].distances * rangeMod / smallestTick) + 1
+    this.maxRange = calc * smallestTick
+    
+    const colours = ['#444', '#666', '#aaa', '#ddd']
+
+    // calculate break point percentages
+    const arr: number[] = []
+    for(let interval of this.baseDamageIntervals) {
+      const calc = interval.distances * rangeMod / this.maxRange * 100
+      arr.push(calc)
+    }
+    arr.push(100)
+
+    // build style with break point ticks
+    let style = 'to right'
+    for(let i = 0; i < this.baseDamageIntervals.length; i ++) {
+      style += ', ' + colours[i] + ' ' + arr[i] + '%'
+      style += ', ' + colours[i] + ' ' + arr[i + 1] + '%'
+    }
+
+    // apply style to slider
+    setTimeout(() => {
+      const slider = (document.querySelector('#rangeSlider') as HTMLElement)
+      slider.style.backgroundImage = 'linear-gradient(' + style + ')'
+      
+      slider.setAttribute('max', this.maxRange + '')
+      this.setDamageInterval(this.sliderValue)
+    }, 0)
+  }
+
+  
+
+
+
   drawCanvas(): void {
     const xMult = 1.5
 
@@ -92,120 +183,6 @@ export class StatsComponent implements OnInit {
 
   }
 
-  ngOnChanges(): void {
-    this.weaponStatSummary = undefined
-    this.dataService.getWeaponSummary(this.weaponConfig).then(result => {
-      this.weaponStatSummary = result
-    })
-  }
-
-  // getDamageRangeInterval(damageInterval: WeaponDamage): string {
-  //   if(this.weaponStatSummary) {
-  //     const index = this.baseDamage.findIndex(interval => interval === damageInterval)
-  //     const rangeMod = 1 + this.weaponStatSummary.get(Stats.names.dmg_range).status
-  //     const from = this.globalService.round(this.baseDamage[index].distances * rangeMod, 1)
-  //     const to = index + 1 < this.baseDamage.length
-  //       ? ' - ' + this.globalService.round(this.baseDamage[index + 1].distances * rangeMod, 1)
-  //       : ' +'
-     
-  //     return from + to + ' m'
-  //   }
-  // }
-
-  /**
-   * Finds the appropriate interval that covers the range given by the value
-   * @param value
-   */
-  setDamageInterval(value: number): void {
-    let prevInterval: WeaponDamage
-    for(const interval of this.baseDamageIntervals) {
-      if(value < interval.distances) {
-        this.activeDamageInterval = prevInterval || interval
-        return
-      }
-      prevInterval = interval
-    }
-    this.activeDamageInterval = this.baseDamageIntervals[this.baseDamageIntervals.length - 1]
-  }
   
-  getSliderRange(): number {
-    return Math.round(this.baseDamageIntervals[this.baseDamageIntervals.length - 1].distances / this.lastIntervalPercentagePosition * 100)
-  }
- 
-  /**
-   * Used to add ticks for the range slider
-   */
-  getDamageRangeIntervals() {
-    let intervals = []
-    const ratio = (this.lastIntervalPercentagePosition / 100) * this.baseStatsWidth / this.baseDamageIntervals[this.baseDamageIntervals.length - 1].distances
-
-    let totalWidth = 0
-    for(let i = 1; i < this.baseDamageIntervals.length; i ++) {
-      const interval = this.baseDamageIntervals[i].distances
-      const calc = interval * ratio - totalWidth
-      intervals.push(calc)
-      totalWidth += calc
-    }
-    
-    return intervals
-  }
-  // getDamageRangeIntervals() {
-  //   let intervals = {} // display interval + element width
-  //   const ratio = (this.lastIntervalPercentagePosition / 100) * this.baseStatsWidth / this.baseDamageIntervals[this.baseDamageIntervals.length - 1].distances
-
-  //   let totalWidth = 0
-  //   for(let i = 1; i < this.baseDamageIntervals.length; i ++) {
-  //     const interval = this.baseDamageIntervals[i].distances
-  //     const calc = interval * ratio - totalWidth
-  //     intervals[interval] = calc
-  //     totalWidth += calc
-  //   }
-    
-  //   return intervals
-  // }
-
-  getRangeDisplay(value: number): string {
-    let ret: string = value + ''
-    
-    if(value == this.getSliderRange()) {
-      ret += '+'
-    }
-    return ret + ' meters'
-  }
-
-  // getDamageRangeInterval(damageInterval: WeaponDamage): number {
-  //   if(this.weaponStatSummary) {
-  //     const max = 200
-  //     const index = this.baseDamageIntervals.findIndex(interval => interval === damageInterval) + 1
-  //     const distance = this.baseDamageIntervals[index].distances
-
-  //     const rangeMod = 1 + this.weaponStatSummary.get(Stats.names.dmg_range).status
-  //     return this.globalService.round(distance * rangeMod, 1)
-  //   }
-  // }
-
-  getDamage(hitBox: string) {
-    return this.activeDamageInterval[hitBox]
-  }
-  
-  getDPS(hitBox: string) {
-    return Math.round(this.activeDamageInterval[hitBox] * this.activeDamageInterval.fire_rate / 60)
-  }
-
-  getRateOfFire(): number {
-    return this.activeDamageInterval.fire_rate
-  }
-
-  // getDamagePerMag(hitBox: string) {
-  //   if(this.weaponStatSummary) {
-  //     console.log(this.weaponStatSummary.get(Stats.names.mag_size))
-  //     return this.weaponStatSummary.get(Stats.names.mag_size).status
-  //     // this.activeDamageInterval[hitBox] *
-  //   }
-  // }
-  
-  getLockTime(): number {
-      return this.activeDamageInterval.open_bolt_delay
-  }
 
 }

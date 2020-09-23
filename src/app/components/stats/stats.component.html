@@ -2,7 +2,8 @@
   <div class="stacking column summary">
     <div class="cell" *ngFor="let stat of statOrder">{{stat}}</div>
   </div>
-
+  
+  <!-- Stats Summary -->
   <div class="stacking column">
     <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
       <ng-container *ngFor="let stat of statOrder">
@@ -11,6 +12,7 @@
         </div>
       </ng-container>
     </ng-container>
+    <!-- Loading stats -->
     <ng-template #loadingWeaponStatSummary>
       <div class="cell" class="loading">
         Loading...
@@ -20,56 +22,68 @@
 </div>
 
 
-<div class="stats" *ngIf="activeDamageInterval" [style]="'width:' + (baseStatsWidth + 50) + 'px'">
-  <div class="title">
-    Damage Range: {{getRangeDisplay(slider.value)}}
-    <!-- : {{getDamageRangeInterval(activeDamageInterval)}} -->
-  </div>
-  <div class="space">
-    <input type="range" id="rangeSlider" (input)="setDamageInterval(slider.value)" min="0" [max]="getSliderRange()" value="0" #slider>
-    <!-- <datalist id="intervalList">
-      <option>30</option>
-      <option>54</option>
-      <option *ngFor="let interval of getDamageIntervals() | keyvalue">{{interval.key}}</option>
-    </datalist> -->
-  </div>
-  <div>
-    <!-- <div class="stacking testRange" [style]="'width:' + interval.value + 'px'" *ngFor="let interval of getDamageRangeIntervals() | keyvalue"> -->
-      <!-- {{interval.key}} -->
-    <!-- </div> -->
-    <!-- <div class="stacking" *ngFor="let interval of baseDamage; let i = index">
-      <input type="radio" [(ngModel)]="activeDamageInterval" [value]="interval">
-      {{getDamageRangeInterval(interval)}}
+<!-- Base data + Range slider -->
+<div class="stats basedata">
+  <ng-container *ngIf="activeDamageInterval else loadingBaseData">
+    <div class="title">
+      Damage Range: {{getRangeDisplay(sliderValue)}}
+      <!-- : {{getDamageRangeInterval(activeDamageInterval)}} -->
+    </div>
+    <div class="space">
+      <input type="range" [class.disabled]="intervalsLoaded === false" [(ngModel)]="sliderValue" id="rangeSlider" value="0" (input)="setDamageInterval(sliderValue)">
+      <!-- <ng-template #loadingDmgIntervals>
+        <div class="loading">Loading damage intervals...</div>
+      </ng-template> -->
+    </div>
+    <div class="stacking column capitalize">
+      <div class="header">Hit box</div>
+      <div>{{hitBoxes.head}}</div>
+      <div>{{hitBoxes.torso}}</div>
+      <div>{{hitBoxes.stomach}}</div>
+      <div>{{hitBoxes.limbs}}</div>
+    </div>
+    <div class="stacking column">
+      <div class="header">Dmg per bullet</div>
+      <div>{{getDamage(hitBoxes.head)}}</div>
+      <div>{{getDamage(hitBoxes.torso)}}</div>
+      <div>{{getDamage(hitBoxes.stomach)}}</div>
+      <div>{{getDamage(hitBoxes.limbs)}}</div>
+    </div>
+    <div class="stacking column">
+      <div class="header">DPS</div>
+      <div>{{getDPS(hitBoxes.head)}} DPS</div>
+      <div>{{getDPS(hitBoxes.torso)}} DPS</div>
+      <div>{{getDPS(hitBoxes.stomach)}} DPS</div>
+      <div>{{getDPS(hitBoxes.limbs)}} DPS</div>
+    </div>
+    <!-- <div class="stacking column">
+      <div  *ngFor="let hitBox of hitBoxes | keyvalue">{{getDamagePerMag(hitBox.value)}} damage</div>
     </div> -->
-  </div>
-  <div class="stacking column capitalize">
-    <div *ngFor="let hitBox of hitBoxes | keyvalue">{{hitBox.key}}</div>
-  </div>
-  <div class="stacking column">
-    <div *ngFor="let hitBox of hitBoxes | keyvalue">{{getDamage(hitBox.value)}}</div>
-  </div>
-  <div class="stacking column">
-    <div *ngFor="let hitBox of hitBoxes | keyvalue">{{getDPS(hitBox.value)}} DPS</div>
-  </div>
-  <!-- <div class="stacking column">
-    <div  *ngFor="let hitBox of hitBoxes | keyvalue">{{getDamagePerMag(hitBox.value)}} damage</div>
-  </div> -->
 
-  <br><br>
-  
-  <div class="title">
-    Additional Info
-  </div>
-  <div class="stacking column">
-    <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">Lock time</div>
-    <div>Rate of Fire</div>
-  </div>
-  <div class="stacking column" title="Also known as 'Open bolt delay'">
-    <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">{{getLockTime()}} ms *</div>
-    <div>{{getRateOfFire()}} rpm</div>
-  </div>
+    <br><br>
+    
+    <div class="title">
+      Additional Info
+    </div>
+    <div class="stacking column">
+      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">Lock time</div>
+      <div>Rate of Fire</div>
+    </div>
+    <div class="stacking column" title="Also known as 'Open bolt delay'">
+      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">{{getLockTime()}} ms *</div>
+      <div>{{getRateOfFire()}} rpm</div>
+    </div>
+  </ng-container>
+  <!-- Loading base data -->
+  <ng-template #loadingBaseData>
+    <div class="loading">
+      Loading...
+    </div>
+  </ng-template>
 </div>
-   
+
+
+<!-- Graph -->
 <canvas>
   Weapon Damage Graph
 </canvas>

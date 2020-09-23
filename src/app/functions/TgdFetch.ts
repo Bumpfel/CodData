@@ -22,7 +22,7 @@ export class TgdFetch {
   //   hitbox,
   // ]
 
-  static async getWeaponsData(weaponType: string): Promise<Array<Array<string>>> { // dno why there is a second array here, but it is what it is
+  static async getWeaponsData(weaponType: string): Promise<Array<string[]>> { // dno why TGD wraps each string in their own array here, but it is what it is
     return this.getTGDData(this.request.weapons, weaponType)
   }
 
@@ -32,11 +32,11 @@ export class TgdFetch {
    * [1] = base weapon data
    * @param weaponName
    */
-  static getBaseWeaponData(weaponName: string): Promise<Array<Array<WeaponDamage> | WeaponData>> {
+  static getBaseWeaponData(weaponName: string): Promise<(WeaponDamage[] | WeaponData)[]> {
     return this.getTGDData(this.request.weapon, weaponName)
   }
 
-  static getAttachmentData(weaponName: string): Promise<Array<AttachmentData>> {
+  static getAttachmentData(weaponName: string): Promise<AttachmentData[]> {
     return this.getTGDData(this.request.attachments, weaponName)
   }
 

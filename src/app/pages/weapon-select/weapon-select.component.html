@@ -30,6 +30,9 @@
     <div *ngFor="let interval of tempIntervals">
       {{interval.distances}} m
     </div>
+    <div *ngIf="!tempIntervals">
+      Loading...
+    </div>
   </div>
 </main>
 

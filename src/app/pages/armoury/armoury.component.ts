@@ -42,7 +42,11 @@ export class ArmouryComponent implements OnInit {
     this.globalService.enableGoBackOnEscape()
     const weaponName = this.globalService.linkToName(this.route.snapshot.paramMap.get('weaponName'))
     this.armouryConfigs = this.configService.getArmouryConfigs(weaponName)
-    // const weaponType = await this.dataService.getWeaponType(weaponName)
+
+    // cache summary data for the armoury configs
+    for(let key in this.armouryConfigs) {
+      this.dataService.getWeaponSummary(this.armouryConfigs[key])
+    }
     
     if(Object.keys(this.armouryConfigs).length === 0) { // if deleted last config
       window.history.back()

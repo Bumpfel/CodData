@@ -26,7 +26,7 @@ export class WeaponSelectComponent implements OnInit {
   // TODO TEMP
   tempIntervals = []
   showTempRanges(weaponName) {
-    this.tempIntervals = undefined //[{ distances: 'Loading...' }]
+    this.tempIntervals = undefined
     this.dataService.getBaseDamage(weaponName).then(result => {
       this.tempIntervals = result
     })
@@ -45,7 +45,7 @@ export class WeaponSelectComponent implements OnInit {
       } else {
         this.weaponType = this.globalService.linkToName(params.weaponType)
         // get weapons and map nr of armouryConfigs
-        this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType)) // ta inte bort async. kan hända att jag byter metod som hämtar tgd-data
+        this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType)) // ta inte bort await. kan hända att jag byter metod som hämtar tgd-data
         for(let weaponName of this.weaponNames) {
           let saves = this.configService.getArmouryConfigs(weaponName)
           this.armourySaves.set(weaponName, saves ? Object.keys(saves).length : 0)
