@@ -21,6 +21,7 @@ export class ConfigurationComponent implements OnInit {
   contextOverlay: HTMLElement
 
   configurations: WeaponConfig[]
+  enableGraph = true // to show experimental graph
 
   callBack: (e: KeyboardEvent) => void
 
@@ -53,6 +54,10 @@ export class ConfigurationComponent implements OnInit {
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
     this.hoveredSlot = undefined
     this.activeConfig = undefined
+  }
+
+  setActiveConfig(config: WeaponConfig): void {
+    this.activeConfig = config
   }
  
   showGunsmithButton(slot?: number): void {

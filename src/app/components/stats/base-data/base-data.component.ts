@@ -33,22 +33,25 @@ export class BaseDataComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    this.baseData = this.dataService.getBaseDamageIntervals(this.weaponConfig.weaponName)
-    this.baseData.then(result => {
-      this.baseDamageIntervals = result
-      this.activeDamageInterval = result[0]
-    })
   }
-
+  
   async ngOnChanges() {
-    this.intervalsLoaded = false
-    
-    this.weaponStatSummary = undefined // clear obsolete data
-    this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
-    
-    await this.baseData
-    this.styleRangeSlider()
-    this.intervalsLoaded = true
+    if(this.weaponConfig) {
+      this.baseData = this.dataService.getBaseDamageIntervals(this.weaponConfig.weaponName)
+      this.baseData.then(result => {
+        this.baseDamageIntervals = result
+        this.activeDamageInterval = result[0]
+      })
+
+      this.intervalsLoaded = false
+      
+      this.weaponStatSummary = undefined // clear obsolete data
+      this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
+      
+      await this.baseData
+      this.styleRangeSlider()
+      this.intervalsLoaded = true
+    }
   }
 
   getDamage(hitBox: string) {
@@ -91,7 +94,7 @@ export class BaseDataComponent implements OnInit {
     return ret + ' meters'
   }
 
-  styleRangeSlider() {
+  private styleRangeSlider() {
     // calculate max range
     const smallestTick = 50
     const rangeMod = this.weaponStatSummary.get(Stats.names.dmg_range).status + 1

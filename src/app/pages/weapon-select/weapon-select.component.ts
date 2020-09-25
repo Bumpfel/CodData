@@ -20,17 +20,18 @@ export class WeaponSelectComponent implements OnInit {
   armourySaves: Map<string, number> = new Map()
 
   weaponType: string
+  activeWeaponConfig: WeaponConfig
   
   constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
   // TODO TEMP
-  tempIntervals = []
-  showTempRanges(weaponName) {
-    this.tempIntervals = undefined
-    this.dataService.getBaseDamageIntervals(weaponName).then(result => {
-      this.tempIntervals = result
-    })
-  } 
+  // tempIntervals = []
+  // showTempRanges(weaponName) {
+  //   this.tempIntervals = undefined
+  //   this.dataService.getBaseDamageIntervals(weaponName).then(result => {
+  //     this.tempIntervals = result
+  //   })
+  // } 
 
 
   ngOnInit(): void {
@@ -60,6 +61,10 @@ export class WeaponSelectComponent implements OnInit {
   
   getTempConfig(weaponName: string): WeaponConfig {
     return new WeaponConfig(weaponName, this.getComparisonSlot(), this.weaponType)
+  }
+
+  setActiveWeapon(weaponName: string): void {
+    this.activeWeaponConfig = this.getTempConfig(weaponName)
   }
 
   selectWeapon(weaponName: string): void {  

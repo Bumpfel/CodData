@@ -153,7 +153,7 @@ export class DataService {
    * @param weaponConfig 
    */
   async getWeaponSummary(weaponConfig: WeaponConfig): Promise<Map<string, Effect>> {
-    const ordered = Object.values(weaponConfig.attachments).sort() 
+    const ordered = Object.values(weaponConfig.attachments).sort()
     const cacheKey = weaponConfig.weaponName + JSON.stringify(ordered)
    
     const baseWeaponData = await this.getBaseWeaponData(weaponConfig.weaponName)

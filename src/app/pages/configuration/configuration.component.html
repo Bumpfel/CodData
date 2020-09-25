@@ -4,8 +4,8 @@
   <div class="scrollBox">
     <div>
       <div class="card" *ngFor="let weaponConfig of configurations">
-        <!-- Weapon Button -->
-        <a [id]="'weapon-slot' + weaponConfig.comparisonSlot" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover()" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
+        <!-- WeaponCard Button -->
+        <a [id]="'weapon-slot' + weaponConfig.comparisonSlot" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover(); setActiveConfig(weaponConfig)" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
           <app-weapon-card [weaponConfig]="weaponConfig" page="configurations"></app-weapon-card>
         </a>
         <!-- Gusmith Button -->
@@ -20,6 +20,16 @@
         +
       </a>
     </div>
+  </div>
+
+  <!-- Stats Components -->
+  <div class="inlineContainer">
+    <div>
+      <input type="checkbox" [(ngModel)]="enableGraph">Show experimental DPS graph
+    </div>
+    <app-damage-graph class="block" *ngIf="configurations && configurations.length > 0 && enableGraph" [weaponConfigs]="configurations"></app-damage-graph>
+    <app-summary [weaponConfig]="activeConfig"></app-summary>
+    <app-base-data [weaponConfig]="activeConfig"></app-base-data>
   </div>
   
   <!-- Context Menu Overlay -->

@@ -1,3 +1,19 @@
-<canvas>
-  Weapon Damage Graph
-</canvas>
+<div id="container">
+  <div id="markerContainer">
+    <div class="marker" [style]="'color:' + config.colour" *ngFor="let config of weaponConfigs">
+      <div class="box" [style]="'background-color:' + config.colour"></div>
+      {{config.weaponName}}
+    </div>
+  </div>
+  
+  <div class="hitBoxes">
+    <div *ngFor="let hitBox of hitBoxes | keyvalue">
+      <input type="radio" [value]="hitBox.value" id="hitBox.key" (click)="setHitBox(hitBox.value)" [(ngModel)]="selectedHitBox" #hitBox>
+      <label [for]="hitBox.key">{{hitBox.key}}</label>
+    </div>
+  </div>
+
+  <canvas id="mainCanvas" (wheel)="zoomCanvas($event)">
+    Weapon Damage Graph
+  </canvas>
+</div>

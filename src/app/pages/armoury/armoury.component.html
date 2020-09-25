@@ -2,11 +2,11 @@
 
 <main *ngIf="loaded">
   <div id="weapon">{{ getFullWeaponType()}} {{ getWeaponSortIdentifier() }}</div>
-  <div id="title">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
+  <div class="weaponTitle">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
   
   <app-summary [weaponConfig]="activeConfig"></app-summary>
   <app-base-data [weaponConfig]="activeConfig"></app-base-data>
-  <app-damage-graph [weaponConfig]="activeConfig"></app-damage-graph>
+  <!-- <app-damage-graph [weaponConfigs]="[activeConfig, { weaponName: 'MP5', attachments: [] }]"></app-damage-graph> -->
   <br>
 
   <a (click)="selectConfig(newConfig)" (mouseenter)="setActiveConfig(newConfig)" (contextmenu)="$event.preventDefault()">

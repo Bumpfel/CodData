@@ -4,36 +4,47 @@
 <!-- Weapon Select -->
 <main>
   <div class="scrollBox">
-    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName); showTempRanges(weaponName)">        
+    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName); setActiveWeapon(weaponName)">        
       <!-- Weapon Card -->
       <a (click)="selectWeapon(weaponName)" (mouseenter)="soundService.hover()">
         <app-weapon-card [weaponConfig]="getTempConfig(weaponName)" page="weapon-select"></app-weapon-card>
       </a>
-      <!-- Collapsed armoury button -->
-      <a *ngIf="armourySaves.get(weaponName) > 0" class="armoury" id="armoury-button-collapsed">
-        {{armourySaves.get(weaponName)}}
-        <div class="triangle"></div>
-        <!-- <div>&#9654;</div> -->
-      </a>
-      <!-- Expanded armoury button -->
-      <a class="armoury gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
-        <div class="title">Armoury</div>
-        <img src="/assets/images/armoury.png" alt="Armoury button">
-        <br>
-        {{armourySaves.get(weaponName)}}
-      </a>
+      
+      <div class="armouryButtons">
+        <!-- Collapsed armoury button -->
+        <a *ngIf="armourySaves.get(weaponName) > 0" id="armoury-button-collapsed">
+          {{armourySaves.get(weaponName)}}
+          <div class="triangle"></div>
+        </a>
+        <!-- Expanded armoury button -->
+        <a class="gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
+          <div class="title">Armoury</div>
+          <img src="/assets/images/armoury.png" alt="Armoury button">
+          <br>
+          {{armourySaves.get(weaponName)}}
+        </a>
+      </div>
     </div>
-    <!-- <img src="/assets/images/grau.png"> -->
+      <!-- <img src="/assets/images/grau.png"> -->
   </div>
 
-  <div style="border: 1px dotted grey; position: fixed; top: 200px; right: 100px; color: white; padding: 20px">
+  <!-- Stats -->
+  <div class="inlineContainer">
+    <div *ngIf="activeWeaponConfig" class="weaponTitle">{{activeWeaponConfig.weaponName}}</div>
+    <app-summary [condensed]="true" [weaponConfig]="activeWeaponConfig"></app-summary>
+    <br>
+    <app-base-data [weaponConfig]="activeWeaponConfig"></app-base-data>
+  </div>
+
+    
+  <!-- <div style="border: 1px dotted grey; position: fixed; top: 200px; right: 100px; color: white; padding: 20px">
     <div *ngFor="let interval of tempIntervals">
       {{interval.distances}} m
     </div>
     <div *ngIf="!tempIntervals">
       Loading...
     </div>
-  </div>
+  </div> -->
 </main>
 
 <app-footer></app-footer>

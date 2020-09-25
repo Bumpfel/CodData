@@ -3,6 +3,7 @@
 // there is no attachment data for base magasine size or reload time. have to compare with base weapon
 // the attachment data given for the reload time is not the reduction in reload time, but rather the new total reload time
 // attachments affecting damage stat are listed as their own weapons
+// rate of fire is a part of the base gun data, but not in the summary
 
 import { Stats } from '../models/Stats'
 import { Effect } from '../models/Effect'

@@ -1,21 +1,12 @@
 @import './src/vars.scss';
 
 main {
-  
   #weapon {
     color: $mediumGrey;
     font-size: 18px;
     text-transform: capitalize;
   }
   
-  #title {
-    color: grey;
-    font-family: 'Roboto Bold';
-    font-size: 54px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
   a {
     transform: scale(.85);
     margin-right: -35px;

@@ -1,21 +1,17 @@
 @import "./vars.scss";
+@font-face {
+  font-family: 'Roboto Light';
+  src: url('./assets/fonts/Roboto/Roboto-Light.ttf');
+}
+@font-face {
+  font-family: 'Roboto Bold';
+  src: url('./assets/fonts/Roboto/Roboto-Bold.ttf');
+}
 
 * {
   font-family: 'Roboto Light'; // numbers don't look the same
   font-weight: 700;
   cursor: url('./assets/images/pointer.png'), pointer;
-}
-
-body {
-  margin: 0;
-  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
-  user-select: none;
-  overflow-x: hidden;
-  scrollbar-color: #f1f1f1bc $meterBG; // for firefox
-  scrollbar-width: 10px;
-
-  // background-image: url('/assets/images/tempBG.png'); // TODO temp
-  // background-size: cover;
 }
 
 // ###################
@@ -55,6 +51,28 @@ a, a * {
   -moz-user-drag: none; 
 }
 
+html {
+  height: 100%;
+}
+body {
+  position: relative;
+  min-height: 100%;
+  margin: 0;
+
+  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
+  user-select: none;
+  overflow-x: hidden;
+  scrollbar-color: #f1f1f1bc $meterBG; // for firefox
+  scrollbar-width: 10px;
+  color: white;
+  // background-image: url('/assets/images/tempBG.png'); // TODO temp
+  // background-size: cover;
+}
+
+main {
+  // margin: 100px $leftPageMargin; 
+  padding: 100px $leftPageMargin; // compensates for footer
+}
 
 main, footer {
   // Buttons 
@@ -131,6 +149,10 @@ main, footer {
   }
 }
 
+input {
+  outline: none;
+}
+
 .disabledButton {
   filter: grayscale(100%) opacity(.5);
   // -webkit-filter: grayscale(100%);
@@ -139,96 +161,93 @@ main, footer {
   // -o-filter:      grayscale(100%);
 }
 
-main {
-  margin: 50px $leftPageMargin;
-  padding-bottom: 50px; // compensates for footer
+// Scrollbox
+.scrollBox {
+  // border: 1px dotted orange;
+  display: inline-block;
+  height: 600px;
+  padding-left: 15px;
+  width: auto;
   
-  // Scrollbox
-  .scrollBox {
-    display: inline-block;
-    height: 600px;
-    padding-left: 15px;
-    width: auto;
-    
-    overflow-y: auto;
-    overflow-x: hidden;
-    direction: rtl;
+  overflow-y: auto;
+  overflow-x: hidden;
+  direction: rtl;
 
-    div {
-      direction: ltr;
-    }
+  div {
+    direction: ltr;
   }
+}
 
-  // ###  Stats  ###
-  // ###############
-  .stats, .cutoutBox {
-    display: inline-block;
+// ###  Stats  ###
+// ###############
+.stats, .cutoutBox {
+  display: inline-block;
+  white-space: nowrap;
+  min-height: 50px;
+  margin-top: 20px;
+  padding: 10px 20px 20px;
+  $cut: 20px;
+  background: $darkBG;
+  clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
+
+  color: $inactiveColour;
+  font-size: 14px;
+}
+
+.stats {
+  .title {
+    width: 200px;
+    // text-align: right;
     white-space: nowrap;
-    min-height: 50px;
-    margin-top: 20px;
-    padding: 10px 20px 20px;
-    $cut: 20px;
-    background: $darkBG;
-    clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
-
-    color: $inactiveColour;
-    font-size: 14px;
   }
+  
+  .text {
+    // width: 100px;
+    margin-left: 20px;
+    // display: inline-block;
+  }
+  
+  .meter {
+    // border: 1px solid blue;
+    margin: 10px;
+    display: inline-flex;
+    height: 4px;
+    width: 200px;
+    background-color: $meterBG;
+    vertical-align: middle;
     
-  .stats {
-    .title {
-      width: 200px;
-      // text-align: right;
-      white-space: nowrap;
-    }
-    
-    .text {
-      // width: 100px;
-      margin-left: 20px;
-      // display: inline-block;
-    }
-    
-    .meter {
-      // border: 1px solid blue;
-      margin: 10px;
-      display: inline-flex;
-      height: 4px;
-      width: 200px;
-      background-color: $meterBG;
-      vertical-align: middle;
-      
-      &:hover {
-        &::before {
-          content: 'test';
-          padding: 0 5px;
-          // width: 50px;
-          // height: 25px;
-          position: absolute;
-          // top: 5px;
-          z-index: 2;
-          background-color: #333;
-        }
+    &:hover {
+      &::before {
+        content: 'test';
+        padding: 0 5px;
+        // width: 50px;
+        // height: 25px;
+        position: absolute;
+        // top: 5px;
+        z-index: 2;
+        background-color: #333;
       }
+    }
 
-      .filled {
-        width: 150px; // TODO temp
-        background-color: $inactiveColour;
-      }
-      
-      .first {
-        width: 100px; // TODO temp
-        background-color: $inactiveColour;
-      }
-      .second {
-        width: 180px; // TODO temp
-        background-color: darken($inactiveColour, 20%);
-      }
-      .last {
-        background-color: darken($inactiveColour, 40%);
-      }
+    .filled {
+      width: 150px; // TODO temp
+      background-color: $inactiveColour;
+    }
+    
+    .first {
+      width: 100px; // TODO temp
+      background-color: $inactiveColour;
+    }
+    .second {
+      width: 180px; // TODO temp
+      background-color: darken($inactiveColour, 20%);
+    }
+    .last {
+      background-color: darken($inactiveColour, 40%);
     }
   }
 }
+
 
 .circle {
   display: inline-block;
@@ -256,6 +275,24 @@ main {
       border-radius: 50%;
     }
   }
+}
+
+.block {
+  display: block;
+}
+
+.inlineContainer {
+  // border: 1px dotted white;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.weaponTitle {
+  color: grey;
+  font-family: 'Roboto Bold';
+  font-size: 54px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .right {

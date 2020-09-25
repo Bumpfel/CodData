@@ -35,14 +35,22 @@ export class SoundService {
     this.playSound(this.sounds.selectCategory);
   }
 
-  private playSound = (sound: string) => {
+  preloadSounds(): void {
+    for(let sound in this.sounds) {
+      this.loadSound(this.sounds[sound])
+    }
+  }
+
+  private loadSound(file: string): HTMLAudioElement {
     const audioElement = document.createElement('audio')
-    audioElement.setAttribute('autoplay', '')
-    // document.body.appendChild(audioElement)
-    audioElement.setAttribute('src', './assets/sounds/' + sound + '.mp3')
-    audioElement.setAttribute('volume', '0.1')
-    audioElement.play();
-    
-    // setTimeout(() => { document.body.removeChild(audioElement) }, 500)
+    audioElement.setAttribute('src', './assets/sounds/' + file + '.mp3')
+    // audioElement.setAttribute('volume', '0.1')
+    return audioElement
+  }
+
+  private playSound(file: string) {
+    const sound = this.loadSound(file)
+    sound.setAttribute('autoplay', '')
+    // sound.play()
   }
 }

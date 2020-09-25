@@ -13,19 +13,31 @@ import { GlobalService } from 'src/app/services/global.service';
 export class SummaryComponent implements OnInit {
   
   @Input() weaponConfig: WeaponConfig
+  @Input() condensed: boolean = false
 
   weaponStatSummary: Map<string, Effect>
   statOrder: string[]
 
+  condensedSkipStats = [Stats.names.dmg_range, Stats.names.recoil_control, Stats.names.recoil_stability]
+
   constructor(private dataService: DataService, private globalService: GlobalService) { }
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.statOrder = Stats.getAllOrderedStats()
   }
     
-  async ngOnChanges() {   
-    this.weaponStatSummary = undefined // clear obsolete data
-    this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
+  async ngOnChanges() {
+    if(this.weaponConfig) {
+      this.weaponStatSummary = undefined // clear obsolete data
+      this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
+
+      if(this.condensed === true) {
+
+        for(const skipStat of this.condensedSkipStats) {
+          this.statOrder = this.statOrder.filter(stat => stat !== skipStat)
+        }
+      }
+    }
   }  
  
 }

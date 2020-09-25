@@ -1,4 +1,4 @@
-<div class="stats basedata">
+<div class="stats basedata" *ngIf="weaponConfig">
   <ng-container *ngIf="activeDamageInterval else loadingBaseData">
     <div class="title">
       Damage Range: {{getRangeDisplay(sliderValue)}}
@@ -12,10 +12,10 @@
     </div>
     <div class="stacking column capitalize">
       <div class="header">Hit box</div>
-      <div>{{hitBoxes.head}}</div>
-      <div>{{hitBoxes.torso}}</div>
-      <div>{{hitBoxes.stomach}}</div>
-      <div>{{hitBoxes.limbs}}</div>
+      <div>Head</div>
+      <div>Torso</div>
+      <div>Stomach</div>
+      <div>Limbs</div>
     </div>
     <div class="stacking column">
       <div class="header">Dmg per bullet</div>
@@ -41,11 +41,11 @@
       Additional Info
     </div>
     <div class="stacking column">
-      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">Lock time</div>
+      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay' - the time it from pulling to trigger to the weapon firing a shot">Lock time *</div>
       <div>Rate of Fire</div>
     </div>
     <div class="stacking column" title="Also known as 'Open bolt delay'">
-      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">{{getLockTime()}} ms *</div>
+      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">{{getLockTime()}} ms</div>
       <div>{{getRateOfFire()}} rpm</div>
     </div>
   </ng-container>

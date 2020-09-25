@@ -1,21 +1,36 @@
 @import "./src/vars.scss";
 
 main {
-
+  white-space: nowrap;
+  
   .scrollBox > div {
-    // border: 1px solid red;
+    // border: 1px dotted orange;
+    white-space: nowrap;
+    margin-bottom: 10px;
+    margin-right: 50px;
+    height: 130px;
     
     a {
+      // border: 2px solid red;
+      margin-right: 10px;
       box-sizing: border-box;
-      // height: 130px; // TODO static
-      margin: 0 10px 10px 0;
-      
-      &.armoury {
-        // border: 1px dotted orange;
-        width: 50px;
-        vertical-align: top; // TODO align vertically middle
-        padding: 8px 7px 5px; // TODO static numbers deciding height. should be dependant on the size of the card
+    }
 
+    .armouryButtons { // placeholder that makes sure the content doesn't jump around when armoury button expands/collapses
+      // border: 1px dotted white;
+      display: inline-block;
+      vertical-align: top;
+      
+      width: 90px;
+      height: 100%;
+       
+      a {
+        // border: 2px dotted teal;
+        box-sizing: border-box;
+        height: 100%;
+        vertical-align: center; // TODO align vertically middle
+        padding: 8px 7px 5px;
+        
         color: white;
         font-size: 18px;
         text-align: center;

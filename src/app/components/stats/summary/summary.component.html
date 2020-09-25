@@ -1,4 +1,4 @@
-<div class="stats">
+<div class="stats" *ngIf="weaponConfig">
   <div class="stacking column summary">
     <div class="cell" *ngFor="let stat of statOrder">{{stat}}</div>
   </div>
