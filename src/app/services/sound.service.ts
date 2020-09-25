@@ -37,20 +37,18 @@ export class SoundService {
 
   preloadSounds(): void {
     for(let sound in this.sounds) {
-      this.loadSound(this.sounds[sound])
+      this.playSound(this.sounds[sound], true)
     }
   }
 
-  private loadSound(file: string): HTMLAudioElement {
+  private playSound(file: string, mute?: boolean) {
     const audioElement = document.createElement('audio')
     audioElement.setAttribute('src', './assets/sounds/' + file + '.mp3')
-    // audioElement.setAttribute('volume', '0.1')
-    return audioElement
-  }
-
-  private playSound(file: string) {
-    const sound = this.loadSound(file)
-    sound.setAttribute('autoplay', '')
+    
+    if(mute) {
+      audioElement.muted = true
+    }
+    audioElement.setAttribute('autoplay', '')
     // sound.play()
   }
 }

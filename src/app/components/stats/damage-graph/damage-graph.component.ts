@@ -34,7 +34,6 @@ export class DamageGraphComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
-    
   }
   
   ngOnChanges(): void {
@@ -85,7 +84,6 @@ export class DamageGraphComponent implements OnInit {
     const verticalLineInterval = 25 * this.xScale
     
     await Promise.all(Object.values(this.promises))
-    console.log('drawing grid')
     
     this.context.beginPath()
     this.context.strokeStyle = 'grey'
@@ -161,7 +159,6 @@ export class DamageGraphComponent implements OnInit {
       // await this.promises[config.weaponName + 'Summary']
       
       const rangeMod = this.weaponStatSummaries[config.comparisonSlot].get(Stats.names.dmg_range).status + 1
-      console.log('config ' + i, rangeMod)
       
       this.context.strokeStyle = this.plotColours[i % this.plotColours.length]
       config['colour'] = this.plotColours[i % this.plotColours.length]

@@ -1,4 +1,9 @@
-import { WeaponConfig } from './WeaponConfig';
+export type ContextMenu = {
+  title: string,
+  alternatives: {}
+  x: string
+  y: string
+}
 
 export type Dialogue = {
   title?: string
@@ -9,4 +14,10 @@ export type Dialogue = {
     // buttons: string[]
   }
   // weaponConfig?: WeaponConfig
+}
+
+export type InfoPopup = {
+  info: {[key:string]: string}
+  x: number
+  y: number
 }

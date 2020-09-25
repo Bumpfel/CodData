@@ -19,9 +19,15 @@ export class WeaponConfigService {
   ])
   public editStatus = { UNEQUIPPED: 1, EQUIPPED: 2,  TOOMANY: 3, BLOCKED: 4 }
 
+  private storageSaveName = 'configurations'
+
   private maxAttachments: number = 5
 
   constructor() {
+  }
+
+  getAllArmouryConfigs(): {[key:string]: {[key:string]: WeaponConfig}} {
+    return JSON.parse(window.localStorage.getItem(this.storageSaveName)) || {}
   }
 
   getWeaponConfig(slot: number): WeaponConfig {
@@ -29,8 +35,9 @@ export class WeaponConfigService {
     return JSON.parse(weaponConfig)
   }
 
-  getArmouryConfigs(weaponName: string): WeaponConfig[] {
-    return JSON.parse(window.localStorage.getItem(weaponName))
+  getArmouryConfigs(weaponName: string): {[key:string]: WeaponConfig} {
+    return this.getAllArmouryConfigs()[weaponName]
+    // return JSON.parse(window.localStorage.getItem(weaponName))
   }
 
   // obs_getComparisonConfigs(): Observable<WeaponConfig[]> {
@@ -70,9 +77,16 @@ export class WeaponConfigService {
       }
       weaponConfig.armouryName = name
       
-      const weaponConfigs = this.getArmouryConfigs(weaponConfig.weaponName) || {}
+      const allConfigs = this.getAllArmouryConfigs()
+      const weaponConfigs = allConfigs[weaponConfig.weaponName] || {} //this.getArmouryConfigs(weaponConfig.weaponName) || {}
       weaponConfigs[weaponConfig.armouryName] = weaponConfig
-      window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(weaponConfigs))
+      allConfigs[weaponConfig.weaponName] = weaponConfigs
+      console.log(allConfigs)
+      
+      
+      console.log('saving config')
+      window.localStorage.setItem(this.storageSaveName, JSON.stringify(allConfigs))
+      // window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(weaponConfigs))
     }
     window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
     return true
@@ -83,8 +97,10 @@ export class WeaponConfigService {
    * @param weaponConfig 
    */
   configDuplicateExists(weaponConfig: WeaponConfig): boolean {
-    const armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName)
-    return armouryConfigs && armouryConfigs[weaponConfig.armouryName]
+    const armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName) || {}    
+    console.log(armouryConfigs[weaponConfig.armouryName])
+    
+    return armouryConfigs[weaponConfig.armouryName] !== undefined
   }
 
   deleteComparisonConfig(slot: number) {
@@ -92,9 +108,12 @@ export class WeaponConfigService {
   }
 
   deleteArmouryConfig(weaponConfig: WeaponConfig) {
-    let armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName)
-    delete armouryConfigs[weaponConfig.armouryName]
-    window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(armouryConfigs))
+    const allConfigs = this.getAllArmouryConfigs()
+    delete allConfigs[weaponConfig.weaponName][weaponConfig.armouryName]
+    window.localStorage.setItem(this.storageSaveName, JSON.stringify(allConfigs))
+    // let armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName)
+    // delete armouryConfigs[weaponConfig.armouryName]
+    // window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(armouryConfigs))
   }
 
   renameArmouryConfig(oldConfig: WeaponConfig, newName: string): boolean {

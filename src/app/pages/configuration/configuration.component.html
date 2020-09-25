@@ -24,10 +24,10 @@
 
   <!-- Stats Components -->
   <div class="inlineContainer">
-    <div>
-      <input type="checkbox" [(ngModel)]="enableGraph">Show experimental DPS graph
+    <div *ngIf="configurations && configurations.length > 0">
+      <input type="checkbox" [(ngModel)]="showGraph" (click)="toggleGraph(graphToggle.checked)" #graphToggle>Show experimental DPS graph
     </div>
-    <app-damage-graph class="block" *ngIf="configurations && configurations.length > 0 && enableGraph" [weaponConfigs]="configurations"></app-damage-graph>
+    <app-damage-graph class="block" *ngIf="configurations && configurations.length > 0 && showGraph" [weaponConfigs]="configurations"></app-damage-graph>
     <app-summary [weaponConfig]="activeConfig"></app-summary>
     <app-base-data [weaponConfig]="activeConfig"></app-base-data>
   </div>

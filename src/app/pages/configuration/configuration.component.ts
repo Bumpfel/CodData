@@ -21,24 +21,25 @@ export class ConfigurationComponent implements OnInit {
   contextOverlay: HTMLElement
 
   configurations: WeaponConfig[]
-  enableGraph = true // to show experimental graph
+  showGraph: boolean
+  showGraphSaveKey = 'showExperimentalGraph'
 
   callBack: (e: KeyboardEvent) => void
 
   ngOnInit(): void {
+    this.showGraph = JSON.parse(window.localStorage.getItem(this.showGraphSaveKey)) || false // to show experimental graph
+
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
-    // this.configService.obs_getComparisonConfigs().subscribe(configs => {
-    //   this.configurations = configs
-    //   this.configurations.sort((a, b) => a.comparisonSlot - b.comparisonSlot)
-    // })
     this.nextSlot = this.configService.getNextFreeComparisonSlot()
     
     this.contextOverlay = document.querySelector('#contextMenuOverlay')
     this.contextMenu = document.querySelector('#contextMenu')
 
     this.callBack = e => {
-      this.closeContextMenu();
-      // document.removeEventListener('keydown', this.callBack)
+      if(e.key === 'Escape') {
+        this.closeContextMenu();
+        document.removeEventListener('keydown', this.callBack)
+      }
     }
   }
   
@@ -74,7 +75,7 @@ export class ConfigurationComponent implements OnInit {
     event.preventDefault()
     this.activeConfig = weaponConfig
 
-    document.addEventListener('keydown', this.callBack, { once: true })
+    document.addEventListener('keydown', this.callBack)
 
     this.contextOverlay.style.position = 'fixed'
     this.contextOverlay.classList.remove('hidden')
@@ -96,5 +97,10 @@ export class ConfigurationComponent implements OnInit {
 
   getActiveConfigName(): string {   
     return this.activeConfig ? this.activeConfig.weaponName : null
+  }
+  
+  toggleGraph(bool: boolean): void {
+    this.showGraph = bool
+    window.localStorage.setItem(this.showGraphSaveKey, JSON.stringify(this.showGraph))
   }
 }

@@ -21,6 +21,7 @@ import { DialogueComponent } from './components/dialogue/dialogue.component';
 import { BaseDataComponent } from './components/stats/base-data/base-data.component';
 import { SummaryComponent } from './components/stats/summary/summary.component';
 import { DamageGraphComponent } from './components/stats/damage-graph/damage-graph.component';
+import { InfoPopupComponent } from './components/info-popup/info-popup.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { DamageGraphComponent } from './components/stats/damage-graph/damage-gra
     DialogueComponent,
     BaseDataComponent,
     SummaryComponent,
-    DamageGraphComponent
+    DamageGraphComponent,
+    InfoPopupComponent
   ],
   imports: [
     BrowserModule,

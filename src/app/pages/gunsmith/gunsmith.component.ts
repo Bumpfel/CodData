@@ -8,7 +8,7 @@ import { Stats } from 'src/app/models/Stats'
 import { Effect } from 'src/app/models/Effect'
 import { DataService } from 'src/app/services/data.service';
 import { MessageService } from 'src/app/services/message.service';
-import { Dialogue } from 'src/app/models/Dialogue';
+import { Dialogue, InfoPopup } from 'src/app/models/ComponentTypes';
 
 @Component({
   selector: 'app-gunsmith',
@@ -45,7 +45,8 @@ export class GunsmithComponent implements OnInit {
   upperAttachments: string[]
   lowerAttachments: string[]
 
-  deselectPopup: HTMLElement 
+  // deselectPopup: HTMLElement
+  infoPopupSettings: InfoPopup
 
   // TODO type vars when done with re-structure
   baseWeaponStats: any
@@ -81,7 +82,6 @@ export class GunsmithComponent implements OnInit {
 
   ngOnInit(): void {
     this.globalService.enableGoBackOnEscape()
-    this.deselectPopup = document.querySelector('#deselect')
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
     this.weaponConfig = this.configService.getWeaponConfig(slot)
@@ -153,19 +153,13 @@ export class GunsmithComponent implements OnInit {
     }
     
     if(this.weaponConfig.attachments[attachmentSlot]) {     
-      this.deselectPopup.classList.remove('hidden')
-      this.deselectPopup.classList.add('fade-in')
-      
-      this.deselectPopup.style.left = event.clientX + 'px'
-      this.deselectPopup.style.top = event.clientY + 'px'
-      
+      this.infoPopupSettings = { info: { R: 'Deselect' }, x: event.pageX, y: event.pageY }      
       document.addEventListener('keydown', this.quickAttachmentRemoveCb)
     }
   }
   
   disableQuickAttachmentRemoval(): void {
-    this.deselectPopup.classList.add('hidden')
-    this.deselectPopup.classList.remove('fade-in')
+    delete this.infoPopupSettings
     document.removeEventListener('keydown', this.quickAttachmentRemoveCb)
   }
 

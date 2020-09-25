@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
-import { Dialogue } from 'src/app/models/Dialogue';
+import { Dialogue } from 'src/app/models/ComponentTypes';
 import { GlobalService } from 'src/app/services/global.service';
 import { SoundService } from 'src/app/services/sound.service';
 import { DialogueService } from 'src/app/services/dialogue.service';

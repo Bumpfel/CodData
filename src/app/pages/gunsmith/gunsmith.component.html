@@ -122,7 +122,7 @@
           <tr>
             <th [scope]="attachment.key">{{attachment.key}}</th>
           </tr>
-          <tr *ngFor="let stat of statOrder"><!-- [class.summary]="isSummary(attachment.key)" -->
+          <tr *ngFor="let stat of statOrder">
             <td [class.positive]="attachment.value.get(stat).isPositive()">{{attachment.value.get(stat).value}}</td>
           </tr>
         </table>
@@ -133,46 +133,11 @@
 
     </div>
 
-<!-- 
-      <div id="ads">
-        <div class="title">ADS</div>
-        <div class="meter">
-          <div class="filled"></div>
-        </div>
-        <div class="text">291 ms</div>
-      </div>
-
-      <div id="range">
-        <div class="title">Drop-Offs</div>
-        <div class="meter">
-          <div class="first"></div>
-          <div class="second"></div>
-          <div class="last"></div>
-        </div>
-      </div>
-
-      <div id="bullet velocity">
-        <div class="title">Bullet Velocity</div>
-        <div class="meter">
-          <div class="filled"></div>
-        </div>
-        <div class="text">1259 m/s</div>
-      </div>
-
-      <div id="reload-time">
-        <div class="title">Reload Time</div>
-        <div class="meter">
-          <div class="filled"></div>
-        </div>
-        <div class="text">2.3 s</div>
-      </div> -->
-
-
-  <!-- Deselect popup -->
-  <div id="deselect" class="popup hidden">
-    <div>R</div>
+  <!-- <div id="deselect" class="popup hidden">
+    <div class="key">R</div>
     Deselect
-  </div>
+  </div> -->
+  <app-info-popup [settings]="infoPopupSettings"></app-info-popup>
 
   <app-dialogue [options]="initialDialogueOptions" [weaponConfig]="weaponConfig" [tempName]="this.newName" (optionSelected)="initialDialogueAction($event)"></app-dialogue>
   <app-dialogue [options]="secondDialogueOptions" (optionSelected)="secondDialogueAction($event)"></app-dialogue>

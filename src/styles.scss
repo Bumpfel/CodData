@@ -14,6 +14,7 @@
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 
+
 // ###################
 // ###  Scrollbar  ###
 ::-webkit-scrollbar {
@@ -43,17 +44,13 @@
   cursor: url('/assets/images/pointer-link.png'), pointer;
 }
 
-a, a * {
-  text-decoration: none;
-  cursor: url('/assets/images/pointer-link.png'), pointer;
-  
-  -webkit-user-drag: none;
-  -moz-user-drag: none; 
-}
 
+// #################
+// ###  Layout  ###
 html {
   height: 100%;
 }
+
 body {
   position: relative;
   min-height: 100%;
@@ -67,13 +64,19 @@ body {
   color: white;
   // background-image: url('/assets/images/tempBG.png'); // TODO temp
   // background-size: cover;
+
 }
 
 main {
   // margin: 100px $leftPageMargin; 
-  padding: 100px $leftPageMargin; // compensates for footer
+  padding: 50px $leftPageMargin 100px; // compensates for footer
+  overflow: hidden;
 }
 
+
+
+// #########################
+// ###  Common Elements  ###
 main, footer {
   // Buttons 
   a, .disabledButton, .button {
@@ -149,10 +152,21 @@ main, footer {
   }
 }
 
+a, a * {
+  text-decoration: none;
+  cursor: url('/assets/images/pointer-link.png'), pointer;
+  
+  -webkit-user-drag: none;
+  -moz-user-drag: none; 
+}
+
 input {
   outline: none;
 }
 
+
+// ###############################
+// ###  Reused custom classes  ### 
 .disabledButton {
   filter: grayscale(100%) opacity(.5);
   // -webkit-filter: grayscale(100%);
@@ -161,7 +175,6 @@ input {
   // -o-filter:      grayscale(100%);
 }
 
-// Scrollbox
 .scrollBox {
   // border: 1px dotted orange;
   display: inline-block;
@@ -178,8 +191,9 @@ input {
   }
 }
 
-// ###  Stats  ###
-// ###############
+
+// ###  Stats  ### 
+// TODO delete? check where cutoutBox is used tho
 .stats, .cutoutBox {
   display: inline-block;
   white-space: nowrap;
@@ -248,7 +262,6 @@ input {
   }
 }
 
-
 .circle {
   display: inline-block;
   $size: 15px;
@@ -277,6 +290,8 @@ input {
   }
 }
 
+// #####################
+// ###  Misc classes ### 
 .block {
   display: block;
 }
@@ -343,8 +358,22 @@ input {
   background-color: #0005;
 }
 
+
+
+// ####################
+// ###  Animations  ### 
+.delayed-fade-in {
+  animation: delayed-fade-in 1s forwards;
+}
+
 @keyframes flash {
   0% { opacity: 1; }
   50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes delayed-fade-in {
+  0% { opacity: 0; }
+  50% { opacity: 0; }
   100% { opacity: 1; }
 }

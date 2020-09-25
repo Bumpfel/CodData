@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ContextMenu } from 'src/app/models/ContextMenu';
+import { ContextMenu } from 'src/app/models/ComponentTypes';
 import { GlobalService } from 'src/app/services/global.service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
-import { ContextMenu } from 'src/app/models/ContextMenu';
+import { ContextMenu, InfoPopup } from 'src/app/models/ComponentTypes';
 import { DataService } from 'src/app/services/data.service';
 import { GlobalService } from 'src/app/services/global.service';
 import { MessageService } from 'src/app/services/message.service';
@@ -16,7 +16,9 @@ import { SoundService } from 'src/app/services/sound.service';
 export class ArmouryComponent implements OnInit {
 
   activeConfig: WeaponConfig
-  armouryConfigs: WeaponConfig[]
+  infoPopupSettings: InfoPopup
+  // attachmentsPopup: HTMLElement
+  armouryConfigs: {[key:string]: WeaponConfig}
   newConfig: WeaponConfig
   contextMenuOptions: ContextMenu
   nameFormConfig: WeaponConfig
@@ -36,6 +38,10 @@ export class ArmouryComponent implements OnInit {
   ngOnInit(): void {
     // this.dataService.getWeaponType(this.globalService.linkToName(this.route.snapshot.paramMap.get('weaponName')))
     this.initiate()
+  }
+  
+  ngAfterViewInit(): void {
+    // this.attachmentsPopup = document.querySelector('#attachmentsPopup')
   }
   
   initiate(): void {  
@@ -60,9 +66,18 @@ export class ArmouryComponent implements OnInit {
     this.loaded = true
   }
 
-  setActiveConfig(weaponConfig: WeaponConfig) {
+  setActiveConfig(weaponConfig: WeaponConfig, event: MouseEvent) {   
     this.soundService.hover()
     this.activeConfig = weaponConfig
+    
+  }
+
+  showAttachmentsPopup(weaponConfig: WeaponConfig, event: MouseEvent): void {
+    this.infoPopupSettings = { info: weaponConfig.attachments, x: event.pageX, y: event.pageY }
+  }
+  
+  closeAttachmentsPopup(): void {
+    delete this.infoPopupSettings
   }
 
   getCurrentSlot(): number {
@@ -123,7 +138,7 @@ export class ArmouryComponent implements OnInit {
     return this.configService.getFullWeaponType(this.activeConfig)
   }
   
-  getWeaponSortIdentifier(): string {
+  getWeaponSortIdentifier(): string {    
     return this.dataService.getWeaponSortIdentifier(this.activeConfig)
   }
 }
