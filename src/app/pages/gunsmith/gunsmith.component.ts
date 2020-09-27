@@ -9,6 +9,7 @@ import { Effect } from 'src/app/models/Effect'
 import { DataService } from 'src/app/services/data.service';
 import { MessageService } from 'src/app/services/message.service';
 import { Dialogue, InfoPopup } from 'src/app/models/ComponentTypes';
+import { ConfigSaveResponse } from 'src/app/models/ConfigSaveResponse';
 
 @Component({
   selector: 'app-gunsmith',
@@ -197,45 +198,32 @@ export class GunsmithComponent implements OnInit {
         }
       }
     } else {
-      let duplicateFound = false
+      let response: ConfigSaveResponse
       let tempConfig: WeaponConfig = { ...this.weaponConfig }
       tempConfig.armouryName = this.newName || tempConfig.armouryName
 
       if(action === this.initialDialogueButtons.createNewConfig || action === this.initialDialogueButtons.saveConfig) {
-        // Save/Create new modification
-        
-        if(this.configService.configDuplicateExists(tempConfig)) {
-          duplicateFound = true
-        } else if(this.configService.saveConfig(tempConfig, true, true)) {
-          this.messageService.addMessage('Modification added to the weapon armoury', this.newName)
-          this.initialDialogueOptions = undefined
-        } else {
-          this.messageService.addMessage('Notice', 'Enter a name to save a custom modification')
-          this.refreshInitialDialogue()
-          return
-        }
+        response = this.configService.saveConfig(tempConfig, true, true)
       } else if(action === this.initialDialogueButtons.updateConfig) {
-        console.log('action: update')
-        // Update modification
-        this.globalService.enableGoBackOnEscape()
-        if(this.newName && this.weaponConfig.armouryName !== this.newName && this.configService.configDuplicateExists(tempConfig)) {
-          duplicateFound = true
-        } else if(this.configService.renameArmouryConfig(this.weaponConfig, this.newName || this.weaponConfig.armouryName, true)) {
-          // this.messageService.addMessage('Modification added to the weapon armoury', this.newName)
-          this.messageService.addMessage('Modification updated', this.newName || this.weaponConfig.armouryName)
-          this.initialDialogueOptions = undefined
-        } else { // TODO code duplication
-          this.messageService.addMessage('Notice', 'Enter a name to save a custom modification')
-          this.refreshInitialDialogue()
-          return
-        }
+        response = this.configService.renameArmouryConfig(this.weaponConfig, this.newName || this.weaponConfig.armouryName, true)
       }
-      if(duplicateFound === true) {
+
+      if(response === ConfigSaveResponse.duplicate) {
         this.messageService.addMessage('Notice', 'A modification with that name already exists') // TODO change to overwrite dialogue
         this.refreshInitialDialogue()
         return
+      } else if(response === ConfigSaveResponse.missingName) {
+        this.messageService.addMessage('Notice', 'Enter a name to save a custom modification')
+        this.refreshInitialDialogue()
+        return
+      } else if(response === ConfigSaveResponse.savedNew) {
+        this.messageService.addMessage('Modification added to the weapon armoury', tempConfig.armouryName)
+      } else if(response === ConfigSaveResponse.updated) {
+        this.messageService.addMessage('Modification updated', this.newName || this.weaponConfig.armouryName)
       }
-
+      
+      // response not erroneous
+      this.weaponConfig = tempConfig
       this.initialDialogueOptions = undefined
       document.addEventListener('keydown', this.showConfigDialogueCB)
       this.globalService.enableGoBackOnEscape()
@@ -245,13 +233,15 @@ export class GunsmithComponent implements OnInit {
   secondDialogueAction(name: string): void {
     if(name) {
       this.newName = name
-      // console.log('update name: ', name)
     }
     this.secondDialogueOptions = undefined
     // trigger change to register event listener on the first dialogue
     this.refreshInitialDialogue()
   }
   
+  /**
+   * Used to re-register event listener
+   */
   refreshInitialDialogue() {
     this.initialDialogueOptions = this.initialDialogueOptions ? { ...this.initialDialogueOptions } : undefined
   }

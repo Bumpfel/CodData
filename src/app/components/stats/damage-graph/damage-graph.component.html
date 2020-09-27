@@ -6,7 +6,7 @@
     </div>
   </div>
   
-  <div class="spaceContainer">
+  <div class="spaceContainer hitBoxes">
     <div *ngFor="let hitBox of hitBoxes | keyvalue" class="">
       <input type="radio" [value]="hitBox.value" id="hitBox.key" (click)="setHitBox(hitBox.value)" [(ngModel)]="selectedHitBox" #hitBox>
       <label [for]="hitBox.key">{{hitBox.key}}</label>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from 'src/app/models/WeaponConfig'
+import { ConfigSaveResponse } from 'src/app/models/ConfigSaveResponse'
 import { GlobalService } from './global.service';
 
 @Injectable({
@@ -67,16 +68,19 @@ export class WeaponConfigService {
    * @param isArmouryConfig Saves config to sessionStorage, and also to localStorage if isAmouryConfig === true
 
    */
-  saveConfig(weaponConfig: WeaponConfig, isArmouryConfig: boolean = false, updateComparisonConfig: boolean = true): boolean {
+  saveConfig(weaponConfig: WeaponConfig, isArmouryConfig: boolean = false, updateComparisonConfig: boolean = true, isUpdate: boolean = false): ConfigSaveResponse {
     if(isArmouryConfig) {
-      let name = weaponConfig.armouryName
-      if(!name || name.trim().length === 0) {
-        return false
+      if(!weaponConfig.armouryName || weaponConfig.armouryName.trim().length === 0) {
+        return ConfigSaveResponse.missingName
       }
-      if(name.length > WeaponConfig.maxNameLength) {
-        name = name.substr(0, WeaponConfig.maxNameLength)
+      weaponConfig.armouryName = weaponConfig.armouryName.trim()
+      if(weaponConfig.armouryName.length > WeaponConfig.maxNameLength) { // this only happens if the user removed the limitation. cutting it and saving without a warning is fine
+        weaponConfig.armouryName = weaponConfig.armouryName.substr(0, WeaponConfig.maxNameLength)
       }
-      weaponConfig.armouryName = name.trim()
+
+      if(this.configDuplicateExists(weaponConfig) === true) {
+        return ConfigSaveResponse.duplicate
+      }
       
       const allConfigs = this.getAllArmouryConfigs()
       const weaponConfigs = allConfigs[weaponConfig.weaponName] || {}
@@ -88,7 +92,7 @@ export class WeaponConfigService {
     if(updateComparisonConfig === true) {
       window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
     }
-    return true
+    return isUpdate ? ConfigSaveResponse.updated : ConfigSaveResponse.savedNew
   }
 
   /**
@@ -97,18 +101,20 @@ export class WeaponConfigService {
    * @param newName 
    * @param updateComparisonConfig 
    */
-  renameArmouryConfig(oldConfig: WeaponConfig, newName: string, updateComparisonConfig: boolean = false): boolean {
+  renameArmouryConfig(oldConfig: WeaponConfig, newName: string, updateComparisonConfig: boolean = false): ConfigSaveResponse {
     let newConfig: WeaponConfig = { ...oldConfig }
     newConfig.armouryName = newName
-    
-    console.log('rename', oldConfig.armouryName, newName)   
-    
+   
+    if(newName && oldConfig.armouryName !== newName && this.configDuplicateExists(newConfig)) {
+      return ConfigSaveResponse.duplicate
+    }
+
     this.deleteArmouryConfig(oldConfig)
     oldConfig.armouryName = newName
-    return this.saveConfig(newConfig, true, updateComparisonConfig)
+    return this.saveConfig(newConfig, true, updateComparisonConfig, true)
   }
 
-  deleteArmouryConfig(weaponConfig: WeaponConfig) {
+  deleteArmouryConfig(weaponConfig: WeaponConfig): void {
     const allConfigs = this.getAllArmouryConfigs()
     delete allConfigs[weaponConfig.weaponName][weaponConfig.armouryName]
     window.localStorage.setItem(this.storageSaveName, JSON.stringify(allConfigs))
@@ -117,9 +123,7 @@ export class WeaponConfigService {
   /**
    * Checks if this weapon has a config with the armouryName in the argument
    */
-  configDuplicateExists(config: WeaponConfig): boolean {
-    console.log('checking for duplicate')
-    
+  private configDuplicateExists(config: WeaponConfig): boolean {   
     const armouryConfigs = this.getArmouryConfigs(config.weaponName) || {}
     return armouryConfigs[config.armouryName.trim()] !== undefined
   }

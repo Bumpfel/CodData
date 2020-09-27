@@ -48,6 +48,7 @@ export class DialogueComponent implements OnInit {
   ngOnChanges(): void {   
     if(this.contentLoaded === true && this.options) {
       this.globalService.disableGoBackOnEscape()
+      
       document.addEventListener('keydown', this.closeDialogueCB)
       this.isActive = true
       setTimeout(() => {
@@ -64,7 +65,6 @@ export class DialogueComponent implements OnInit {
     if(!value) {
       this.soundService.goBack()
     }
-    
     this.optionSelected.emit(value)
     document.removeEventListener('keydown', this.closeDialogueCB)
   }
