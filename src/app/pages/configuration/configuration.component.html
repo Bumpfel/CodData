@@ -28,17 +28,20 @@
       <input type="checkbox" [(ngModel)]="showGraph" (click)="toggleGraph(graphToggle.checked)" #graphToggle>Show experimental DPS graph
     </div>
     <app-damage-graph class="block" *ngIf="configurations && configurations.length > 0 && showGraph" [weaponConfigs]="configurations"></app-damage-graph>
-    <app-summary [weaponConfig]="activeConfig"></app-summary>
-    <app-base-data [weaponConfig]="activeConfig"></app-base-data>
+    <ng-container *ngIf="activeConfig">
+      <div class="weaponTitle">{{getActiveConfigTitle()}}</div>
+      <app-summary [weaponConfig]="activeConfig"></app-summary>
+      <app-dmg-profile [weaponConfig]="activeConfig"></app-dmg-profile>
+    </ng-container>
   </div>
   
   <!-- Context Menu Overlay -->
   <div id="contextMenuOverlay" class="overlay hidden" (click)="closeContextMenu()" (contextmenu)="$event.preventDefault(); closeContextMenu()"></div>
-  
   <!-- Right click ContextMenu -->
   <div id="contextMenu" class="small hidden">
     <div>{{getActiveConfigName()}}</div>
     <a (click)="deleteConfig()">Delete</a>
   </div>
+  <!-- <app-context-menu [options] (optionSelected)="deleteConfig()"></app-context-menu> -->
 </main>
  

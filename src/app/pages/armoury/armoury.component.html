@@ -5,7 +5,7 @@
   <div class="weaponTitle">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
   
   <app-summary [weaponConfig]="activeConfig"></app-summary>
-  <app-base-data [weaponConfig]="activeConfig"></app-base-data>
+  <app-dmg-profile [weaponConfig]="activeConfig"></app-dmg-profile>
   <!-- <app-damage-graph [weaponConfigs]="[activeConfig, { weaponName: 'MP5', attachments: [] }]"></app-damage-graph> -->
   <br>
 

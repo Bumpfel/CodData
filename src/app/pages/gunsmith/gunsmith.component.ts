@@ -195,19 +195,19 @@ export class GunsmithComponent implements OnInit {
         form: {
           inputValue: this.newName || this.weaponConfig.armouryName || '',
         }
-      }      
+      }
     } else {
-      if(action === this.initialDialogueButtons.createNewConfig || action === this.initialDialogueButtons.saveConfig) {
-        this.weaponConfig.armouryName = this.newName || this.weaponConfig.armouryName
-        // Save/Create new modification
+      let duplicateFound = false
+      let tempConfig: WeaponConfig = { ...this.weaponConfig }
+      tempConfig.armouryName = this.newName || tempConfig.armouryName
 
-        if(this.configService.configDuplicateExists(this.weaponConfig)) {
-          this.messageService.addMessage('Notice', 'A modification with that name already exists') // TODO change to overwrite dialogue
-          this.refreshInitialDialogue()
-          return
-        }
-        else if(this.configService.saveConfig(this.weaponConfig, true)) {
-          this.messageService.addMessage('Modification added to the weapon armoury', this.weaponConfig.armouryName)
+      if(action === this.initialDialogueButtons.createNewConfig || action === this.initialDialogueButtons.saveConfig) {
+        // Save/Create new modification
+        
+        if(this.configService.configDuplicateExists(tempConfig)) {
+          duplicateFound = true
+        } else if(this.configService.saveConfig(tempConfig, true, true)) {
+          this.messageService.addMessage('Modification added to the weapon armoury', this.newName)
           this.initialDialogueOptions = undefined
         } else {
           this.messageService.addMessage('Notice', 'Enter a name to save a custom modification')
@@ -215,14 +215,27 @@ export class GunsmithComponent implements OnInit {
           return
         }
       } else if(action === this.initialDialogueButtons.updateConfig) {
+        console.log('action: update')
         // Update modification
         this.globalService.enableGoBackOnEscape()
-        if(this.configService.renameArmouryConfig(this.weaponConfig, this.newName || this.weaponConfig.armouryName)) {
+        if(this.newName && this.weaponConfig.armouryName !== this.newName && this.configService.configDuplicateExists(tempConfig)) {
+          duplicateFound = true
+        } else if(this.configService.renameArmouryConfig(this.weaponConfig, this.newName || this.weaponConfig.armouryName, true)) {
           // this.messageService.addMessage('Modification added to the weapon armoury', this.newName)
           this.messageService.addMessage('Modification updated', this.newName || this.weaponConfig.armouryName)
           this.initialDialogueOptions = undefined
+        } else { // TODO code duplication
+          this.messageService.addMessage('Notice', 'Enter a name to save a custom modification')
+          this.refreshInitialDialogue()
+          return
         }
       }
+      if(duplicateFound === true) {
+        this.messageService.addMessage('Notice', 'A modification with that name already exists') // TODO change to overwrite dialogue
+        this.refreshInitialDialogue()
+        return
+      }
+
       this.initialDialogueOptions = undefined
       document.addEventListener('keydown', this.showConfigDialogueCB)
       this.globalService.enableGoBackOnEscape()
@@ -240,6 +253,6 @@ export class GunsmithComponent implements OnInit {
   }
   
   refreshInitialDialogue() {
-    this.initialDialogueOptions = this.initialDialogueOptions ? JSON.parse(JSON.stringify(this.initialDialogueOptions)) : undefined
+    this.initialDialogueOptions = this.initialDialogueOptions ? { ...this.initialDialogueOptions } : undefined
   }
 }

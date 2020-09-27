@@ -18,10 +18,10 @@ import { FooterComponent } from './components/navigation/footer/footer.component
 import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
 import { NameformComponent } from './components/nameform/nameform.component';
 import { DialogueComponent } from './components/dialogue/dialogue.component';
-import { BaseDataComponent } from './components/stats/base-data/base-data.component';
 import { SummaryComponent } from './components/stats/summary/summary.component';
 import { DamageGraphComponent } from './components/stats/damage-graph/damage-graph.component';
 import { InfoPopupComponent } from './components/info-popup/info-popup.component';
+import { DmgProfileComponent } from './components/stats/dmg-profile/dmg-profile.component';
 
 @NgModule({
   declarations: [
@@ -38,10 +38,10 @@ import { InfoPopupComponent } from './components/info-popup/info-popup.component
     ContextmenuComponent,
     NameformComponent,
     DialogueComponent,
-    BaseDataComponent,
     SummaryComponent,
     DamageGraphComponent,
-    InfoPopupComponent
+    InfoPopupComponent,
+    DmgProfileComponent
   ],
   imports: [
     BrowserModule,

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BaseDataComponent } from './base-data.component';
+import { DmgProfileComponent } from './dmg-profile.component';
 
-describe('BasedataComponent', () => {
-  let component: BaseDataComponent;
-  let fixture: ComponentFixture<BaseDataComponent>;
+describe('DmgProfileComponent', () => {
+  let component: DmgProfileComponent;
+  let fixture: ComponentFixture<DmgProfileComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BaseDataComponent ]
+      declarations: [ DmgProfileComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BaseDataComponent);
+    fixture = TestBed.createComponent(DmgProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

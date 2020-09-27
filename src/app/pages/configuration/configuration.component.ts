@@ -27,8 +27,7 @@ export class ConfigurationComponent implements OnInit {
   callBack: (e: KeyboardEvent) => void
 
   ngOnInit(): void {
-    this.showGraph = JSON.parse(window.localStorage.getItem(this.showGraphSaveKey)) || false // to show experimental graph
-
+    this.showGraph = JSON.parse(window.localStorage.getItem(this.showGraphSaveKey)) || false
     this.configurations = this.configService.getComparisonConfigs().sort((a, b) => a.comparisonSlot - b.comparisonSlot)
     this.nextSlot = this.configService.getNextFreeComparisonSlot()
     
@@ -97,6 +96,10 @@ export class ConfigurationComponent implements OnInit {
 
   getActiveConfigName(): string {   
     return this.activeConfig ? this.activeConfig.weaponName : null
+  }
+
+  getActiveConfigTitle(): string {
+    return '#' + this.activeConfig.comparisonSlot + ' ' + (this.activeConfig.armouryName || this.activeConfig.weaponName)
   }
   
   toggleGraph(bool: boolean): void {

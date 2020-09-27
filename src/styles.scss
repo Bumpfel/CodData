@@ -68,8 +68,7 @@ body {
 }
 
 main {
-  // margin: 100px $leftPageMargin; 
-  padding: 50px $leftPageMargin 100px; // compensates for footer
+  padding: 50px 0 100px $leftPageMargin ; // compensates for footer
   overflow: hidden;
 }
 
@@ -296,6 +295,12 @@ input {
   display: block;
 }
 
+.spaceContainer {
+  // border: 1px dotted white;
+  display: flex;
+  justify-content: space-between;
+}
+
 .inlineContainer {
   // border: 1px dotted white;
   display: inline-block;
@@ -347,6 +352,10 @@ input {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+.lineThrough {
+  text-decoration: line-through;
 }
 
 .background {

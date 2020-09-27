@@ -3,25 +3,24 @@
 
 <!-- Weapon Select -->
 <main>
-  <div class="scrollBox">
-    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToLink(weaponName)" (mouseenter)="showArmouryButton(weaponName); setActiveWeapon(weaponName)">        
+  <div class="scrollBox" *ngIf="weaponsLoaded === true">
+    <div *ngFor="let weaponName of weaponProfiles | keyvalue" [id]="globalService.nameToSelector(weaponName.key)" (mouseenter)="showArmouryButton(weaponName.key); setActiveWeapon(weaponName.key)">
       <!-- Weapon Card -->
-      <a (click)="selectWeapon(weaponName)" (mouseenter)="soundService.hover()">
-        <app-weapon-card [weaponConfig]="getTempConfig(weaponName)" page="weapon-select"></app-weapon-card>
+      <a (click)="selectWeapon(weaponName.key)" (mouseenter)="soundService.hover()">
+        <app-weapon-card [weaponConfig]="getTempConfig(weaponName.key)" page="weapon-select"></app-weapon-card>
       </a>
-      
       <div class="armouryButtons">
         <!-- Collapsed armoury button -->
-        <a *ngIf="armourySaves.get(weaponName) > 0" id="armoury-button-collapsed">
-          {{armourySaves.get(weaponName)}}
+        <a *ngIf="armourySaves.get(weaponName.key) > 0" id="armoury-button-collapsed">
+          {{armourySaves.get(weaponName.key)}}
           <div class="triangle"></div>
         </a>
         <!-- Expanded armoury button -->
-        <a class="gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
+        <a class="gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName.key)">
           <div class="title">Armoury</div>
           <img src="/assets/images/armoury.png" alt="Armoury button">
           <br>
-          {{armourySaves.get(weaponName)}}
+          {{armourySaves.get(weaponName.key)}}
         </a>
       </div>
     </div>
@@ -29,11 +28,11 @@
   </div>
 
   <!-- Stats -->
-  <div class="inlineContainer">
-    <div *ngIf="activeWeaponConfig" class="weaponTitle">{{activeWeaponConfig.weaponName}}</div>
-    <app-summary [condensed]="true" [weaponConfig]="activeWeaponConfig"></app-summary>
-    <br>
-    <app-base-data [weaponConfig]="activeWeaponConfig"></app-base-data>
+  <div class="inlineContainer" *ngIf="activeWeapon">
+    <div class="weaponTitle">{{activeWeapon.weaponName}}</div>
+    <app-summary [condensed]="true" [weaponConfig]="activeWeapon"></app-summary>
+    <div></div>
+    <app-dmg-profile [weaponConfig]="activeWeapon"></app-dmg-profile>
   </div>
 
     

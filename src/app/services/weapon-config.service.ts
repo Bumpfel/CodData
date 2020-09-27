@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WeaponConfig } from 'src/app/models/WeaponConfig'
+import { GlobalService } from './global.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class WeaponConfigService {
 
   private maxAttachments: number = 5
 
-  constructor() {
+  constructor(private globalService: GlobalService) {
   }
 
   getAllArmouryConfigs(): {[key:string]: {[key:string]: WeaponConfig}} {
@@ -37,7 +38,6 @@ export class WeaponConfigService {
 
   getArmouryConfigs(weaponName: string): {[key:string]: WeaponConfig} {
     return this.getAllArmouryConfigs()[weaponName]
-    // return JSON.parse(window.localStorage.getItem(weaponName))
   }
 
   // obs_getComparisonConfigs(): Observable<WeaponConfig[]> {
@@ -62,12 +62,13 @@ export class WeaponConfigService {
 
   /**
    * If isArmouryconfig, name is checked before it's saved. Returns true if name is ok
+   * DOES NOT CHECK FOR DUPLICATES
    * @param weaponConfig
-   * @param isArmoryConfig Saves config to sessionStorage, and also to localStorage if isAmouryConfig === true
+   * @param isArmouryConfig Saves config to sessionStorage, and also to localStorage if isAmouryConfig === true
 
    */
-  saveConfig(weaponConfig: WeaponConfig, isArmoryConfig: boolean = false): boolean {
-    if(isArmoryConfig) {
+  saveConfig(weaponConfig: WeaponConfig, isArmouryConfig: boolean = false, updateComparisonConfig: boolean = true): boolean {
+    if(isArmouryConfig) {
       let name = weaponConfig.armouryName
       if(!name || name.trim().length === 0) {
         return false
@@ -75,60 +76,65 @@ export class WeaponConfigService {
       if(name.length > WeaponConfig.maxNameLength) {
         name = name.substr(0, WeaponConfig.maxNameLength)
       }
-      weaponConfig.armouryName = name
+      weaponConfig.armouryName = name.trim()
       
       const allConfigs = this.getAllArmouryConfigs()
-      const weaponConfigs = allConfigs[weaponConfig.weaponName] || {} //this.getArmouryConfigs(weaponConfig.weaponName) || {}
+      const weaponConfigs = allConfigs[weaponConfig.weaponName] || {}
       weaponConfigs[weaponConfig.armouryName] = weaponConfig
       allConfigs[weaponConfig.weaponName] = weaponConfigs
-      console.log(allConfigs)
       
-      
-      console.log('saving config')
       window.localStorage.setItem(this.storageSaveName, JSON.stringify(allConfigs))
-      // window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(weaponConfigs))
     }
-    window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
+    if(updateComparisonConfig === true) {
+      window.sessionStorage.setItem('' + weaponConfig.comparisonSlot, JSON.stringify(weaponConfig))
+    }
     return true
   }
 
   /**
-   * Checks if this weapon has a config with the armouryName in the arugument
-   * @param weaponConfig 
+   * returns false if duplicate was found
+   * @param oldConfig
+   * @param newName 
+   * @param updateComparisonConfig 
    */
-  configDuplicateExists(weaponConfig: WeaponConfig): boolean {
-    const armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName) || {}    
-    console.log(armouryConfigs[weaponConfig.armouryName])
+  renameArmouryConfig(oldConfig: WeaponConfig, newName: string, updateComparisonConfig: boolean = false): boolean {
+    let newConfig: WeaponConfig = { ...oldConfig }
+    newConfig.armouryName = newName
     
-    return armouryConfigs[weaponConfig.armouryName] !== undefined
-  }
-
-  deleteComparisonConfig(slot: number) {
-    window.sessionStorage.removeItem('' + slot)
+    console.log('rename', oldConfig.armouryName, newName)   
+    
+    this.deleteArmouryConfig(oldConfig)
+    oldConfig.armouryName = newName
+    return this.saveConfig(newConfig, true, updateComparisonConfig)
   }
 
   deleteArmouryConfig(weaponConfig: WeaponConfig) {
     const allConfigs = this.getAllArmouryConfigs()
     delete allConfigs[weaponConfig.weaponName][weaponConfig.armouryName]
     window.localStorage.setItem(this.storageSaveName, JSON.stringify(allConfigs))
-    // let armouryConfigs = this.getArmouryConfigs(weaponConfig.weaponName)
-    // delete armouryConfigs[weaponConfig.armouryName]
-    // window.localStorage.setItem(weaponConfig.weaponName, JSON.stringify(armouryConfigs))
   }
 
-  renameArmouryConfig(oldConfig: WeaponConfig, newName: string): boolean {
-    this.deleteArmouryConfig(oldConfig)
-    oldConfig.armouryName = newName
-    return this.saveConfig(oldConfig, true)
+  /**
+   * Checks if this weapon has a config with the armouryName in the argument
+   */
+  configDuplicateExists(config: WeaponConfig): boolean {
+    console.log('checking for duplicate')
+    
+    const armouryConfigs = this.getArmouryConfigs(config.weaponName) || {}
+    return armouryConfigs[config.armouryName.trim()] !== undefined
+  }
+
+  deleteComparisonConfig(slot: number) {
+    window.sessionStorage.removeItem('' + slot)
   }
 
   getNextFreeComparisonSlot(): number {
-    let temp = this.getComparisonConfigs()   
+    let temp = this.getComparisonConfigs()
     if(temp.length) {
       temp.sort((a, b) => b.comparisonSlot - a.comparisonSlot)
       return temp[0].comparisonSlot + 1
     }
-    return 0
+    return 1
   }
 
   getIterableNrOfEmptyAttachmentSlots(weaponConfig: WeaponConfig) { // for angular iterator (*ngFor)

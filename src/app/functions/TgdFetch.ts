@@ -76,8 +76,8 @@ export class TgdFetch {
   }
 
   private static async getTGDData(request: any, formData: any): Promise<any> {
-    // const proxyurl = "https://cors-anywhere.herokuapp.com/"
-    const proxyurl = "http://localhost:4100/"
+    const proxyurl = "https://cors-anywhere.herokuapp.com/" // prod
+    // const proxyurl = "http://localhost:4100/" // dev
 
     formData = JSON.stringify(formData)
 

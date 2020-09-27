@@ -32,8 +32,12 @@ export class GlobalService {
     document.removeEventListener('keydown', this.goBackCallback)
   }
 
-  nameToLink(str: string): string {
+  nameToSelector(str: string): string {
     return str != null ? str.split(' ').join('_').split('.').join('') : null
+  }
+ 
+  nameToLink(str: string): string {
+    return str != null ? str.split(' ').join('_') : null
   }
 
   linkToName(str: string): string {
@@ -41,7 +45,7 @@ export class GlobalService {
   }
 
   getImageLink(weaponConfig: WeaponConfig): string {
-    return '/assets/images/weapons/' + this.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'
+    return '/assets/images/weapons/' + this.nameToSelector(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'
   }
 
   round(nr: number, decimals: number): number {
@@ -50,5 +54,29 @@ export class GlobalService {
 
     return calc / smt
   }
+
+  /**
+   * Ceiling rounds a nr to the nearest interval
+   * @param nr 
+   * @param interval 
+   * @param roundDown floor rounds instead of ceiling 
+   */
+  roundToClosestInterval(nr: number, interval: number, roundDown: boolean = false) {
+    if(roundDown === true) {
+      return Math.floor(nr / interval) * interval
+    } else {
+      return Math.ceil(nr / interval) * interval
+    }
+  }
+
+  clamp(nr: number, min: number, max: number): number {
+    nr = Math.max(nr, min)
+    nr = Math.min(nr, max)
+    return nr
+  }
+
+  // copyObject(obj: {[key: string]: any}): any { //{[key: string]: any} {
+    // return JSON.parse(JSON.stringify(obj))
+  // }
 
 }

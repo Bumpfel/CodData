@@ -1,11 +1,12 @@
-<div class="stats basedata" *ngIf="weaponConfig">
-  <ng-container *ngIf="activeDamageInterval else loadingBaseData">
+<div class="stats basedata" [class.hidden]="!weaponConfig">
+  <ng-container *ngIf="activeDamageInterval && weaponStatSummary else loadingDmgProfile">
+    <h2>Damage Profile</h2>
     <div class="title">
       Damage Range: {{getRangeDisplay(sliderValue)}}
       <!-- : {{getDamageRangeInterval(activeDamageInterval)}} -->
     </div>
-    <div class="space">
-      <input type="range" [class.disabled]="intervalsLoaded === false" [(ngModel)]="sliderValue" id="rangeSlider" value="0" (input)="setDamageInterval(sliderValue)">
+    <div class="spaceContainer">
+      <input type="range" [style]="sliderStyle" [class.disabled]="intervalsLoaded === false" [(ngModel)]="sliderValue" id="rangeSlider" [max]="sliderMaxRange" value="0" (input)="setDamageInterval(sliderValue)">
       <!-- <ng-template #loadingDmgIntervals>
         <div class="loading">Loading damage intervals...</div>
       </ng-template> -->
@@ -41,18 +42,16 @@
       Additional Info
     </div>
     <div class="stacking column">
-      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay' - the time it from pulling to trigger to the weapon firing a shot">Lock time *</div>
+      <div *ngIf="getLockTime()" title="Belt fed LMG's and the Uzi has an open bolt design which causes a small input lag between pulling the trigger and the weapon firing a shot">Lock time *</div>
       <div>Rate of Fire</div>
     </div>
-    <div class="stacking column" title="Also known as 'Open bolt delay'">
-      <div *ngIf="getLockTime() > 0" title="Also known as 'Open bolt delay'">{{getLockTime()}} ms</div>
+    <div class="stacking column">
+      <div *ngIf="getLockTime()">{{getLockTime()}}</div>
       <div>{{getRateOfFire()}} rpm</div>
     </div>
   </ng-container>
   <!-- Loading base data -->
-  <ng-template #loadingBaseData>
-    <div class="loading">
-      Loading...
-    </div>
+  <ng-template #loadingDmgProfile>
+    <div class="loading">Loading...</div>
   </ng-template>
 </div>

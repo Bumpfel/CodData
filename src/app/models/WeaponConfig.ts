@@ -18,9 +18,9 @@ export class WeaponConfig {
 
     static maxNameLength = 20
     
-    constructor(name: string, slot?: number, type?: string) {
+    constructor(weaponName: string, slot?: number, type?: string) {
       this.comparisonSlot = slot
-      this.weaponName = name
+      this.weaponName = weaponName
       this.weaponType = type
       this.attachments = {}
       this.armouryName  = undefined

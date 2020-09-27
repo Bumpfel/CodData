@@ -8,11 +8,9 @@
   background-color: black;
   padding: 5px;
 
-  .hitBoxes {
-    display: flex;
-    justify-content: space-evenly;
-    text-transform: capitalize;
-  }
+  // .hitBoxes {
+  //   text-transform: capitalize;
+  // }
 
   #markerContainer {
     // border: 1px dotted orange;
@@ -23,7 +21,7 @@
     
     .marker {
       padding: 10px;
-      font-size: 12px;
+      font-size: 14px;
       
       .box {
         display: inline-block;
@@ -32,8 +30,12 @@
       }
     }
   }
-
-  canvas {
-    // border: 1px dotted white;
-  }
 }
+
+// canvas {
+//   border: 1px dotted white;
+// }
+
+// #hitBoxSlider {
+//   width: 90%;
+// }

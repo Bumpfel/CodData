@@ -11,7 +11,6 @@ import { WeaponConfig } from 'src/app/models/WeaponConfig';
 export class WeaponCardComponent implements OnInit {
 
   @Input() weaponConfig: WeaponConfig
-  // @Input() displayExtras: boolean = false
   @Input() page: string
 
   static page = { configurations: 1 }
@@ -22,7 +21,6 @@ export class WeaponCardComponent implements OnInit {
   }
 
   getDisplayName() {
-    // return this.displayExtras
     return this.page === 'configurations'
       ? 'Configuration #' + this.weaponConfig.comparisonSlot
       : this.weaponConfig.armouryName || this.weaponConfig.weaponName

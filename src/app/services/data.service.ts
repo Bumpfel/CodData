@@ -30,7 +30,7 @@ export class DataService {
     assaultrifles: ['Kilo 141', 'FAL', 'M4A1', 'FR 5.56', 'Oden', 'M13', 'FN Scar 17', 'AK-47' ,'RAM-7', 'Grau 5.56', 'CR-56 AMAX', 'AN-94'],
     smgs: ['AUG', 'P90', 'MP5', 'Uzi', 'PP19 Bizon', 'MP7', 'Striker-45', 'Fennec', 'ISO'],
     shotguns: ['R9-0 Shotgun', '725', 'Origin 12 Shotgun', 'VLK Rogue'],
-    lmgs: ['PKM', 'SA87', 'M91', 'MG34', 'Holger-26', 'Bruen Mk9', 'FiNN LMG'], // 'FiNN LMG Factory Adverse'],
+    lmgs: ['PKM', 'SA87', 'M91', 'MG34', 'Holger-26', 'Bruen Mk9', 'FiNN LMG', 'FiNN LMG Factory Adverse'],
     marksmanrifles: ['EBR', 'Mk2 Carbine', 'Kar98k', 'Crossbow', 'SKS'], // EBR-14
     sniperrifles: ['Dragunov', 'HDR', 'AX-50', 'Rytec AMR'],
     handguns: ['X16', '1911', '.357', 'M19', '.50 GS', 'Renetti'],
@@ -45,7 +45,7 @@ export class DataService {
   ]
 
     // Cache VARS
-  private weaponTypesData: { [key: string]: string[] } = {} // TODO improved caching not done
+  private weaponNamesData: { [key: string]:  Promise<string[][]> } = {}
   private weaponData: { [key: string]: Promise<(WeaponData | DamageIntervals[])[]> } = {} // P.I.T.A. typing
   private summaryData: Map<string, Promise<TGDData>> = new Map() // uses stringifed WeaponConfig as key
   private attachmentData: { [key: string]: Promise<AttachmentData[]> } = {}
@@ -69,32 +69,17 @@ export class DataService {
     return this.weaponIdentifiers[index]
   }
 
-  /**
-   * Fetches and caches weapons
-   * @param type
-   */
-  async tgd_getWeapons(type: string): Promise<string[]> { // TODO should use this one, but I don't like how he's displaying different versions of the same weapons sometimes
-    const tgdType = this.menuToTGDWeaponTypes.get(type)
-    
-    // if(type) {
-      if(!this.weaponTypesData[tgdType]) {
-        this.weaponTypesData[tgdType] = []
-        const weapons = await TgdFetch.getWeaponsData(tgdType)
-        for(const weapon of weapons) {
-          this.weaponTypesData[tgdType].push(weapon[0])
-        }
-      }
-
-      return this.weaponTypesData[tgdType]
-    // }
-    // return null
+  cacheWeapons(): void{
+    for(const tgdType of this.menuToTGDWeaponTypes.keys()) {
+      this.getWeaponNames(tgdType)
+    }
   }
-  
+
   /**
    * @deprecated Uses internally listed weapons
    * @param type
    */
-  getWeapons(type: string): string[] {
+  static_getWeaponNames(type: string): string[] {
     // if(type) {
       return this.weapons[type.split(' ').join('')]
     // }
@@ -102,7 +87,59 @@ export class DataService {
   }
 
   /**
-   * Fetches and caches attachment data for the given weapon
+   * Fetches and caches weapon names data
+   * @param type
+   */
+  async getWeaponNames(type: string): Promise<string[]> {
+    const tgdType = this.menuToTGDWeaponTypes.get(type)
+    
+    const arr = []
+    if(!this.weaponNamesData[tgdType]) {
+      this.weaponNamesData[tgdType] = TgdFetch.getWeaponsData(tgdType)
+    }
+    const weapons = await this.weaponNamesData[tgdType]
+    
+    for(const weapon of weapons) {
+      arr.push(weapon[0])
+    }
+
+    return arr
+  }
+
+  /**
+   * Maps alternate TGD weapon profiles so that the base weapon name links to the other profiles
+   * e.g. { AK-47: {AK-47, AK-47 5.45mm }}
+   * @param names 
+   */
+  getWeaponProfiles(names: string[]): Map<string, string[]> { // TODO ev merga denna med getWeapons
+    // const uniqueWeaponNames: Set<string> = new Set()
+    const weaponProfiles: Map<string, string[]> = new Map() // <base weapon name, alternate profile weapon name>
+
+    for(let name of names) {
+      let duplicateFound = false
+      let appendedString: string = ''
+      
+      for(let str of name.split(' ')) {
+        appendedString += str + ' '
+        const compareString = appendedString.trim()
+
+        if(weaponProfiles.has(compareString)) {
+          duplicateFound = true
+          const arr = weaponProfiles.get(compareString) || []
+          arr.push(name)
+          weaponProfiles.set(compareString, arr)
+          break;
+        }
+      }
+      if(!duplicateFound) {
+        weaponProfiles.set(name, Array.of(name))
+      }
+    }
+    return weaponProfiles
+  }
+
+  /**
+   * Fetches attachment data for the given weapon
    */
   async getAvailableAttachmentSlots(weaponName: string): Promise<Set<string>> {  
     let result = await this.getAllAttachmentData(weaponName)

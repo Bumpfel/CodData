@@ -1,9 +1,10 @@
 <div class="stats" *ngIf="weaponConfig">
+  <h2>Stat Summary</h2>
+  <!-- Headers -->
   <div class="stacking column summary">
     <div class="cell" *ngFor="let stat of statOrder">{{stat}}</div>
   </div>
-  
-  <!-- Stats Summary -->
+  <!-- Stats -->
   <div class="stacking column">
     <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
       <ng-container *ngFor="let stat of statOrder">

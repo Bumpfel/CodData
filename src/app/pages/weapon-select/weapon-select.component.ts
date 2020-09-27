@@ -16,37 +16,39 @@ export class WeaponSelectComponent implements OnInit {
 
   weaponTypes: string[]
   weaponNames: string[]
+  weaponProfiles: Map<string, string[]>
+  weaponsLoaded: boolean
+
   hoveredWeapon: HTMLElement
   armourySaves: Map<string, number> = new Map()
 
   weaponType: string
-  activeWeaponConfig: WeaponConfig
-  
+  activeWeapon: WeaponConfig
+    
   constructor(public globalService: GlobalService, private dataService: DataService, public configService: WeaponConfigService, private soundService: SoundService, private route: ActivatedRoute, private router: Router, private messageService: MessageService) { }
 
-  // TODO TEMP
-  // tempIntervals = []
-  // showTempRanges(weaponName) {
-  //   this.tempIntervals = undefined
-  //   this.dataService.getBaseDamageIntervals(weaponName).then(result => {
-  //     this.tempIntervals = result
-  //   })
-  // } 
-
-
   ngOnInit(): void {
+    this.dataService.cacheWeapons()
+
     this.globalService.enableGoBackOnEscape()
     
     this.weaponTypes = this.dataService.getWeaponTypes()
     
     this.route.params.subscribe(async params => {
+      delete this.activeWeapon
       if(!params.weaponType) {
         // route to first weapon type in list
         this.router.navigate([this.globalService.nameToLink(this.weaponTypes[0])], { relativeTo: this.route, replaceUrl: true })
       } else {
-        this.weaponType = this.globalService.linkToName(params.weaponType)
         // get weapons and map nr of armouryConfigs
-        this.weaponNames = await this.dataService.getWeapons(this.globalService.linkToName(params.weaponType)) // ta inte bort await. kan hända att jag byter metod som hämtar tgd-data
+        // delete this.weaponNames // clear old. can cause console errors due to async call. could use a boolean to say when it's not loaded intstead
+        this.weaponsLoaded = false
+        this.weaponNames = await this.dataService.getWeaponNames(this.globalService.linkToName(params.weaponType))
+        this.weaponsLoaded = true
+        this.weaponType = this.globalService.linkToName(params.weaponType)
+        
+        this.weaponProfiles = this.dataService.getWeaponProfiles(this.weaponNames)
+        
         for(let weaponName of this.weaponNames) {
           let saves = this.configService.getArmouryConfigs(weaponName)
           this.armourySaves.set(weaponName, saves ? Object.keys(saves).length : 0)
@@ -59,12 +61,12 @@ export class WeaponSelectComponent implements OnInit {
     this.globalService.disableGoBackOnEscape()
   }
   
-  getTempConfig(weaponName: string): WeaponConfig {
+  private getTempConfig(weaponName: string): WeaponConfig {   
     return new WeaponConfig(weaponName, this.getComparisonSlot(), this.weaponType)
   }
 
   setActiveWeapon(weaponName: string): void {
-    this.activeWeaponConfig = this.getTempConfig(weaponName)
+    this.activeWeapon = this.getTempConfig(weaponName)
   }
 
   selectWeapon(weaponName: string): void {  
@@ -84,7 +86,7 @@ export class WeaponSelectComponent implements OnInit {
       this.hoveredWeapon.querySelector('#armoury-button-expanded').classList.add('gone')
     }
     if(this.armourySaves.get(weaponName) > 0) {
-      this.hoveredWeapon = document.querySelector('#' + this.globalService.nameToLink(weaponName))
+      this.hoveredWeapon = document.querySelector('#' + this.globalService.nameToSelector(weaponName))
       this.hoveredWeapon.querySelector('#armoury-button-collapsed').classList.add('gone')
       this.hoveredWeapon.querySelector('#armoury-button-expanded').classList.remove('gone')
     }
