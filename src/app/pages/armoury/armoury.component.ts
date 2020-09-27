@@ -7,6 +7,7 @@ import { GlobalService } from 'src/app/services/global.service';
 import { MessageService } from 'src/app/services/message.service';
 import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { SoundService } from 'src/app/services/sound.service';
+import { ConfigSaveResponse } from 'src/app/models/ConfigSaveResponse';
 
 @Component({
   selector: 'app-armoury',
@@ -127,9 +128,13 @@ export class ArmouryComponent implements OnInit {
   }
 
   renameConfig(newName: string): void {
-    if(newName) {
-      this.configService.renameArmouryConfig(this.nameFormConfig, newName)
+    const response = this.configService.renameArmouryConfig(this.nameFormConfig, newName)
+    if(response === ConfigSaveResponse.updated) {
       this.messageService.addMessage('Armoury Configuration renamed', newName)
+    } else if(response === ConfigSaveResponse.missingName) {
+      this.messageService.addMessage('Notice', 'Enter a name to save a custom modification')
+    } else if(response === ConfigSaveResponse.duplicate) {
+      this.messageService.addMessage('Notice', 'A modification with that name already exists')
     }
     this.nameFormConfig = undefined
   }

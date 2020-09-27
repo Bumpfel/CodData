@@ -86,7 +86,6 @@ export class WeaponConfigService {
       const weaponConfigs = allConfigs[weaponConfig.weaponName] || {}
       weaponConfigs[weaponConfig.armouryName] = weaponConfig
       allConfigs[weaponConfig.weaponName] = weaponConfigs
-      
       window.localStorage.setItem(this.storageSaveName, JSON.stringify(allConfigs))
     }
     if(updateComparisonConfig === true) {
@@ -105,12 +104,15 @@ export class WeaponConfigService {
     let newConfig: WeaponConfig = { ...oldConfig }
     newConfig.armouryName = newName
    
-    if(newName && oldConfig.armouryName !== newName && this.configDuplicateExists(newConfig)) {
+    if(!newName || newName.trim().length == 0) {      
+      return ConfigSaveResponse.missingName
+    } else if(oldConfig.armouryName !== newName && this.configDuplicateExists(newConfig)) {
       return ConfigSaveResponse.duplicate
     }
-
+  
     this.deleteArmouryConfig(oldConfig)
     oldConfig.armouryName = newName
+
     return this.saveConfig(newConfig, true, updateComparisonConfig, true)
   }
 

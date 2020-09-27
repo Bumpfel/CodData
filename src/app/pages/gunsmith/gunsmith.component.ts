@@ -85,7 +85,8 @@ export class GunsmithComponent implements OnInit {
     this.globalService.enableGoBackOnEscape()
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
-    this.weaponConfig = this.configService.getWeaponConfig(slot)
+    this.weaponConfig = this.configService.getWeaponConfig(slot)   
+    this.newName = this.weaponConfig.armouryName
    
     this.statOrder = Stats.getAllOrderedStats()
 
@@ -205,7 +206,7 @@ export class GunsmithComponent implements OnInit {
       if(action === this.initialDialogueButtons.createNewConfig || action === this.initialDialogueButtons.saveConfig) {
         response = this.configService.saveConfig(tempConfig, true, true)
       } else if(action === this.initialDialogueButtons.updateConfig) {
-        response = this.configService.renameArmouryConfig(this.weaponConfig, this.newName || this.weaponConfig.armouryName, true)
+        response = this.configService.renameArmouryConfig(this.weaponConfig, this.newName, true)
       }
 
       if(response === ConfigSaveResponse.duplicate) {
@@ -217,11 +218,11 @@ export class GunsmithComponent implements OnInit {
         this.refreshInitialDialogue()
         return
       } else if(response === ConfigSaveResponse.savedNew) {
-        this.messageService.addMessage('Modification added to the weapon armoury', tempConfig.armouryName)
+        this.messageService.addMessage('Modification added to the weapon armoury', this.newName)
       } else if(response === ConfigSaveResponse.updated) {
         this.messageService.addMessage('Modification updated', this.newName || this.weaponConfig.armouryName)
       }
-      
+            
       // response not erroneous
       this.weaponConfig = tempConfig
       this.initialDialogueOptions = undefined
