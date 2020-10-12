@@ -7,7 +7,8 @@
 
 import { Stats } from '../models/Stats'
 import { Effect } from '../models/Effect'
-import { AttachmentData, WeaponData, TGDData } from '../models/TGD/Data'
+import { TGDData } from '../models/TGD/Data'
+import { WeaponProfile } from '../models/WeaponConfig'
 
 export class TgdFormatter {
 
@@ -42,27 +43,57 @@ export class TgdFormatter {
     type: 'type,'
   }
 
-  
-  /**
-   * @deprecated Use getAttachmentEffects
-   * Formats TGD data into printable keys and values (TODO not sure I'll use at all)
-   * @param summaryData
-   */
-  static getAllWeaponEffects(summaryData: AttachmentData[], weaponData: WeaponData): Array<Map<string, Effect>> {
-    const allEffects: Map<string, Effect>[] = []
-    
-    for(let i = 0; i < summaryData.length; i ++) {
-      const attachmentKey: string = summaryData[i].attachment || summaryData[i].gun
-      allEffects[attachmentKey] = TgdFormatter.getAttachmentEffects(summaryData[i], weaponData)
-    }
-    
-    return allEffects
+  private static positiveEffects = { negative: '-', positive: '+', greaterThan1: '>', lessThan1: '<' }
+  private static units = { s: 's', ms: 'ms', mps: 'm/s', percent: '%', area: 'kPixel^2', rounds: 'rounds'}
+
+  static getHitboxes(): {[key: string]: string} {
+    return { head: 'head', torso: 'chest', stomach: 'stomach', limbs: 'legs' }
   }
 
-  // TODO rename to reflect its used by weapon summary data as well
-  static getAttachmentEffects(tgdData: TGDData, baseWeaponData: WeaponData, isSummary: boolean = false): Map<string, Effect> {
-    const effects: Map<string, Effect> = new Map()   
+  // TGD weapon name: WeaponProfile[]
+  // profileName: the key used when requesting the tgd data. attachmentName: the name shown in the attachments
+  static weaponProfileAttachments: Map<string, WeaponProfile[]> = new Map([
+    [ 'AK-47', [{ profileName: 'AK-47 5.45x39mm', attachmentSlot: 'ammunition', attachmentName: '5.45x39mm 30-Round Mags' }]],
+    [ 'AS VAL', [{ profileName: 'AS VAL (SPP 10-R Mags)', attachmentSlot: 'ammunition', attachmentName: 'SPP 10-R Mags' }]],
+    [ 'CR-56 AMAX', [{ profileName: 'CR-56 AMAX M67 10-R Mags', attachmentSlot: 'ammunition', attachmentName: 'M67 10-R Mags' }]],
+    [ 'M13', [{ profileName: 'M13 .300 Blackout', attachmentSlot: 'ammunition', attachmentName: '.300 Blackout 30-Round Mags' }] ],
+    [ 'M4A1', [
+      { profileName: 'M4A1 9mm', attachmentSlot: 'ammunition', attachmentName: '9mm Para 32-Round Mags' },
+      { profileName: 'M4A1 .458 SOCOM', attachmentSlot: 'ammunition', attachmentName: '.458 SOCOM 10-Round Mags' }
+    ]],
+    [ 'AUG', [
+      { profileName: 'AUG 5.56', attachmentSlot: 'ammunition', attachmentName: '5.56 NATO 30-Round Mags' },
+      { profileName: 'AUG 5.56', attachmentSlot: 'ammunition', attachmentName: '5.56 NATO 60-Round Drums' },
+    ]],
+    [ 'Fennec', [{ profileName: 'Fennec .45 Hollow Point 12-R Mags', attachmentSlot: 'ammunition', attachmentName: '.45 Hollow Point 12-R Mags' }]],
+    [ 'MP5', [{ profileName: 'MP5 10mm', attachmentSlot: 'ammunition', attachmentName: '10mm Auto 30-Round Mags' }]],
+    [ 'Striker-45', [{ profileName: 'Striker-45 .45 ACP Burst', attachmentSlot: 'ammunition', attachmentName: '.45 Hollow Point 12-R Mags' }]],
+    [ 'Uzi', [{ profileName: 'Uzi 0.41AE', attachmentSlot: 'ammunition', attachmentName: '.41 AE 32-Round Mags' }]],
+    
+    [ 'FiNN LMG', [
+      { profileName: 'FiNN LMG Factory Adverse', attachmentSlot: 'barrel', attachmentName: 'Factory Adverse (Default)' },
+      { profileName: 'FiNN LMG Factory Adverse', attachmentSlot: 'barrel', attachmentName: 'XRK Pro Twist Adverse' },
+      { profileName: 'FiNN LMG Factory Adverse', attachmentSlot: 'barrel', attachmentName: 'XRK LongShot Adverse' },
+      { profileName: 'FiNN LMG Factory Adverse', attachmentSlot: 'barrel', attachmentName: 'FLTAC VC-8 Harrier Adverse' }, // misspelt on TGD
+    ]],
 
+    [ 'Crossbow', [
+      { profileName: 'Crossbow (Fury Bolts)', attachmentSlot: 'bolt', attachmentName: 'FTAC Fury 20\' Bolts' },
+      { profileName: 'Crossbow (Venom Bolts)', attachmentSlot: 'bolt', attachmentName: 'FTAC Venom 20\' Bolts' },
+      { profileName: 'Crossbow (Backburn Bolts)', attachmentSlot: 'bolt', attachmentName: 'FTAC Backburn 20\' Bolts' },
+    ]],
+    [ 'SR-R 208', [{ profileName: 'SP-R 208 .338 Lapua', attachmentSlot: 'ammunition', attachmentName: '.338 Lapua Mag 5-R Mags' }]],
+
+    [ 'Rytec AMR', [
+      { profileName: 'Rytec AMR', attachmentSlot: 'ammunition', attachmentName: '25x59mm Explosive 5-R Mags' },
+      { profileName: 'Rytec AMR', attachmentSlot: 'ammunition', attachmentName: '25x59mm Thermite 5-R Mags' },
+    ]],
+  ])
+
+  // TODO rename to reflect its used by weapon summary data as well
+  static getAttachmentEffects(tgdData: TGDData, baseWeaponData: TGDData, isSummary: boolean = false): Map<string, Effect> {
+    const effects: Map<string, Effect> = new Map()
+    
     for(let mod in tgdData) {
       const value = tgdData[mod]
       
@@ -70,9 +101,9 @@ export class TgdFormatter {
         TgdFormatter.getEffectDisplayValue(mod, value, (isSummary && TgdFormatter.summaryValuesWithSign.has(mod) || !isSummary), baseWeaponData, isSummary),
         this.getModEffectStatus(mod, value, baseWeaponData)
       )
-      
+
       effects.set(TgdFormatter.displayNames.get(mod), effect)
-    }
+    }    
     
     return effects
   }
@@ -83,7 +114,7 @@ export class TgdFormatter {
    * @param value raw value
    * @param baseWeaponData tgd base weapon data. use TgdService.getWeaponData()[1]
    */
-  private static getModEffectStatus(mod: string, value: number, baseWeaponData: WeaponData): number {
+  private static getModEffectStatus(mod: string, value: number, baseWeaponData: TGDData): number {
     const positiveModEffect: string = TgdFormatter.positiveModEffect.get(mod)
     let status: number // positive effect = pro, negative effect = con, neutral effect = none
 
@@ -112,7 +143,7 @@ export class TgdFormatter {
     return status
   }
 
-  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean, baseWeaponData: WeaponData, isSummary: boolean = false): string {
+  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean, baseWeaponData: TGDData, isSummary: boolean = false): string {
     let unit = TgdFormatter.displayUnits.get(mod)
 
     if(!isSummary && TgdFormatter.compareToBaseMods.has(mod)) {          
@@ -135,10 +166,6 @@ export class TgdFormatter {
         : '')
       + value + ' ' + unit)
   }
-
-  private static positiveEffects = { negative: '-', positive: '+', greaterThan1: '>', lessThan1: '<' }
-
-  private static units = { s: 's', ms: 'ms', mps: 'm/s', percent: '%', area: 'kPixel^2', rounds: 'rounds'}
 
   private static compareToBaseMods: Map<string, string> = new Map([
     [TgdFormatter.mods.reload, TgdFormatter.mods.reload],

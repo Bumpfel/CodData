@@ -29,8 +29,3 @@ export interface TGDData {
   y_sway?: number
   y_sway_mod?: number
 }
-
-export interface AttachmentData extends TGDData {
-}
-export interface WeaponData extends TGDData {
-}

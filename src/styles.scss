@@ -323,6 +323,10 @@ input {
   color: white;
 }
 
+.specialProfile{
+   color: $specialProfile;
+}
+
 .hidden {
   visibility: hidden;
 }
@@ -356,6 +360,7 @@ input {
 
 .lineThrough {
   text-decoration: line-through;
+  font-size: 20px;
 }
 
 .background {

@@ -32,21 +32,23 @@ export class DamageGraphComponent implements OnInit {
   xScale = 4 // TODO calc dynamically
   canvasScale = 1
 
-  hitBoxes = { head: 'head', torso: 'chest', stomach: 'stomach', limbs: 'legs' } // move to some tgd class, and access through dataservice
-  selectedHitBox = this.hitBoxes.head
+  hitBoxes: {[key: string]: string}
+  selectedHitBox: string
   // hidden = 'hidden'
   extraAttributes = { hidden: 'hidden', colour: 'colour'}
 
   constructor(private dataService: DataService, private globalService: GlobalService) { }
 
   ngOnInit(): void {
+    this.hitBoxes = this.dataService.getHitboxes()
+    this.selectedHitBox = this.hitBoxes.head
   }
 
   ngOnChanges(): void {
     if(this.weaponConfigs && this.weaponConfigs.length > 0) {
       for(let config of this.weaponConfigs) {
-        this.promises[config.weaponName + 'Summary'] = this.dataService.getWeaponSummary(config).then(result => this.weaponStatSummaries[config.comparisonSlot] = result)
-        this.promises[config.weaponName + 'Interval'] = this.dataService.getBaseDamageIntervals(config.weaponName).then(result => this.damageIntervals[config.weaponName] = result)
+        this.promises[config.weaponProfile + 'Summary'] = this.dataService.getWeaponSummary(config).then(result => this.weaponStatSummaries[config.comparisonSlot] = result)
+        this.promises[config.weaponProfile + 'Interval'] = this.dataService.getBaseDamageIntervals(config).then(result => this.damageIntervals[config.weaponProfile] = result)
       }
       this.drawCanvas()
     }
@@ -163,7 +165,7 @@ export class DamageGraphComponent implements OnInit {
         continue;
       }
       // TODO twas nice idea to wait for the promises one at a time, but problem when origin moves after the lines have been drawn
-      // await this.promises[config.weaponName + 'Interval'] 
+      // await this.promises[config.weaponName + 'Interval']
       // await this.promises[config.weaponName + 'Summary']
       
       const rangeMod = this.weaponStatSummaries[config.comparisonSlot].get(Stats.names.dmg_range).status + 1
@@ -175,13 +177,13 @@ export class DamageGraphComponent implements OnInit {
       this.context.beginPath()
       this.context.strokeStyle = colour
 
-      this.context.moveTo(0, this.getDPS(config, this.damageIntervals[config.weaponName][0][this.selectedHitBox]))
+      this.context.moveTo(0, this.getDPS(config, this.damageIntervals[config.weaponProfile][0][this.selectedHitBox]))
       
       // iterates through dmg intervals
-      for(let j = 0; j < this.damageIntervals[config.weaponName].length; j ++) {
-        const interval = this.damageIntervals[config.weaponName][j]
+      for(let j = 0; j < this.damageIntervals[config.weaponProfile].length; j ++) {
+        const interval = this.damageIntervals[config.weaponProfile][j]
         const from = this.getPoint(interval.distances, rangeMod)
-        const nextInterval = this.damageIntervals[config.weaponName][j + 1] || { distances: this.canvas.width }
+        const nextInterval = this.damageIntervals[config.weaponProfile][j + 1] || { distances: this.canvas.width }
         const to = this.getPoint(nextInterval.distances, rangeMod)
 
         this.context.lineTo(from, this.getDPS(config, interval[this.selectedHitBox]))
@@ -206,13 +208,13 @@ export class DamageGraphComponent implements OnInit {
   }
 
   private getMaxDPS(config: WeaponConfig, hitBox: string): number {
-    return this.getDPS(config, this.damageIntervals[config.weaponName][0][hitBox])
+    return this.getDPS(config, this.damageIntervals[config.weaponProfile][0][hitBox])
   }
   private getMinDPS(config: WeaponConfig, hitBox: string): number {
-    return this.getDPS(config, this.damageIntervals[config.weaponName][this.damageIntervals[config.weaponName].length -1][hitBox])
+    return this.getDPS(config, this.damageIntervals[config.weaponProfile][this.damageIntervals[config.weaponProfile].length -1][hitBox])
   }
   private getDPS(config: WeaponConfig, damage: number) {
-    const rateOfFire = this.damageIntervals[config.weaponName][0].fire_rate
+    const rateOfFire = this.damageIntervals[config.weaponProfile][0].fire_rate
     return Math.round(damage * rateOfFire / 60)
   }
 

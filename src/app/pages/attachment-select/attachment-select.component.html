@@ -5,7 +5,8 @@
     <div>
       <a *ngFor="let attachment of attachments | keyvalue" (click)="selectAttachment(attachment.key)" (mouseenter)="setHoveredAttachment(attachment.key)">
         <!-- <img [src]="'/assets/images/attachments/muzzle/' + attachment.key + '.png'"> -->
-        {{attachment.key}}
+        {{removeSpecialProfile(attachment.key)}}
+        <span class="specialProfile">{{triggersSpecialProfile(attachment.key)}}</span>
         <div *ngIf="isSelectedAttachment(attachment.key)" class="circle filled small right"></div>
       </a>
     </div>

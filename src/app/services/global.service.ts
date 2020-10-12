@@ -56,7 +56,7 @@ export class GlobalService {
   }
 
   /**
-   * Ceiling rounds a nr to the nearest interval
+   * Ceiling (or floor) rounds a nr to the nearest interval
    * @param nr 
    * @param interval 
    * @param roundDown floor rounds instead of ceiling 
@@ -74,9 +74,4 @@ export class GlobalService {
     nr = Math.min(nr, max)
     return nr
   }
-
-  // copyObject(obj: {[key: string]: any}): any { //{[key: string]: any} {
-    // return JSON.parse(JSON.stringify(obj))
-  // }
-
 }

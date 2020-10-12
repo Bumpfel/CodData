@@ -38,105 +38,105 @@
     </div>
   </div> 
 
-    <!-- Lower Attachments -->
-    <!----------------------->
-    <!-- code duplication here. make template? -->
-    <div class="attachments" id="lowerAttachments">
-      <ng-container *ngFor="let attachmentSlot of lowerAttachments">
-        <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="chooseAttachment()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+  <!-- Lower Attachments -->
+  <!----------------------->
+  <!-- code duplication here. make template? -->
+  <div class="attachments" id="lowerAttachments">
+    <ng-container *ngFor="let attachmentSlot of lowerAttachments">
+      <a *ngIf="!configService.getBlockingAttachment(weaponConfig, attachmentSlot) else disabledSlot" [class.hidden]="!attachmentSlot" (mouseenter)="enableQuickAttachmentRemoval(attachmentSlot, $event)" (mouseleave)="disableQuickAttachmentRemoval()" (click)="chooseAttachment()" [routerLink]="attachmentSlot" [id]="attachmentSlot">
+        {{attachmentSlot}}
+        <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
+        <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
+      </a>
+      <ng-template #disabledSlot>
+        <div class="disabledButton" [id]="attachmentSlot">
+          <!-- <img src="/assets/images/blocked.png" alt="blocked"> -->
           {{attachmentSlot}}
-          <div *ngIf="weaponConfig.attachments && weaponConfig.attachments[attachmentSlot]" class="circle filled"></div>
-          <div *ngIf="weaponConfig.attachments" class="white">{{weaponConfig.attachments[attachmentSlot]}}</div>
-        </a>
-        <ng-template #disabledSlot>
-          <div class="disabledButton" [id]="attachmentSlot">
-            <!-- <img src="/assets/images/blocked.png" alt="blocked"> -->
-            {{attachmentSlot}}
-            <div class="white">Blocked by {{configService.getBlockingAttachment(weaponConfig, attachmentSlot)}}</div>
-          </div>
-        </ng-template>
-      </ng-container>
-    </div>
+          <div class="white">Blocked by {{configService.getBlockingAttachment(weaponConfig, attachmentSlot)}}</div>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
     
-    <!-- Stats -->
-    <!----------->
-    <div class="stats">
-      <table aria-describedby="stats">
+  <!-- Stats -->
+  <!----------->
+  <div class="stats">
+    <table aria-describedby="stats">
+      <tr>
+        <td></td>
+      </tr>
+      <tr *ngFor="let stat of statOrder">
+        <th>{{stat}}</th>
+      </tr>
+    </table>
+
+    <!-- Base Weapon Stats -->
+    <table aria-describedby="base weapon stats">
+      <tr class="summary">
+        <th scope="summary title">
+          Base weapon stats
+        </th>
+      </tr>
+      <ng-container *ngIf="baseWeaponStats else loadingBaseWeaponStat">
+        <tr class="summary" *ngFor="let stat of statOrder">
+          <td>
+            <ng-container *ngIf="baseWeaponStats.get(stat)">
+              {{baseWeaponStats.get(stat).value}}
+            </ng-container>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #loadingBaseWeaponStat>
+        <div>
+          Loading...
+        </div>
+      </ng-template>
+    </table>
+
+    <!-- Weapon Stat Summary -->
+    <table aria-describedby="weapon stat summary" class="summary" *ngIf="getNrOfAttachments() > 0">
+      <tr class="summary">
+        <th scope="summary title">
+          Summary
+        </th>
+      </tr>
+      <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
+        <tr class="summary" *ngFor="let stat of statOrder">
+          <td [class.positive]="weaponStatSummary.get(stat).isPositive()" [class.negative]="weaponStatSummary.get(stat).isNegative()">
+            <ng-container *ngIf="weaponStatSummary.get(stat)">
+              {{weaponStatSummary.get(stat).value}}
+            </ng-container>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #loadingWeaponStatSummary>
+        <div>
+          Loading...
+        </div>
+      </ng-template>
+    </table>
+    
+    <!-- Attachment Summaries -->
+    <ng-container *ngIf="attachmentSummary else loadingAttachmentSummary">
+      <table *ngFor="let attachment of attachmentSummary | keyvalue" aria-describedby="attachment summaries">
         <tr>
-          <td></td>
+          <th [scope]="attachment.key">{{attachment.key}}</th>
         </tr>
         <tr *ngFor="let stat of statOrder">
-          <th>{{stat}}</th>
+          <td [class.positive]="attachment.value.get(stat) && attachment.value.get(stat).isPositive()">
+            <ng-container *ngIf="attachment.value.get(stat)">
+              {{attachment.value.get(stat).value}}
+            </ng-container>
+          </td>
         </tr>
       </table>
+    </ng-container>
+    <ng-template #loadingAttachmentSummary>
+      Loading...
+    </ng-template>
 
-      <!-- Base Weapon Stats -->
-      <table aria-describedby="base weapon stats">
-        <tr class="summary">
-          <th scope="summary title">
-            Base weapon stats
-          </th>
-        </tr>
-        <ng-container *ngIf="baseWeaponStats else loadingBaseWeaponStat">
-          <tr class="summary" *ngFor="let stat of statOrder">
-            <td>
-              <ng-container *ngIf="baseWeaponStats.get(stat)">
-                {{baseWeaponStats.get(stat).value}}
-              </ng-container>
-            </td>
-          </tr>
-        </ng-container>
-        <ng-template #loadingBaseWeaponStat>
-          <div>
-            Loading...
-          </div>
-        </ng-template>
-      </table>
+  </div>
 
-      <!-- Weapon Stat Summary -->
-      <table aria-describedby="weapon stat summary" class="summary" *ngIf="getNrOfAttachments() > 0">
-        <tr class="summary">
-          <th scope="summary title">
-            Summary
-          </th>
-        </tr>
-        <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
-          <tr class="summary" *ngFor="let stat of statOrder">
-            <td [class.positive]="weaponStatSummary.get(stat).isPositive()" [class.negative]="weaponStatSummary.get(stat).isNegative()">
-              <ng-container *ngIf="weaponStatSummary.get(stat)">
-                {{weaponStatSummary.get(stat).value}}
-              </ng-container>
-            </td>
-          </tr>
-        </ng-container>
-        <ng-template #loadingWeaponStatSummary>
-          <div>
-            Loading...
-          </div>
-        </ng-template>
-      </table>
-      
-      <!-- Attachment Summaries -->
-      <ng-container *ngIf="attachmentSummary else loadingAttachmentSummary">
-        <table *ngFor="let attachment of attachmentSummary | keyvalue" aria-describedby="attachment summaries">
-          <tr>
-            <th [scope]="attachment.key">{{attachment.key}}</th>
-          </tr>
-          <tr *ngFor="let stat of statOrder">
-            <td [class.positive]="attachment.value.get(stat).isPositive()">{{attachment.value.get(stat).value}}</td>
-          </tr>
-        </table>
-      </ng-container>
-      <ng-template #loadingAttachmentSummary>
-        Loading...
-      </ng-template>
-
-    </div>
-
-  <!-- <div id="deselect" class="popup hidden">
-    <div class="key">R</div>
-    Deselect
-  </div> -->
   <app-info-popup [settings]="infoPopupSettings"></app-info-popup>
 
   <app-dialogue [options]="initialDialogueOptions" [weaponConfig]="weaponConfig" [tempName]="this.newName" (optionSelected)="initialDialogueAction($event)"></app-dialogue>

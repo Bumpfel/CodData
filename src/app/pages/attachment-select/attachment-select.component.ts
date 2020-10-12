@@ -17,7 +17,7 @@ export class AttachmentSelectComponent implements OnInit {
 
   weaponConfig: WeaponConfig
   attachmentSlot: string
-  attachments: Array<Map<string, Effect>> // TODO not array. object
+  attachments: {[key:string]: Map<string, Effect>}
   selectedAttachmentName: string
   hoveredAttachment: Map<string, Effect>
   hoveredAttachmentName: string
@@ -37,11 +37,23 @@ export class AttachmentSelectComponent implements OnInit {
   }
   
   async mapAttachmentEffects(): Promise<void> {
-    this.attachments = await this.dataService.getAttachmentsEffectsOfType(this.weaponConfig.weaponName, this.attachmentSlot)
-    let firstInList =  Object.keys(this.attachments).sort((a, b) => a.localeCompare(b))[0]
-    this.setHoveredAttachment(this.selectedAttachmentName ? this.selectedAttachmentName : firstInList)
+    this.attachments = await this.dataService.getAttachmentsEffectsOfType(this.weaponConfig, this.attachmentSlot)   
+
+    // this.addSpecialAttachments()
+
+    let firstInList = Object.keys(this.attachments).sort((a, b) => a.localeCompare(b))[0]
+    this.setHoveredAttachment(this.selectedAttachmentName ? this.selectedAttachmentName : firstInList)    
   }
   
+  addSpecialAttachments(): void {
+    const specialProfiles = this.dataService.getSpecialAttachmentProfiles(this.weaponConfig.weaponName, this.attachmentSlot)
+    for(const profile of specialProfiles) {
+      if(profile.attachmentSlot === this.attachmentSlot) {
+        this.attachments[profile.attachmentName] = new Map()
+      }
+    }
+  }
+
   selectAttachment(attachmentName: string): void {
     this.soundService.select()
 
@@ -58,7 +70,7 @@ export class AttachmentSelectComponent implements OnInit {
       this.messageService.addMessage('Cannot equip attachments', 'This attachment is blocked by another attachment')
     } else if(status === this.configService.editStatus.TOOMANY) {
       // TODO replace attachment window
-      this.messageService.addMessage('Cannot equip attachments', 'You have too many attachments equipped already') // temp
+      this.messageService.addMessage('Cannot equip attachments', 'You have too many attachments equipped already')
     }
   }
 
@@ -75,7 +87,14 @@ export class AttachmentSelectComponent implements OnInit {
     this.hoveredAttachmentName = attachmentName
   }
 
-  log(...what: any[]): void { // TODO debug
-    console.log(what)
+  // TODO not the best solution
+  removeSpecialProfile(str: string) {
+    const searchStr = 'Adverse'
+    return str.replace(searchStr, '')
+  }
+
+  triggersSpecialProfile(str :string): string {
+    const searchStr = 'Adverse'
+    return str.search(searchStr) != -1 ? searchStr : ''
   }
 }

@@ -4,23 +4,23 @@
 <!-- Weapon Select -->
 <main>
   <div class="scrollBox" *ngIf="weaponsLoaded === true">
-    <div *ngFor="let weaponName of weaponProfiles | keyvalue" [id]="globalService.nameToSelector(weaponName.key)" (mouseenter)="showArmouryButton(weaponName.key); setActiveWeapon(weaponName.key)">
+    <div *ngFor="let weaponName of weaponNames" [id]="globalService.nameToSelector(weaponName)" (mouseenter)="showArmouryButton(weaponName); setActiveWeapon(weaponName)">
       <!-- Weapon Card -->
-      <a (click)="selectWeapon(weaponName.key)" (mouseenter)="soundService.hover()">
-        <app-weapon-card [weaponConfig]="getTempConfig(weaponName.key)" page="weapon-select"></app-weapon-card>
+      <a (click)="selectWeapon(weaponName)" (mouseenter)="soundService.hover()">
+        <app-weapon-card [weaponConfig]="getTempConfig(weaponName)" page="weapon-select"></app-weapon-card>
       </a>
       <div class="armouryButtons">
         <!-- Collapsed armoury button -->
-        <a *ngIf="armourySaves.get(weaponName.key) > 0" id="armoury-button-collapsed">
-          {{armourySaves.get(weaponName.key)}}
+        <a *ngIf="armourySaves.get(weaponName) > 0" id="armoury-button-collapsed">
+          {{armourySaves.get(weaponName)}}
           <div class="triangle"></div>
         </a>
         <!-- Expanded armoury button -->
-        <a class="gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName.key)">
+        <a class="gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
           <div class="title">Armoury</div>
           <img src="/assets/images/armoury.png" alt="Armoury button">
           <br>
-          {{armourySaves.get(weaponName.key)}}
+          {{armourySaves.get(weaponName)}}
         </a>
       </div>
     </div>

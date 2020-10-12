@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { WeaponConfig } from 'src/app/models/WeaponConfig'
 import { ConfigSaveResponse } from 'src/app/models/ConfigSaveResponse'
 import { GlobalService } from './global.service';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class WeaponConfigService {
 
   private maxAttachments: number = 5
 
-  constructor(private globalService: GlobalService) {
+  constructor(private globalService: GlobalService, private dataService: DataService) {
   }
 
   getAllArmouryConfigs(): {[key:string]: {[key:string]: WeaponConfig}} {
@@ -33,23 +34,20 @@ export class WeaponConfigService {
   }
 
   getWeaponConfig(slot: number): WeaponConfig {
-    let weaponConfig = window.sessionStorage.getItem('' + slot)
-    return JSON.parse(weaponConfig)
+    const config = window.sessionStorage.getItem('' + slot)
+    return JSON.parse(config)
   }
 
   getArmouryConfigs(weaponName: string): {[key:string]: WeaponConfig} {
-    return this.getAllArmouryConfigs()[weaponName]
+    let weaponConfigs =  this.getAllArmouryConfigs()[weaponName]
+    for(let key in weaponConfigs) {
+      if(!weaponConfigs[key].weaponProfile) {
+        weaponConfigs[key].weaponProfile = weaponConfigs[key].weaponName
+        // this.saveConfig(weaponConfigs[key], true, true)
+      }
+    }
+      return weaponConfigs
   }
-
-  // obs_getComparisonConfigs(): Observable<WeaponConfig[]> {
-  //   let arr: WeaponConfig[] = []
-
-  //   for(let i = 0; i < window.sessionStorage.length; i ++) {
-  //     let key = window.sessionStorage.key(i)
-  //     arr.push(JSON.parse(window.sessionStorage.getItem(key)))
-  //   }
-  //   return of(arr)
-  // }
 
   getComparisonConfigs(): WeaponConfig[] {
     let arr: WeaponConfig[] = []
@@ -164,24 +162,39 @@ export class WeaponConfigService {
 
   setAttachment(saveSlot: number, attachmentSlot: string, attachmentName: string): number {
     let weaponConfig = this.getWeaponConfig(saveSlot)
-
+    
     if(this.getBlockingAttachment(weaponConfig, attachmentSlot)) {
       return this.editStatus.BLOCKED
+
     } else if(weaponConfig.attachments[attachmentSlot] === attachmentName) {
-      // same as selected attachment. unequip
-      delete weaponConfig.attachments[attachmentSlot]
-      this.saveConfig(weaponConfig)
+      // Same as selected attachment. Unequip
+      this.removeAttachment(weaponConfig, attachmentSlot)
       return this.editStatus.UNEQUIPPED
+    
     } else if(Object.keys(weaponConfig.attachments).length >= 5 && !weaponConfig.attachments.hasOwnProperty(attachmentSlot)) {
-      // there are already 5 attachments and the requested swap was not for a used type
+      // There are already 5 attachments and the requested swap was not for a used type
       return this.editStatus.TOOMANY
+
     } else {
+      // Attachment will be equipped
       const blockedAttachment = this.attachmentBlocks.get(attachmentName)
       if(blockedAttachment) {
         // remove blocked attachment
         delete weaponConfig.attachments[blockedAttachment]
       }
       weaponConfig.attachments[attachmentSlot] = attachmentName
+      
+      // set or unset special profile in WeaponConfig
+      const specialProfiles = this.dataService.getSpecialAttachmentProfiles(weaponConfig.weaponName, attachmentSlot)
+      for(const profile of specialProfiles) {
+        if(profile.attachmentName === attachmentName) {
+          weaponConfig.weaponProfile = profile.profileName
+          break
+        } else {
+          weaponConfig.weaponProfile = weaponConfig.weaponName
+        }
+      }
+      
       this.saveConfig(weaponConfig)
       return this.editStatus.EQUIPPED
     }
@@ -189,6 +202,14 @@ export class WeaponConfigService {
 
   removeAttachment(weaponConfig: WeaponConfig, attachmentSlot: string): void {
     delete weaponConfig.attachments[attachmentSlot]
+    const specialProfiles = this.dataService.getSpecialAttachmentProfiles(weaponConfig.weaponName, attachmentSlot)
+    
+    // unequipped slot made the WeaponProfile a "special profile"
+    for(const profile of specialProfiles) {      
+      if(profile.attachmentSlot === attachmentSlot) {
+        weaponConfig.weaponProfile = weaponConfig.weaponName
+      }
+    }
     this.saveConfig(weaponConfig)
   }
 
