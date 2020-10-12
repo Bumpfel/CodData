@@ -17,7 +17,7 @@ export class AttachmentSelectComponent implements OnInit {
 
   weaponConfig: WeaponConfig
   attachmentSlot: string
-  attachments: Array<Map<string, Effect>> // TODO not array. object
+  attachments: {[key: string]: Map<string, Effect>}
   selectedAttachmentName: string
   hoveredAttachment: Map<string, Effect>
   hoveredAttachmentName: string

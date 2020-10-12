@@ -1,6 +1,6 @@
 export class Stats {
 
-  static names = {
+  static names = { // (not quite the same as tgd names)
     ads_speed: 'Aim Down Sight Speed',
     ads_move_speed: 'Aim Walking Movement Speed',
     bullet_velocity: 'Bullet Velocity',
@@ -8,8 +8,8 @@ export class Stats {
     hipfire_accuracy: 'Hip Fire Accuracy',
     mag_size: 'Magasine Size',
     move_speed: 'Movement Speed',
-    recoil_control: 'Recoil Control (Vertical)',
-    recoil_stability: 'Recoil Stability (Horizontal)',
+    recoil_control: 'Recoil Control (Pattern Size)',
+    recoil_stability: 'Recoil Stability (Deviation)',
     reload_time: 'Reload Time',
     stf: 'Sprint to Fire Speed',
     tstf: 'Tactical Sprint to Fire Speed',

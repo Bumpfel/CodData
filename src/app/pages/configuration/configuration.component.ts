@@ -4,6 +4,7 @@ import { WeaponConfigService } from 'src/app/services/weapon-config.service';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
 import { SoundService } from 'src/app/services/sound.service';
 import { MessageService } from 'src/app/services/message.service';
+import { InfoPopup } from 'src/app/models/ComponentTypes';
 
 @Component({
   selector: 'app-configuration',
@@ -19,7 +20,8 @@ export class ConfigurationComponent implements OnInit {
   activeConfig: WeaponConfig
   contextMenu: HTMLElement
   contextOverlay: HTMLElement
-
+  infoPopupSettings: InfoPopup
+  
   configurations: WeaponConfig[]
   showGraph: boolean
   showGraphSaveKey = 'showExperimentalGraph'
@@ -105,5 +107,13 @@ export class ConfigurationComponent implements OnInit {
   toggleGraph(bool: boolean): void {
     this.showGraph = bool
     window.localStorage.setItem(this.showGraphSaveKey, JSON.stringify(this.showGraph))
+  }
+
+  showAttachmentsPopup(weaponConfig: WeaponConfig, event: MouseEvent): void {
+    this.infoPopupSettings = { info: weaponConfig.attachments, x: event.pageX, y: event.pageY }
+  }
+  
+  closeAttachmentsPopup(): void {
+    delete this.infoPopupSettings
   }
 }

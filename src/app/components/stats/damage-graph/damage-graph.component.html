@@ -2,7 +2,7 @@
   <div id="markerContainer">
     <div class="marker" [class.lineThrough]="isHidden(config)" [style]="'color:' + config.colour" *ngFor="let config of weaponConfigs" (click)="togglePath(config)">
       <div class="box" [style]="'background-color:' + config.colour"></div>
-      {{'#' + config.comparisonSlot + ' ' + config.weaponName}}
+      {{'#' + config.comparisonSlot + ' ' + (config.armouryName || config.weaponName)}}
     </div>
   </div>
   

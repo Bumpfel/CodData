@@ -1,6 +1,7 @@
 import { WeaponConfig } from '../models/WeaponConfig'
-import { AttachmentData, WeaponData } from '../models/TGD/Data'
+import { TGDData } from '../models/TGD/Data'
 import { DamageIntervals } from '../models/TGD/WeaponDamage'
+import { environment } from 'src/environments/environment'
 
 export class TgdFetch {
 
@@ -14,14 +15,6 @@ export class TgdFetch {
     // plot: { path: 'generate_plot_data.php', key: 'gunList' },
   }
 
-
-  // static plotData = [
-  //   "Kilo 141",
-  //   [ads, bullet_velocity, range_mod],
-  //   "DPS",
-  //   hitbox,
-  // ]
-
   static async getWeaponsData(weaponType: string): Promise<Array<string[]>> { // dno why TGD wraps each string in their own array here, but it is what it is
     return this.getTGDData(this.request.weapons, weaponType)
   }
@@ -32,39 +25,21 @@ export class TgdFetch {
    * [1] = base weapon data
    * @param weaponName
    */
-  static getBaseWeaponData(weaponName: string): Promise<(DamageIntervals[] | WeaponData)[]> {
-    return this.getTGDData(this.request.weapon, weaponName)
+  static getBaseWeaponData(weaponProfile: string): Promise<(DamageIntervals[] | TGDData)[]> {
+    return this.getTGDData(this.request.weapon, weaponProfile)
   }
 
-  static getAttachmentData(weaponName: string): Promise<AttachmentData[]> {
+  static getAttachmentData(weaponName: string): Promise<TGDData[]> {
     return this.getTGDData(this.request.attachments, weaponName)
-  }
-
-  /**
-   * @deprecated Use getWeaponSummaryData() instead
-   * 
-   * Fetches summary data and data for all equipped attachments for a weapon
-   * Last item arr is summary. The rest of the slots contains attachment data in the order given in the weaponConfig
-   * @param weaponConfig 
-   */
-  static getSummaryData(weaponConfig: WeaponConfig): Promise<Array<AttachmentData>> {
-    const arr = []
-    arr.push(weaponConfig.weaponName)
-    for(const key in weaponConfig.attachments) {
-      arr.push(weaponConfig.attachments[key])
-    }
-    console.log(arr)
-
-    return this.getTGDData(this.request.summary, arr)
   }
 
   /**
    * Fetches summary data for weapon
    * @param weaponConfig 
    */
-  static async getWeaponSummaryData(weaponConfig: WeaponConfig): Promise<AttachmentData> {
-    const arr = Array.of(weaponConfig.weaponName)
-    Object.values(weaponConfig.attachments).forEach(attachment => { 
+  static async getWeaponSummaryData(weaponName: string, attachments: {[key: string]: string}): Promise<TGDData> {
+    const arr = Array.of(weaponName)
+    Object.values(attachments).forEach(attachment => {
       if(attachment) {
         arr.push(attachment)
       }
@@ -76,8 +51,7 @@ export class TgdFetch {
   }
 
   private static async getTGDData(request: any, formData: any): Promise<any> {
-    const proxyurl = "https://cors-anywhere.herokuapp.com/" // prod
-    // const proxyurl = "http://localhost:4100/" // dev
+    const proxyurl = 'https://cors-anywhere-bumpfel.herokuapp.com/'
 
     formData = JSON.stringify(formData)
 

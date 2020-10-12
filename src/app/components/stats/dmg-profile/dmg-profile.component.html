@@ -2,7 +2,7 @@
   <ng-container *ngIf="activeDamageInterval && weaponStatSummary else loadingDmgProfile">
     <h2>Damage Profile</h2>
     <div class="title">
-      Damage Range: {{getRangeDisplay(sliderValue)}}
+      Damage Range: {{getRangeDisplay(sliderValue)}} / {{sliderMaxRange}}
       <!-- : {{getDamageRangeInterval(activeDamageInterval)}} -->
     </div>
     <div class="spaceContainer">

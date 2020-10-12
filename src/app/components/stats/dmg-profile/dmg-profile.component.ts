@@ -3,6 +3,7 @@ import { Effect } from 'src/app/models/Effect';
 import { Stats } from 'src/app/models/Stats';
 import { DamageIntervals } from 'src/app/models/TGD/WeaponDamage';
 import { WeaponConfig } from 'src/app/models/WeaponConfig';
+import { WeaponTypes } from 'src/app/models/WeaponTypes';
 import { DataService } from 'src/app/services/data.service';
 
 @Component({
@@ -41,13 +42,10 @@ export class DmgProfileComponent implements OnInit {
       this.intervalsLoaded = false
       
       this.weaponStatSummary = undefined // clear obsolete data
-      this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)     
-
-
-      const baseData = await this.dataService.getBaseDamageIntervals(this.weaponConfig.weaponName)
-      this.baseDamageIntervals = baseData
+      this.weaponStatSummary = await this.dataService.getWeaponSummary(this.weaponConfig)
       this.rangeMod = this.weaponStatSummary.get(Stats.names.dmg_range).status + 1
-      // this.activeDamageInterval = baseData[0]
+
+      this.baseDamageIntervals = await this.dataService.getBaseDamageIntervals(this.weaponConfig.weaponName)
       this.setDamageInterval(this.sliderValue)
       
       this.styleRangeSlider()
@@ -95,10 +93,22 @@ export class DmgProfileComponent implements OnInit {
   }
 
   private styleRangeSlider(): void {
-    // calculate max range
+    // (alternative 1) calculate max range based on weapon dmg intervals 
     const smallestTick = 50
-    const calc = Math.floor(this.baseDamageIntervals[this.baseDamageIntervals.length - 1].distances * this.rangeMod / smallestTick) + 1
+    const minimumPadding = 10
+    const calc = Math.floor((this.baseDamageIntervals[this.baseDamageIntervals.length - 1].distances * this.rangeMod + minimumPadding) / smallestTick) + 1
+    this.dataService.getWeaponTypes();
     this.sliderMaxRange = calc * smallestTick
+
+    // (alternative 2) set max range based on type
+    // const weaponTypeMaxRanges = new Map([
+    //   [WeaponTypes.assaultRifles, 100],
+    //   [WeaponTypes.subMachineGuns, 100], // aug 5.56 needs 100+. uzi has exactly 50
+    //   [WeaponTypes.lightMachineGuns, 100],
+    //   [WeaponTypes.marksmanRifles, 150],
+    //   [WeaponTypes.sniperRifles, 150],
+    // ])
+    // this.sliderMaxRange = weaponTypeMaxRanges.get(this.weaponConfig.weaponType)
     
     const colours = ['#444', '#666', '#aaa', '#ddd']
 

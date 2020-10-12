@@ -5,7 +5,7 @@
     <div>
       <div class="card" *ngFor="let weaponConfig of configurations">
         <!-- WeaponCard Button -->
-        <a [id]="'weapon-slot' + weaponConfig.comparisonSlot" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover(); setActiveConfig(weaponConfig)" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
+        <a [id]="'weapon-slot' + weaponConfig.comparisonSlot" (mouseenter)="showGunsmithButton(weaponConfig.comparisonSlot); soundService.hover(); setActiveConfig(weaponConfig); showAttachmentsPopup(weaponConfig, $event)" (mouseleave)="closeAttachmentsPopup()" (contextmenu)="showContextMenu($event, weaponConfig)" (click)="soundService.select()" [routerLink]="'/' + weaponConfig.comparisonSlot + '/weapon-select/' + globalService.nameToLink(weaponConfig.weaponType)">
           <app-weapon-card [weaponConfig]="weaponConfig" page="configurations"></app-weapon-card>
         </a>
         <!-- Gusmith Button -->
@@ -43,5 +43,6 @@
     <a (click)="deleteConfig()">Delete</a>
   </div>
   <!-- <app-context-menu [options] (optionSelected)="deleteConfig()"></app-context-menu> -->
+  <app-info-popup [settings]="infoPopupSettings"></app-info-popup>
 </main>
  

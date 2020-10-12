@@ -16,7 +16,6 @@ export class WeaponSelectComponent implements OnInit {
 
   weaponTypes: string[]
   weaponNames: string[]
-  weaponProfiles: Map<string, string[]>
   weaponsLoaded: boolean
 
   hoveredWeapon: HTMLElement
@@ -29,9 +28,7 @@ export class WeaponSelectComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.cacheWeapons()
-
     this.globalService.enableGoBackOnEscape()
-    
     this.weaponTypes = this.dataService.getWeaponTypes()
     
     this.route.params.subscribe(async params => {
@@ -41,13 +38,10 @@ export class WeaponSelectComponent implements OnInit {
         this.router.navigate([this.globalService.nameToLink(this.weaponTypes[0])], { relativeTo: this.route, replaceUrl: true })
       } else {
         // get weapons and map nr of armouryConfigs
-        // delete this.weaponNames // clear old. can cause console errors due to async call. could use a boolean to say when it's not loaded intstead
-        this.weaponsLoaded = false
-        this.weaponNames = await this.dataService.getWeaponNames(this.globalService.linkToName(params.weaponType))
-        this.weaponsLoaded = true
         this.weaponType = this.globalService.linkToName(params.weaponType)
-        
-        this.weaponProfiles = this.dataService.getWeaponProfiles(this.weaponNames)
+        this.weaponsLoaded = false
+        this.weaponNames = await this.dataService.getWeaponNames(this.weaponType)
+        this.weaponsLoaded = true        
         
         for(let weaponName of this.weaponNames) {
           let saves = this.configService.getArmouryConfigs(weaponName)

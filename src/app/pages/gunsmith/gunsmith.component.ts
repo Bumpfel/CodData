@@ -46,12 +46,10 @@ export class GunsmithComponent implements OnInit {
   upperAttachments: string[]
   lowerAttachments: string[]
 
-  // deselectPopup: HTMLElement
   infoPopupSettings: InfoPopup
 
-  // TODO type vars when done with re-structure
-  baseWeaponStats: any
-  attachmentSummary: Array<Map<string, Effect>> = [] // TODO not array
+  baseWeaponStats: Map<string, Effect>
+  attachmentSummary: {[key:string]: Map<string, Effect>} = {}
   weaponStatSummary: Map<string, Effect>
 
   statOrder: string[]
@@ -85,7 +83,7 @@ export class GunsmithComponent implements OnInit {
     this.globalService.enableGoBackOnEscape()
 
     let slot: number = parseInt(this.route.snapshot.paramMap.get('slot'))
-    this.weaponConfig = this.configService.getWeaponConfig(slot)   
+    this.weaponConfig = this.configService.getWeaponConfig(slot)
     this.newName = this.weaponConfig.armouryName
    
     this.statOrder = Stats.getAllOrderedStats()

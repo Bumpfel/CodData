@@ -32,14 +32,16 @@ export class DamageGraphComponent implements OnInit {
   xScale = 4 // TODO calc dynamically
   canvasScale = 1
 
-  hitBoxes = { head: 'head', torso: 'chest', stomach: 'stomach', limbs: 'legs' } // move to some tgd class, and access through dataservice
-  selectedHitBox = this.hitBoxes.head
+  hitBoxes: {[key: string]: string}
+  selectedHitBox: string
   // hidden = 'hidden'
   extraAttributes = { hidden: 'hidden', colour: 'colour'}
 
   constructor(private dataService: DataService, private globalService: GlobalService) { }
 
   ngOnInit(): void {
+    this.hitBoxes = this.dataService.getHitboxes()
+    this.selectedHitBox = this.hitBoxes.head
   }
 
   ngOnChanges(): void {

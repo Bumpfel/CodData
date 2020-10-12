@@ -7,7 +7,7 @@
 
 import { Stats } from '../models/Stats'
 import { Effect } from '../models/Effect'
-import { AttachmentData, WeaponData, TGDData } from '../models/TGD/Data'
+import { TGDData } from '../models/TGD/Data'
 
 export class TgdFormatter {
 
@@ -42,13 +42,16 @@ export class TgdFormatter {
     type: 'type,'
   }
 
+  static getHitboxes(): {[key: string]: string} {
+    return { head: 'head', torso: 'chest', stomach: 'stomach', limbs: 'legs' }
+  }
   
   /**
    * @deprecated Use getAttachmentEffects
    * Formats TGD data into printable keys and values (TODO not sure I'll use at all)
    * @param summaryData
    */
-  static getAllWeaponEffects(summaryData: AttachmentData[], weaponData: WeaponData): Array<Map<string, Effect>> {
+  static getAllWeaponEffects(summaryData: TGDData[], weaponData: TGDData): Array<Map<string, Effect>> {
     const allEffects: Map<string, Effect>[] = []
     
     for(let i = 0; i < summaryData.length; i ++) {
@@ -60,7 +63,7 @@ export class TgdFormatter {
   }
 
   // TODO rename to reflect its used by weapon summary data as well
-  static getAttachmentEffects(tgdData: TGDData, baseWeaponData: WeaponData, isSummary: boolean = false): Map<string, Effect> {
+  static getAttachmentEffects(tgdData: TGDData, baseWeaponData: TGDData, isSummary: boolean = false): Map<string, Effect> {
     const effects: Map<string, Effect> = new Map()   
 
     for(let mod in tgdData) {
@@ -83,7 +86,7 @@ export class TgdFormatter {
    * @param value raw value
    * @param baseWeaponData tgd base weapon data. use TgdService.getWeaponData()[1]
    */
-  private static getModEffectStatus(mod: string, value: number, baseWeaponData: WeaponData): number {
+  private static getModEffectStatus(mod: string, value: number, baseWeaponData: TGDData): number {
     const positiveModEffect: string = TgdFormatter.positiveModEffect.get(mod)
     let status: number // positive effect = pro, negative effect = con, neutral effect = none
 
@@ -112,7 +115,7 @@ export class TgdFormatter {
     return status
   }
 
-  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean, baseWeaponData: WeaponData, isSummary: boolean = false): string {
+  private static getEffectDisplayValue(mod: string, value: number, addSign: boolean, baseWeaponData: TGDData, isSummary: boolean = false): string {
     let unit = TgdFormatter.displayUnits.get(mod)
 
     if(!isSummary && TgdFormatter.compareToBaseMods.has(mod)) {          
@@ -239,20 +242,6 @@ export class TgdFormatter {
     TgdFormatter.mods.vert_recoil_mod,
     TgdFormatter.mods.horiz_bounce_mod,
   ])
-
-  // might need for summary units ?
-  // private static displayUnits: Map<string, string> = new Map([
-  //   [TgdData.mods.ads_mod, TgdData.units.ms],
-  //   [TgdData.mods.ads_move_mod, TgdData.units.mps],
-  //   [TgdData.mods.bullet_velocity_mod, TgdData.units.mps],
-    // [TgdData.mods.hipfire_area_mod, TgdData.units.area],
-  //   [TgdData.mods.horiz_bounce_mod, TgdData.units.percent],
-  //   [TgdData.mods.move_mod, TgdData.units.mps],
-  //   [TgdData.mods.range_mod, TgdData.units.percent],
-  //   [TgdData.mods.sstfe, TgdData.units.mps],
-  //   [TgdData.mods.stfe, TgdData.units.mps],
-  //   [TgdData.mods.vert_recoil_mod, TgdData.units.percent],
-  // ])
 
   // TODO dno if I'll use (unfinished)
   private static nonStatMods: Map<string, string> = new Map([ // Map<Set<string>, string>
