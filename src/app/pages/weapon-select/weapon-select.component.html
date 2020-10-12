@@ -16,7 +16,7 @@
           <div class="triangle"></div>
         </a>
         <!-- Expanded armoury button -->
-        <a class="gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName.key)">
+        <a class="gone" id="armoury-button-expanded" (click)="soundService.select()" (focus)="soundService.hover()" (mouseenter)="soundService.hover()" [routerLink]="'/' + getComparisonSlot() + '/armoury/' + globalService.nameToLink(weaponName)">
           <div class="title">Armoury</div>
           <img src="/assets/images/armoury.png" alt="Armoury button">
           <br>
