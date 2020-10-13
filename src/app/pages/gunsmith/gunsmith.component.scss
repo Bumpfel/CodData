@@ -1,0 +1,216 @@
+@import "./src/vars.scss";
+
+main { 
+  // ###  Attachments  ###
+  // #####################
+  .attachments {
+    // border: 1px solid green;
+    white-space: nowrap;
+    height: 100px;
+    
+    &#upperAttachments a:not(:first-child) {
+      margin-left: 5%;
+    }
+
+    &#lowerAttachments {
+      text-align: right;
+      margin-top: -110px;
+    }
+    
+    &#lowerAttachments a {
+      text-align: left;
+      margin-left: 3%;
+    }   
+
+    // TODO margin-left and width of a's control the widths used. not the best solution
+    a, .disabledButton {
+      box-sizing: border-box;
+      width: 16%;
+
+      // img {
+      //   border: 1px dotted orange;
+      //   display: inline-block;
+      //   width: 10px;
+      //   height: 10px;
+      // }
+
+      .white {
+        color: white;
+        font-size: 14px;
+      }
+
+      .circle {
+        float: right;
+        $sz: 10px;
+        width: $sz;
+        height: $sz;
+        padding: 2px;
+      }
+    
+      $vertDistance: 30px;
+      &#muzzle {
+        top: $vertDistance * 2;
+      }
+      &#barrel {
+        top: $vertDistance;
+      }
+      &#optic {
+        top: $vertDistance;
+      }
+      &#stock {
+        top: $vertDistance * 2;
+      }
+      
+      // &#underbarrel {
+      // }
+      &#ammunition {
+        top: $vertDistance;
+      }
+      &#rear-grip {
+        top: $vertDistance;
+      }
+      // &#perk {
+      // }
+    }
+  }
+
+  // ###  IMG  ###
+  // #############
+  img {
+    // border: 1px dashed grey;
+    $width: 70%;
+    height: auto;
+    min-height: 150px;
+    width: $width;
+    margin: 0 calc((100% - #{$width}) / 2);
+    // z-index: -1;
+    
+    // test
+    &#VLK {
+      width: 10%;
+      min-height: 15px;
+      position: relative;
+      top: -465px;
+      left: 595px;
+    }
+  }
+
+  // ###  Misc Info  ###
+  // ###################
+  #miscInfo {
+    display: inline-block;
+    // border: 1px dashed red;
+    margin: 10px;
+    margin-left: 40px;
+    margin-top: -40px;
+    
+    #equippedSummary, #save {
+      margin-left: 30px;
+      font-size: 21px;
+    }
+    #save {
+      color: white;
+      margin-bottom: 50px;
+
+      > span {
+        padding: 0 5px;
+        margin-right: 2px;
+        border-radius: 15%;
+        background-color: white;
+        color: rgb(45, 45, 45); // TODO var? (same as body left-hand bg)
+      }
+    }
+    #equippedSummary {
+      // border: 1px dotted orange;
+      color: rgb(52, 91, 120); // TODO var?
+      margin-bottom: 5px;
+    }
+
+    .circle {
+      margin-right: 12px;
+    }
+
+    .circle:first-child {
+      margin-left: 15px;
+    }
+
+    .meter {
+      .filled {
+        width: 150px; // TODO temp
+        background-color: $inactiveColour;
+      }
+      
+      .first {
+        width: 100px; // TODO temp
+        background-color: $inactiveColour;
+      }
+      .second {
+        width: 180px; // TODO temp
+        background-color: darken($inactiveColour, 20%);
+      }
+      .last {
+        background-color: darken($inactiveColour, 40%);
+      }
+    }
+  }
+
+  .gone {
+    display: none;
+    
+  }
+
+  // DELETE if stats component is implemented
+  // ###  Stats  ### 
+  // ###############
+  .stats {
+    table {
+      // border: 1px solid orange;
+      display: inline-block;
+      vertical-align: top;
+      border-collapse: collapse;
+      
+      div {
+        padding: 10px;
+        animation: flash 2s infinite;
+      }
+
+      &:not(:first-child) th {
+        width: 100px;
+        max-width: 150px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      
+
+      tr {
+        &:nth-child(2n) {
+          background-color: lighten($darkBG, 20%);
+        }
+        
+        &.summary {
+          color: white;
+        }
+  
+        th, td {
+          height: 20px; 
+          text-align: left;
+          padding: 5px;
+        }
+  
+        td.negative, &:not(.summary) td {
+          color: $red;
+        }
+
+        td.positive {
+          color: $green;
+        }
+      }
+    }
+  }
+}
+
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}

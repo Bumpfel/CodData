@@ -1,0 +1,10 @@
+@import "./src/vars.scss";
+
+footer {
+  // border: 1px dotted white;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: $darkBG; //#0005
+  padding: 20px $leftPageMargin+30px;
+}

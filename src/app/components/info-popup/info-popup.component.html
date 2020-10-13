@@ -1,0 +1,8 @@
+<div id="popup" class="popup hidden">
+  <div *ngIf="settings">
+    <div *ngFor="let item of settings.info | keyvalue">
+      <div class="key">{{item.key}}</div>
+      {{item.value}}
+    </div>
+  </div>
+</div>

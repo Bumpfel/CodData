@@ -4,8 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MessageService {
-
-  messages: object[] = []
+  messages: Msg[] = []
   timeout: number = 3000
 
   constructor() { }
@@ -14,4 +13,10 @@ export class MessageService {
     this.messages.push({msg1: msg1, msg2: msg2})
     setTimeout(() => this.messages.shift(), this.timeout)
   }
+}
+
+// interface Msg {
+type Msg = {
+  msg1: string
+  msg2?: string
 }

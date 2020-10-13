@@ -1,13 +1,16 @@
 <div id="card">
-  {{config.weaponName}}
-  <div class="right" *ngIf="config.attachments">
-    <div *ngFor="let key of config.attachments | keyvalue" class="small circle filled"></div>
-    <div *ngFor="let i of configService.getIterableNrOfEmptyAttachmentSlots(config)" class="small circle"></div>
-    <!-- <div *ngFor="let i of 5 - weapon.attachments" class="circle"></div> -->
+  {{ getDisplayName() }}
+  <div class="right" *ngIf="weaponConfig.attachments && !pageIsWeaponSelect() && (!pageIsArmoury() || isCustomConfig())">
+    <div *ngFor="let key of weaponConfig.attachments | keyvalue" class="small circle filled"></div>
+    <div *ngFor="let i of configService.getIterableNrOfEmptyAttachmentSlots(weaponConfig)" class="small circle"></div>
   </div>
-  <div class="info">{{config.armouryName}}</div>
+  <div class="info" *ngIf="pageIsConfigurations()">
+    {{ getConfigName() }}
+    <img *ngIf="isCustomConfig()" src="/assets/images/cogwheel.png" alt="custom config">
+  </div>
+  <img class="custom" *ngIf="pageIsArmoury() && isCustomConfig()" src="/assets/images/cogwheel_coloured.png" alt="custom config">
   <div class="img">
-    <img [src]="'/assets/images/weapons/small/' + config.weaponName + '.png'" (error)="err($event)">
+    <img [src]="'/assets/images/weapons/' + globalService.nameToLink(weaponConfig.weaponType) + '/' + weaponConfig.weaponName + '.png'" (error)="err($event)" [alt]="weaponConfig.weaponName">
   </div>
-  <div class="info small">{{config.weaponType}}</div>
+  <div class="info small" *ngIf="pageIsConfigurations()">{{ getFullWeaponType() }}</div>
 </div>

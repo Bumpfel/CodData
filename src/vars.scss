@@ -1,15 +1,26 @@
-$darkColour: rgba(0, 0, 0, .8);
-$darkBG: rgba(0, 0, 0, .5);
+$darkColour: #000c;
+$darkBG: #0008;
+// $darkBG: rgba(50, 50, 50, .5);
+
 $highlightColour: rgb(120, 215, 253);
-$highlightColourTransparent: rgba(120, 215, 253, .5);
+$highlightColourTransparent: rgba(120, 215, 253, .55);
+$buttonTrimColour: rgb(60, 146, 202);
 $active: rgb(255, 158, 65);
 $activeBG: rgba(255, 158, 65, .5);
+
 $inactiveColour: #81898c;
+$darkGrey: #444;
+$mediumGrey: #555555;
 $meterBG: #4448;
+$inputBG: #8885;
 
 $leftPageMargin: 100px;
+$weaponCardWidth: 385px;
 
+// Pros & Cons
+$green: rgb(140, 198, 109);
+$greenBG: rgba(140, 198, 109, .2);
+$red: rgb(154, 59, 42);
+$redBG: rgba(154, 59, 42, .2);
 
 // $textColour: rgb(120, 215, 253);
-
-// TODO clean up. merge. 

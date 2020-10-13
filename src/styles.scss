@@ -1,26 +1,19 @@
 @import "./vars.scss";
+@font-face {
+  font-family: 'Roboto Light';
+  src: url('./assets/fonts/Roboto/Roboto-Light.ttf');
+}
+@font-face {
+  font-family: 'Roboto Bold';
+  src: url('./assets/fonts/Roboto/Roboto-Bold.ttf');
+}
 
 * {
-  // font-family: 'Roboto'; // TODO not matching that great
-  font-family: 'Roboto Light';
+  font-family: 'Roboto Light'; // numbers don't look the same
+  font-weight: 700;
   cursor: url('./assets/images/pointer.png'), pointer;
 }
 
-body {
-  margin: 0;
-  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
-  user-select: none;
-  // background-image: url('./assets/images/tempBG.png'); // TODO temp
-  // background-size: cover;
-}
-
-a, a * {
-  text-decoration: none;
-  cursor: url('./assets/images/pointer-link.png'), pointer;
-  
-  -webkit-user-drag: none;
-  -moz-user-drag: none; 
-}
 
 // ###################
 // ###  Scrollbar  ###
@@ -31,11 +24,11 @@ a, a * {
   background: $meterBG;
   opacity: .5;
 }
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb, ::-webkit-slider-thumb {
   $colour: #f1f1f1bc;
-  background-image: linear-gradient($colour, $colour), url('./assets/images/square-pattern.png');
+  background-image: linear-gradient($colour, $colour), url('/assets/images/square-pattern.png');
 }
-::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover, ::-webkit-slider-thumb:hover {
   $trimSize: 1px;
   background-image:
     linear-gradient(to bottom, $darkBG, $highlightColourTransparent 50%, $darkBG 100%),
@@ -44,51 +37,108 @@ a, a * {
       $darkBG $trimSize, $darkBG calc(100% - #{$trimSize}),
       $highlightColour calc(100% - #{$trimSize}), $highlightColour 100%
     ),
-    url('./assets/images/square-pattern.png');
+    url('/assets/images/square-pattern.png');
   border: $trimSize solid $highlightColour;
   border-left: 0;
   border-right: 0;
+  cursor: url('/assets/images/pointer-link.png'), pointer;
+}
+
+
+// #################
+// ###  Layout  ###
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  min-height: 100%;
+  margin: 0;
+
+  background-image: linear-gradient(to right, rgb(45, 45, 45), rgb(35, 35, 35));
+  user-select: none;
+  overflow-x: hidden;
+  scrollbar-color: #f1f1f1bc $meterBG; // for firefox
+  scrollbar-width: 10px;
+  color: white;
+  // background-image: url('/assets/images/tempBG.png'); // TODO temp
+  // background-size: cover;
+
 }
 
 main {
-  margin: 50px $leftPageMargin;
+  padding: 50px 0 100px $leftPageMargin ; // compensates for footer
+  overflow: hidden;
+}
 
+
+
+// #########################
+// ###  Common Elements  ###
+main, footer {
   // Buttons 
-  a, .disabledButton {
-    opacity: .4;
-    
-    text-transform: capitalize;
-    color: $highlightColour;
-    font-size: 18px;
-    background-image:
-      linear-gradient($darkColour, $darkColour),
-      url('./assets/images/square-pattern.png'),
-    ;
+  a, .disabledButton, .button {
     position: relative;
     display: inline-block;
     min-width: fit-content;
     margin: 0;
     padding: 10px;
-   
-    &:hover {
-      $trimColour: rgb(60, 146, 202); // TODO see if it can be merged
+
+    opacity: .4;
+    background-image:
+    linear-gradient($darkColour, $darkColour),
+    url('/assets/images/square-pattern.png'),
+    ;
+    
+    text-transform: capitalize;
+    color: $highlightColour;
+    font-size: 18px;
+
+    &.grey {
+      color: #eee;
+    }
+    
+    &.back {
+      opacity: 1;
+      padding: 0 15px;
+      $bgColor: #333d;
+      background-image:
+        linear-gradient($bgColor, $bgColor),
+        url('/assets/images/square-pattern.png'),
+      ;
+      
+      color: #ddd;
+      font-size: 95%;
+      
+      &::before {
+        content: '\2039';
+        color: $inactiveColour;
+        font-size: 200%;
+        vertical-align: sub;
+        margin-right: 10px;
+      }
+    }
+
+    &:hover, &.hovered {
+      color: $highlightColour;
       $trimHeight: 2px;
       opacity: 1;
       background-image: 
       linear-gradient(to right, $darkBG, transparent 50%, $darkBG 100%),
-      linear-gradient(to bottom,
-      $trimColour, $trimColour $trimHeight,
-      $darkBG $trimHeight, $darkBG calc(100% - 2px),
-      $trimColour calc(100% - 2px), $trimColour 100%),
+        linear-gradient(to bottom,
+        $buttonTrimColour, $buttonTrimColour $trimHeight,
+        $darkBG $trimHeight, $darkBG calc(100% - 2px),
+        $buttonTrimColour calc(100% - 2px), $buttonTrimColour 100%),
       // linear-gradient(to right, $weaponCardBG, $trimColour 50%, weaponCardBG 100%),
-      radial-gradient(ellipse at bottom, $trimColour -25%, $darkBG 120%),
-      url('./assets/images/square-pattern.png'),
+      radial-gradient(ellipse at bottom, $buttonTrimColour -25%, $darkBG 120%),
+      url('/assets/images/square-pattern.png'),
       ;
     }
-    
+
     &.small {
       vertical-align: top;
-      margin-left: 7px;
+      margin: 0 7px;
       width: fit-content;
       padding: 15px 20px 20px;
       
@@ -99,93 +149,114 @@ main {
       }
     }
   }
+}
 
-  .disabledButton {
-    filter: grayscale(100%) opacity(.5);
-    // -webkit-filter: grayscale(100%);
-    // -moz-filter:    grayscale(100%);
-    // -ms-filter:     grayscale(100%);
-    // -o-filter:      grayscale(100%);
+a, a * {
+  text-decoration: none;
+  cursor: url('/assets/images/pointer-link.png'), pointer;
+  
+  -webkit-user-drag: none;
+  -moz-user-drag: none; 
+}
+
+input {
+  outline: none;
+}
+
+
+// ###############################
+// ###  Reused custom classes  ### 
+.disabledButton {
+  filter: grayscale(100%) opacity(.5);
+  // -webkit-filter: grayscale(100%);
+  // -moz-filter:    grayscale(100%);
+  // -ms-filter:     grayscale(100%);
+  // -o-filter:      grayscale(100%);
+}
+
+.scrollBox {
+  // border: 1px dotted orange;
+  display: inline-block;
+  height: 600px;
+  padding-left: 15px;
+  width: auto;
+  
+  overflow-y: auto;
+  overflow-x: hidden;
+  direction: rtl;
+
+  div {
+    direction: ltr;
   }
+}
 
-  // Scrollbox
-  .scrollBox {
-    display: inline-block;
-    height: 600px;
-    padding-left: 15px;
-    width: auto;
-    
-    overflow-y: auto;
-    overflow-x: hidden;
-    direction: rtl;
 
-    div {
-      direction: ltr;
-    }
+// ###  Stats  ### 
+// TODO delete? check where cutoutBox is used tho
+.stats, .cutoutBox {
+  display: inline-block;
+  white-space: nowrap;
+  min-height: 50px;
+  margin-top: 20px;
+  padding: 10px 20px 20px;
+  $cut: 20px;
+  background: $darkBG;
+  clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
+
+  color: $inactiveColour;
+  font-size: 14px;
+}
+
+.stats {
+  .title {
+    width: 200px;
+    // text-align: right;
+    white-space: nowrap;
   }
-
-  // ###  Stats  ###
-  // ###############
-  .stats {
-    display: inline-block;
-    padding: 10px 20px;
-    $cut: 20px;
-    background: $darkBG;
-    clip-path: polygon(0 $cut, $cut 0, 100% 0, 100% calc(100% - #{$cut}), calc(100% - #{$cut}) 100%, 0 100%);
-
-    color: $inactiveColour;
-    font-size: 15px;
-    line-height: 23px;
-
-    > div {
-      direction: rtl;
+  
+  .text {
+    // width: 100px;
+    margin-left: 20px;
+    // display: inline-block;
+  }
+  
+  .meter {
+    // border: 1px solid blue;
+    margin: 10px;
+    display: inline-flex;
+    height: 4px;
+    width: 200px;
+    background-color: $meterBG;
+    vertical-align: middle;
+    
+    &:hover {
+      &::before {
+        content: 'test';
+        padding: 0 5px;
+        // width: 50px;
+        // height: 25px;
+        position: absolute;
+        // top: 5px;
+        z-index: 2;
+        background-color: #333;
+      }
     }
 
-    .title {
-      display: inline-block;
-      padding-right: 10px;
-      text-align: right;
-      white-space: nowrap;
+    .filled {
+      width: 150px; // TODO temp
+      background-color: $inactiveColour;
     }
     
-    .meter {
-      // border: 1px solid blue;
-      direction: ltr;
-      display: inline-flex;
-      height: 5px;
-      width: 200px;
-      background-color: $meterBG;
-      vertical-align: middle;
-      
-      &:hover {
-        &::before {
-          content: 'test';
-          padding: 0 5px;
-          // width: 50px;
-          // height: 25px;
-          position: absolute;
-          // top: 5px;
-          z-index: 2;
-          background-color: #333;
-        }
-      }
-
-      .filled {
-        width: 150px; // TODO temp
-        background-color: $inactiveColour;
-      }
-      
-      .first {
-        width: 100px; // TODO temp
-        background-color: $inactiveColour;
-      }
-      .second {
-        width: 180px; // TODO temp
-        background-color: darken($inactiveColour, 20%);
-      }
-      .last {
-        background-color: darken($inactiveColour, 40%);
-      }
+    .first {
+      width: 100px; // TODO temp
+      background-color: $inactiveColour;
+    }
+    .second {
+      width: 180px; // TODO temp
+      background-color: darken($inactiveColour, 20%);
+    }
+    .last {
+      background-color: darken($inactiveColour, 40%);
     }
   }
 }
@@ -207,6 +278,7 @@ main {
     
     &::before {
       content: '';
+      // content: '\25C9';
       vertical-align: top;
       display: inline-block;
       width: 100%;
@@ -215,6 +287,32 @@ main {
       border-radius: 50%;
     }
   }
+}
+
+// #####################
+// ###  Misc classes ### 
+.block {
+  display: block;
+}
+
+.spaceContainer {
+  // border: 1px dotted white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.inlineContainer {
+  // border: 1px dotted white;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.weaponTitle {
+  color: grey;
+  font-family: 'Roboto Bold';
+  font-size: 54px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .right {
@@ -238,4 +336,53 @@ main {
   font-size: 75%;
   position: relative;
   top: -7px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  &:not(.background) {
+    // background-color: #f002;
+  }
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.lineThrough {
+  text-decoration: line-through;
+}
+
+.background {
+  background-color: #00f2;
+  z-index: 0;
+}
+
+.tinted {
+  background-color: #0005;
+}
+
+
+
+// ####################
+// ###  Animations  ### 
+.delayed-fade-in {
+  animation: delayed-fade-in 1s forwards;
+}
+
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes delayed-fade-in {
+  0% { opacity: 0; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }

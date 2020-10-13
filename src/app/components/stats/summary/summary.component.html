@@ -1,0 +1,23 @@
+<div class="stats" *ngIf="weaponConfig">
+  <h2>Stat Summary</h2>
+  <!-- Headers -->
+  <div class="stacking column summary">
+    <div class="cell" *ngFor="let stat of statOrder">{{stat}}</div>
+  </div>
+  <!-- Stats -->
+  <div class="stacking column">
+    <ng-container *ngIf="weaponStatSummary else loadingWeaponStatSummary">
+      <ng-container *ngFor="let stat of statOrder">
+        <div class="cell" *ngIf="weaponStatSummary.get(stat)" [class.positive]="weaponStatSummary.get(stat).isPositive()" [class.negative]="weaponStatSummary.get(stat).isNegative()">
+          {{weaponStatSummary.get(stat).value}}
+        </div>
+      </ng-container>
+    </ng-container>
+    <!-- Loading stats -->
+    <ng-template #loadingWeaponStatSummary>
+      <div class="cell" class="loading">
+        Loading...
+      </div>
+    </ng-template>
+  </div>
+</div>

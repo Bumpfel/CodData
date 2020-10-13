@@ -1,0 +1,25 @@
+@import "./src/vars.scss";
+
+.popup {
+  position: absolute;
+  display: inline-block;
+  padding: 4px 10px;
+  z-index: 2;
+  
+  pointer-events: none;
+  background-color: lighten(rgb(52, 82, 101, .9), 10%);
+  border: 1px solid rgb(131, 180, 200);
+  color: white;
+  
+  div {
+    margin: 2px 5px 2px 0;
+  }
+  
+  .key {
+    display: inline-block;
+    padding: 0 5px;
+    background-color: white;
+    border-radius: 2px;
+    color: black;
+  }
+}

@@ -1,0 +1,53 @@
+@import "./src/vars.scss";
+
+main {
+  // border: 1px solid orange;
+}
+
+.scrollBox {
+  height: auto;
+  
+  .card {
+    margin-bottom: 10px;
+    // border: 1px solid red;
+    
+    &.new {
+      display: block;
+      width: $weaponCardWidth;
+      
+      text-align: center;
+      color: white;
+      font-size: 70px;
+    }
+  }
+}
+
+#contextMenu { // TODO delete when/if replaced by popup component 
+  position: absolute;
+  z-index: 2;
+  width: 250px;
+  font-size: 14px;
+  opacity: 1;
+  background-color: $darkGrey;
+  
+  div {
+    border: 1px solid $darkBG;
+    background-color: $darkGrey;
+    color: $inactiveColour;
+    padding: 10px 20px;
+  }
+  
+  a {
+    display: block;
+    margin: 0;
+    padding-left: 20px;
+    
+    color: white;
+    font-size: unset;
+    // opacity: unset;
+
+    &:hover {
+      color: $highlightColour;
+    }
+  }
+}

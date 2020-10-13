@@ -1,45 +1,70 @@
-@import "../../../vars.scss";
+@import "./src/vars.scss";
 
-#card {
-  display: inline-block;
-  
-  // margin-bottom: 10px;
+#card {  
   padding: 5px 15px;
   box-sizing: border-box;
-  width: 100%;
-  // height: 95px;
-  
+  width: $weaponCardWidth;
+  text-transform: none;
+
   .circle {
     $sz: 6px;
     width: $sz;
     height: $sz;
     margin-left: 5px;
     border: 1px solid $inactiveColour;
-
+    
   }
   .filled {
+    border: 1px solid $active;
     background-color: $active;
   }
 
   .info {
     $sz: 15px;
-    color: white;
-    font-size: $sz;
     height: $sz + 10px;
+    text-transform: none;
+    font-size: $sz;
+    color: white;
 
     &.small {
       font-size: 12px;
     }
+
+    img {
+      position: relative;
+      top: 2px;
+      $size: 15px;
+      width: $size;
+      height: $size;
+    }
   }
   
-  .img {
-    text-align: center;
+  .custom {
+    position: absolute;
+    $indent: 15px;
+    bottom: $indent;
+    left: $indent;
     
+    $sz: 27px;
+    width: $sz;
+    height: $sz;
+  }
+
+  .img {
+    // border: 1px solid red;
+    height: 75px;
+    text-align: center;
+
     img {
+      // border: 1px dotted yellow;
+      // display: inline-block;
+      // vertical-align: middle;
       max-width: 160px;
-      max-height: 75px;
+      max-height: 100%;
       -webkit-user-drag: none;
       -moz-user-drag: none; 
+
+      filter: grayscale(100%) brightness(130%) contrast(80%);
     }
   }
 

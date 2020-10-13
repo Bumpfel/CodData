@@ -1,0 +1,41 @@
+@import "./src/vars.scss";
+@import "./src/app/components/stats/stats.scss";
+
+#container {
+  // border: 1px dotted white;
+  display: inline-block;
+  vertical-align: top;
+  background-color: black;
+  padding: 5px;
+
+  .hitBoxes {
+    text-transform: capitalize;
+  }
+
+  #markerContainer {
+    // border: 1px dotted orange;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    // color: light
+    
+    .marker {
+      padding: 10px;
+      font-size: 14px;
+      
+      .box {
+        display: inline-block;
+        width: 20px;
+        height: 15px;
+      }
+    }
+  }
+}
+
+// canvas {
+//   border: 1px dotted white;
+// }
+
+// #hitBoxSlider {
+//   width: 90%;
+// }

@@ -1,4 +1,4 @@
-@import '../../../vars.scss';
+@import "./src/vars.scss";
 
 #messageBox {
   // border: 2px dotted orange;
@@ -17,6 +17,7 @@
     position: relative;
     // animation: fade-in 1.5s forwards;
     animation: slide-in .4s forwards;
+    color: black;
     
     #left {
       display: table-cell;

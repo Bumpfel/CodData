@@ -1,0 +1,132 @@
+@import "./src/vars.scss";
+
+#attachments {
+  display: inline-block;
+  width: 330px;
+
+  .circle {
+    $sz: 10px;
+    width: $sz;
+    height: $sz;
+    padding: 2px;
+  }
+  
+  a {
+    display: block;
+    margin-bottom: 2px;
+    padding: 16px;
+
+    img {
+      width: 42px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.stats {
+  margin-left: 100px;
+  padding: 25px;
+  width: 400px;
+  vertical-align: top;
+  white-space: normal;
+  
+  > div {
+    direction: ltr;
+  }
+
+  > #title {
+    display: block;
+    margin-bottom: 5px;
+
+    text-align: left;
+    font-size: 28px;
+    font-weight: bold;
+    color: $inactiveColour;
+  }
+
+  .equipped {
+    box-sizing: border-box;
+    margin: 10px 0;
+    min-height: 60px;
+   
+    .circle {
+      $sz: 18px;
+      width: $sz;
+      height: $sz;
+      padding: 5px; 
+    }
+    
+    #title {
+      position: relative;
+      display: inline-block;
+      left: -15px;
+      padding: 4px;
+      padding-left: 23px;
+      vertical-align: middle;
+      z-index: -1;
+
+      background-image:
+        linear-gradient(darken($activeBG, 25), darken($activeBG, 25)),
+        url('/assets/images/square-pattern.png'),
+      ;
+      font-size: 18px;
+      color: #fffc;
+    }
+  }
+
+  #pros, #cons {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 50px;
+    text-align: left;
+
+    .stat {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 16px;
+      font-weight: 100;
+      
+      &::before {
+        font-family: 'Consolas';
+        padding: 0 5px 1px;
+        margin-right: 5px;
+        border-radius: 50%;
+      }
+
+      div {
+        float: right;
+        margin-right: 5px;
+      }
+    }
+  }
+
+
+  #pros {
+    color: $green;
+    .stat {
+      background-color: $greenBG;
+      
+      &::before {
+        content: '+';
+        // content: '&#9547;';
+        border: 1px solid $green;
+      }
+    }
+  }
+  
+  #cons {
+    color: $red;
+    .stat {
+      background-color: $redBG;
+      
+      &::before {
+        content: '-';
+        border: 1px solid $red;
+      }
+    }
+  }
+
+  .stat {
+    padding-left: 50px;
+  }
+}

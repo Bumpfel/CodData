@@ -1,0 +1,53 @@
+<app-top-menu [title]="attachmentSlot"></app-top-menu>
+
+<main>
+  <div class="scrollBox" id="attachments">
+    <div>
+      <a *ngFor="let attachment of attachments | keyvalue" (click)="selectAttachment(attachment.key)" (mouseenter)="setHoveredAttachment(attachment.key)">
+        <!-- <img [src]="'/assets/images/attachments/muzzle/' + attachment.key + '.png'"> -->
+        {{attachment.key}}
+        <div *ngIf="isSelectedAttachment(attachment.key)" class="circle filled small right"></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div id="title" *ngIf="hoveredAttachment">
+      {{hoveredAttachmentName}}
+    </div>
+
+    <strong>Proclaimer: </strong>Attachments might have other non-quantifiable pros and cons like "Sound Suppression" or "Scope Glint".  They are not listed here, and neither is aiming stability
+
+    <div class="equipped">
+      <ng-container *ngIf="isSelectedAttachment(hoveredAttachmentName)">
+        <div class="circle filled"></div>
+        <div id="title">Equipped</div>
+      </ng-container>
+    </div>
+
+    <!-- PROS -->
+    <div id="pros">
+      PROS
+      <ng-container *ngFor="let stat of hoveredAttachment | keyvalue">
+        <div *ngIf="stat.value.isPositive()"  class="stat">
+          {{stat.key}}
+          <div>{{(stat.value.value)}}</div>
+        </div>
+      </ng-container>
+    </div>
+    
+    <!-- CONS -->
+    <div id="cons">
+      CONS
+      <ng-container *ngFor="let stat of hoveredAttachment | keyvalue">
+        <div *ngIf="stat.value.isNegative()"  class="stat">
+          {{stat.key}}
+          <div>{{stat.value.value}}</div>
+        </div>
+      </ng-container>
+    </div>
+    <!-- <div class="meter"></div> -->
+  </div>
+</main>
+
+<app-footer></app-footer>

@@ -1,0 +1,26 @@
+<app-top-menu title="armoury"></app-top-menu>
+
+<main *ngIf="loaded">
+  <div id="weapon">{{ getFullWeaponType()}} {{ getWeaponSortIdentifier() }}</div>
+  <div class="weaponTitle">{{ activeConfig.armouryName || activeConfig.weaponName }}</div>
+  
+  <app-summary [weaponConfig]="activeConfig"></app-summary>
+  <app-dmg-profile [weaponConfig]="activeConfig"></app-dmg-profile>
+  <!-- <app-damage-graph [weaponConfigs]="[activeConfig, { weaponName: 'MP5', attachments: [] }]"></app-damage-graph> -->
+  <br>
+
+  <a (click)="selectConfig(newConfig)" (mouseenter)="setActiveConfig(newConfig, $event)" (contextmenu)="$event.preventDefault()">
+    <app-weapon-card [weaponConfig]="newConfig" page="armoury"></app-weapon-card>
+  </a>
+  <ng-container *ngFor="let weaponConfig of armouryConfigs | keyvalue">
+    <a (click)="selectConfig(weaponConfig.value)" (mouseenter)="setActiveConfig(weaponConfig.value); showAttachmentsPopup(weaponConfig.value, $event)" (mouseleave)="closeAttachmentsPopup()" (contextmenu)="showContextMenu($event)">
+      <app-weapon-card [weaponConfig]="weaponConfig.value" page="armoury"></app-weapon-card>
+    </a>
+  </ng-container>
+
+  <app-info-popup [settings]="infoPopupSettings"></app-info-popup>
+  <app-contextmenu [options]="contextMenuOptions" (optionSelected)="contextMenuAction($event)"></app-contextmenu>
+  <app-nameform [weaponConfig]="nameFormConfig" [active]="nameFormActive" (submitForm)="renameConfig($event)"></app-nameform>
+</main>
+
+<app-footer></app-footer>

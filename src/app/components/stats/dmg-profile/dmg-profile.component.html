@@ -1,0 +1,57 @@
+<div class="stats basedata" [class.hidden]="!weaponConfig">
+  <ng-container *ngIf="activeDamageInterval && weaponStatSummary else loadingDmgProfile">
+    <h2>Damage Profile</h2>
+    <div class="title">
+      Damage Range: {{getRangeDisplay(sliderValue)}} / {{sliderMaxRange}}
+      <!-- : {{getDamageRangeInterval(activeDamageInterval)}} -->
+    </div>
+    <div class="spaceContainer">
+      <input type="range" [style]="sliderStyle" [class.disabled]="intervalsLoaded === false" [(ngModel)]="sliderValue" id="rangeSlider" [max]="sliderMaxRange" value="0" (input)="setDamageInterval(sliderValue)">
+      <!-- <ng-template #loadingDmgIntervals>
+        <div class="loading">Loading damage intervals...</div>
+      </ng-template> -->
+    </div>
+    <div class="stacking column capitalize">
+      <div class="header">Hit box</div>
+      <div>Head</div>
+      <div>Torso</div>
+      <div>Stomach</div>
+      <div>Limbs</div>
+    </div>
+    <div class="stacking column">
+      <div class="header">Dmg per bullet</div>
+      <div>{{getDamage(hitBoxes.head)}}</div>
+      <div>{{getDamage(hitBoxes.torso)}}</div>
+      <div>{{getDamage(hitBoxes.stomach)}}</div>
+      <div>{{getDamage(hitBoxes.limbs)}}</div>
+    </div>
+    <div class="stacking column">
+      <div class="header">DPS</div>
+      <div>{{getDPS(hitBoxes.head)}} DPS</div>
+      <div>{{getDPS(hitBoxes.torso)}} DPS</div>
+      <div>{{getDPS(hitBoxes.stomach)}} DPS</div>
+      <div>{{getDPS(hitBoxes.limbs)}} DPS</div>
+    </div>
+    <!-- <div class="stacking column">
+      <div  *ngFor="let hitBox of hitBoxes | keyvalue">{{getDamagePerMag(hitBox.value)}} damage</div>
+    </div> -->
+
+    <br><br>
+    
+    <div class="title">
+      Additional Info
+    </div>
+    <div class="stacking column">
+      <div *ngIf="getLockTime()" title="Belt fed LMG's and the Uzi has an open bolt design which causes a small input lag between pulling the trigger and the weapon firing a shot">Lock time *</div>
+      <div>Rate of Fire</div>
+    </div>
+    <div class="stacking column">
+      <div *ngIf="getLockTime()">{{getLockTime()}}</div>
+      <div>{{getRateOfFire()}} rpm</div>
+    </div>
+  </ng-container>
+  <!-- Loading base data -->
+  <ng-template #loadingDmgProfile>
+    <div class="loading">Loading...</div>
+  </ng-template>
+</div>

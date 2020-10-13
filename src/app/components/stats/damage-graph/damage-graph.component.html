@@ -1,0 +1,24 @@
+<div id="container">
+  <div id="markerContainer">
+    <div class="marker" [class.lineThrough]="isHidden(config)" [style]="'color:' + config.colour" *ngFor="let config of weaponConfigs" (click)="togglePath(config)">
+      <div class="box" [style]="'background-color:' + config.colour"></div>
+      {{'#' + config.comparisonSlot + ' ' + (config.armouryName || config.weaponName)}}
+    </div>
+  </div>
+  
+  <div class="spaceContainer hitBoxes">
+    <div *ngFor="let hitBox of hitBoxes | keyvalue" class="">
+      <input type="radio" [value]="hitBox.value" id="hitBox.key" (click)="setHitBox(hitBox.value)" [(ngModel)]="selectedHitBox" #hitBox>
+      <label [for]="hitBox.key">{{hitBox.key}}</label>
+    </div>
+    <!-- <div>Head</div>
+    <div>Torso</div>
+    <div>Stomach</div>
+    <div>Limbs</div>     -->
+  </div>
+  <!-- <input type="range" max="3" id="hitBoxSlider"> -->
+
+  <canvas id="mainCanvas" (wheel)="zoomCanvas($event)">
+    Weapon Damage Graph
+  </canvas>
+</div>

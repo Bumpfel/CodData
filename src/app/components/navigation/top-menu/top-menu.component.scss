@@ -1,4 +1,4 @@
-@import "../../../../vars.scss";
+@import "./src/vars.scss";
 
 nav {
   white-space: nowrap;
@@ -13,7 +13,7 @@ nav {
   // background-color: $darkBG;
   background-image: 
     linear-gradient($darkColour, $darkColour),
-    url('../../../../assets/images/vector-trails.jpg'),
+    url('/assets/images/vector-trails.jpg'),
   ;
 
   #title {
@@ -30,13 +30,13 @@ nav {
 
   #menu {
     margin-left: $leftPageMargin + 50px;
-    
+
     a {
       box-sizing: border-box;
       width: 140px;
       padding: 20px 10px;
       margin-right: 5px;
-
+      
       display: inline-block;
       color: $inactiveColour;
       font-weight: bold;

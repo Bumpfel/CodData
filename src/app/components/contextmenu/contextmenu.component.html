@@ -1,0 +1,12 @@
+<ng-container *ngIf="isActive === true">
+  <!-- Context Menu Overlay -->
+  <div id="contextMenuOverlay" class="overlay" (click)="closeMenu($event)" (contextmenu)="closeMenu($event)"></div>
+  
+  <!-- Right click ContextMenu -->
+  <div id="contextMenu" class="small" [style]="'left:' + options.x + '; top:' + options.y" (contextmenu)="$event.preventDefault()">
+    <div>{{options.title}}</div>
+    <ng-container *ngFor="let alternative of options.alternatives | keyvalue">
+      <a (click)="selectAlternative(alternative.value)">{{alternative.value}}</a>
+    </ng-container>
+  </div>
+</ng-container>
