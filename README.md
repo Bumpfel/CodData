@@ -1,6 +1,8 @@
 # CodData
-
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.5.
+
+## Deployed app
+https://coddata-de6f8.firebaseapp.com
 
 ## Development server
 
