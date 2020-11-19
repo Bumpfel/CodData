@@ -1,8 +1,10 @@
 # CodData
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.5.
+This is a frontend made in Angular that uses an external backend (REST API) supplied by truegamedata.com. It is an alternative to the frontend on truegamedata.com with a design very similar to the one in game that players are more familiar with and is faster to navigate.
 
 ## Deployed app
 https://coddata-de6f8.firebaseapp.com
+
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.5.
 
 ## Development server
 
