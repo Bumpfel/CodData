@@ -1,3 +1,4 @@
+// TODO old. delete
 export interface DamageIntervals {
   gun: string
 

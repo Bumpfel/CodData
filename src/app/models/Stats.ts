@@ -8,7 +8,7 @@ export class Stats {
     hipfire_accuracy: 'Hip Fire Accuracy',
     mag_size: 'Magasine Size',
     move_speed: 'Movement Speed',
-    recoil_control: 'Recoil Control (Pattern Size)',
+    recoil_control: 'Recoil Control (Magnitude)',
     recoil_stability: 'Recoil Stability (Deviation)',
     reload_time: 'Reload Time',
     stf: 'Sprint to Fire Speed',

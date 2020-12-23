@@ -25,20 +25,20 @@
       <div>{{getDamage(hitBoxes.stomach)}}</div>
       <div>{{getDamage(hitBoxes.limbs)}}</div>
     </div>
-    <div class="stacking column">
+    <!-- <div class="stacking column">
       <div class="header">DPS</div>
       <div>{{getDPS(hitBoxes.head)}} DPS</div>
       <div>{{getDPS(hitBoxes.torso)}} DPS</div>
       <div>{{getDPS(hitBoxes.stomach)}} DPS</div>
       <div>{{getDPS(hitBoxes.limbs)}} DPS</div>
-    </div>
+    </div> -->
     <!-- <div class="stacking column">
       <div  *ngFor="let hitBox of hitBoxes | keyvalue">{{getDamagePerMag(hitBox.value)}} damage</div>
     </div> -->
 
     <br><br>
     
-    <div class="title">
+    <!-- <div class="title">
       Additional Info
     </div>
     <div class="stacking column">
@@ -48,7 +48,7 @@
     <div class="stacking column">
       <div *ngIf="getLockTime()">{{getLockTime()}}</div>
       <div>{{getRateOfFire()}} rpm</div>
-    </div>
+    </div> -->
   </ng-container>
   <!-- Loading base data -->
   <ng-template #loadingDmgProfile>
